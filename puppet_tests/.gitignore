@@ -1,12 +1,3 @@
-# sphinx builds
-doc/_build
-doc/*.pdf
-
-# editor's tmp files
-*~
-*.swp
-
-# python temporary files
 *.py[cod]
 
 # C extensions
@@ -45,6 +36,3 @@ nosetests.xml
 
 #IDEs
 .idea
-
-#log files
-*.log
