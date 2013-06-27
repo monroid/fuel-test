@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+MakeTests is a script to create tests scripts for every Puppet module using jinja2 templates.
+"""
+
 import jinja2
 import os
 import sys

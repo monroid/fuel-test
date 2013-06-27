@@ -4,6 +4,9 @@ from Color import Color
 
 
 class Interface:
+    """
+    This class is used to control program's messages and logs
+    """
     def __init__(
             self,
             debuglevel=1,
