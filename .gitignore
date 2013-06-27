@@ -1,0 +1,5 @@
+doc/_build
+doc/*.pdf
+.idea
+*~
+*.swp
