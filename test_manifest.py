@@ -1,6 +1,6 @@
-from fuel_test.base_test_case import BaseTestCase
-from fuel_test.ci.ci_vm import CiVM
-from fuel_test.manifest import Manifest, Template
+from base_test_case import BaseTestCase
+from ci.ci_vm import CiVM
+from manifest import Manifest, Template
 
 __author__ = 'alan'
 

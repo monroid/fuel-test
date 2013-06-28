@@ -1,10 +1,10 @@
 from devops.helpers.helpers import ssh
 from time import sleep
-from fuel_test.ci.ci_vm import CiVM
-from fuel_test.helpers import install_packages, switch_off_ip_tables
-from fuel_test.prepare_tempest import PrepareTempest
-from fuel_test.root import root
-from fuel_test.settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
+from ci.ci_vm import CiVM
+from helpers import install_packages, switch_off_ip_tables
+from prepare_tempest import PrepareTempest
+from root import root
+from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
 class PrepareTempestCI():
@@ -28,7 +28,6 @@ class PrepareTempestCI():
         return self._ci
 
     def prepare(self):
-        print "in prepare"
         prepare = PrepareTempest(username=self.username,
                                       password=self.password,
                                       tenant=self.tenant,
@@ -48,7 +47,6 @@ class PrepareTempestCI():
         self.prepare.prepare_tempest_folsom(template_folsom)
 
     def prepare_tempest_grizzly(self, template_grizzly):
-        print "in grizzly tempest"
         self.prepare.prepare_tempest_grizzly(template_grizzly)
 
     def prepare_tempest_essex(self, template_essex):

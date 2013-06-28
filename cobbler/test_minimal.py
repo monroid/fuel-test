@@ -1,9 +1,9 @@
 import unittest
-from fuel_test.cobbler.vm_test_case import CobblerTestCase
-from fuel_test.config import Config
-from fuel_test.helpers import write_config
-from fuel_test.manifest import Template, Manifest
-from fuel_test.settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
+from cobbler.vm_test_case import CobblerTestCase
+from config import Config
+from helpers import write_config
+from manifest import Template, Manifest
+from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 
 class MinimalTestCase(CobblerTestCase):

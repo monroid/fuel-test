@@ -1,4 +1,4 @@
-from fuel_test.settings import DOMAIN_NAME
+from settings import DOMAIN_NAME
 
 __author__ = 'vic'
 import yaml
