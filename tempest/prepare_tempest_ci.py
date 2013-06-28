@@ -1,10 +1,10 @@
-from devops.helpers.helpers import ssh
 from time import sleep
-from fuel_test.ci.ci_vm import CiVM
-from fuel_test.helpers import install_packages, switch_off_ip_tables
-from fuel_test.prepare_tempest import PrepareTempest
-from fuel_test.root import root
-from fuel_test.settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
+
+from devops.helpers.helpers import ssh
+from ci.ci_vm import CiVM
+from helpers import install_packages, switch_off_ip_tables, root
+from tempest.prepare_tempest import PrepareTempest
+from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
 class PrepareTempestCI():

@@ -1,8 +1,9 @@
 from time import sleep
-from root import root
 import tarfile
 
+from functions import root
 from devops.manager import Manager
+
 
 class EnvManager():
     login = "root"

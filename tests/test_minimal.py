@@ -1,21 +1,21 @@
 import unittest
-from fuel_test.cobbler.vm_test_case import CobblerTestCase
-from fuel_test.config import Config
-from fuel_test.helpers import write_config
-from fuel_test.manifest import Manifest, Template
-from fuel_test.settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
+from helpers.vm_test_case import CobblerTestCase
+from helpers.config import Config
+from helpers import write_config
+from helpers.manifest import Template, Manifest
+from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 
-class FullTestCase(CobblerTestCase):
+class MinimalTestCase(CobblerTestCase):
     """
-    Deploy openstack in full mode.
+    Deploy openstack in minimal mode.
     Supports multiple deployment tool -- astute or puppet.
     By default:
         master x1
-        controller x3
-        compute x3
-        storage x3
-        proxy x2
+        controller x?
+        compute x?
+        storage x?
+        proxy x?
         quantum x0
 
     """
@@ -34,20 +34,14 @@ class FullTestCase(CobblerTestCase):
         Deploy via puppet.
         """
         manifest = Manifest().generate_openstack_manifest(
-            template=Template.full(),
+            template=Template.minimal(),
             ci=self.ci(),
             controllers=self.nodes().controllers,
-            proxies=self.nodes().proxies,
             quantums=self.nodes().quantums,
-            quantum=True,
-            use_syslog=False
-        )
-
+            quantum=True)
+        
         Manifest().write_manifest(remote=self.remote(), manifest=manifest)
-
-        self.validate(self.nodes().proxies[:1], PUPPET_AGENT_COMMAND)
-        self.validate(self.nodes().proxies[1:], PUPPET_AGENT_COMMAND)
-        self.validate(self.nodes().storages, PUPPET_AGENT_COMMAND)
+        
         self.validate(self.nodes().controllers[:1], PUPPET_AGENT_COMMAND)
         self.validate(self.nodes().controllers[1:], PUPPET_AGENT_COMMAND)
         self.validate(self.nodes().controllers[:1], PUPPET_AGENT_COMMAND)
@@ -61,32 +55,30 @@ class FullTestCase(CobblerTestCase):
 
     def prepare_astute(self):
         """
-        Prepare astute config.
+        Prepare config files for astute.
         """
         config = Config().generate(
-            ci=self.ci(),
-            nodes=self.nodes(),
-            template=Template.full(),
-            quantums=self.nodes().quantums,
-            swift=False,
-            loopback=False,
-            use_syslog=False,
-            quantum=True
-        )
+                template=Template.minimal(),
+                ci=self.ci(),
+                nodes = self.nodes().controllers + self.nodes().computes,
+                quantums=self.nodes().quantums,
+                quantum=True,
+                cinder_nodes=['controller']
+            )
         print "Generated config.yaml:", config
         config_path = "/root/config.yaml"
         write_config(self.remote(), config_path, str(config))
         self.remote().check_call("cobbler_system -f %s" % config_path)
         self.remote().check_stderr("openstack_system -c %s -o /etc/puppet/manifests/site.pp -a /root/astute.yaml" % config_path, True)
 
-    def test_full(self):
+    def test_minimal(self):
         """
-        Use unittest for deploy.
+        Unittest for deploy.
         """
         self.deploy()
 
         if CREATE_SNAPSHOTS:
-            self.environment().snapshot('full', force=True)
+            self.environment().snapshot('minimal', force=True)
 
 if __name__ == '__main__':
     unittest.main()

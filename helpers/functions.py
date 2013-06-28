@@ -2,12 +2,14 @@ import logging
 import subprocess
 import tarfile
 from time import sleep
-from devops.helpers.helpers import _wait
 import os
 import re
-from fuel_test.cobbler.cobbler_client import CobblerClient
-from fuel_test.settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE, EXIST_TAR, USE_ISO
-from root import root
+
+from devops.helpers.helpers import _wait
+from helpers import root
+from cobbler_client import CobblerClient
+from settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE, EXIST_TAR, USE_ISO
+
 
 def get_file_as_string(path):
     with open(path) as f:

@@ -1,6 +1,6 @@
 import yaml
-from fuel_test.manifest import Manifest
-from fuel_test.settings import CURRENT_PROFILE, PUPPET_VERSION, INTERFACES, DOMAIN_NAME
+from functions.manifest import Manifest
+from settings import CURRENT_PROFILE, PUPPET_VERSION, INTERFACES, DOMAIN_NAME
 
 
 class Config():

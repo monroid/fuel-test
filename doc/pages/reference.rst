@@ -1,15 +1,37 @@
-=====================
 Справочная информация
 =====================
 
-MakeTests
----------
+Библиотека окружений ci
+-----------------------
 
-.. automodule:: MakeTests
+.. automodule:: ci.ci_base
+.. automodule:: ci.ci_bm
+.. automodule:: ci.ci_vm
 
+Тесты
+-----
+
+.. automodule:: tests
+.. automodule:: tests.test_apply_noop
+.. automodule:: tests.test_cobbler
+.. automodule:: tests.test_compact
+.. automodule:: tests.test_full
+.. automodule:: tests.test_minimal
+.. automodule:: tests.test_nova_subclasses
+.. automodule:: tests.test_puppet_module
+.. automodule:: tests.test_simple
+.. automodule:: tests.test_single
+.. automodule:: tests.test_swift
+
+Скрипт MakeTests
+----------------
+
+.. automodule:: puppet_tests.PuppetModule
+.. automodule:: puppet_tests.PuppetTest
+.. automodule:: puppet_tests.MakeTests
 
 Вспомогательные классы
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: Color
-.. automodule:: Interface
+.. automodule:: helpers.color
+.. automodule:: helpers.interface

@@ -1,7 +1,7 @@
 import logging
 from time import sleep
 import unittest
-from fuel_test.cobbler.env_manager import EnvManager
+from helpers.env_manager import EnvManager
 
 LOG = logging.getLogger(__name__)
 

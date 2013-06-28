@@ -1,7 +1,9 @@
+#!/usr/bin/env python
+
 import os
-from fuel_test.ci.ci_base import CiBase
-from fuel_test.node_roles import NodeRoles
-from fuel_test.settings import CONTROLLERS, COMPUTES,\
+from ci.ci_base import CiBase
+from helpers.node_roles import NodeRoles
+from settings import CONTROLLERS, COMPUTES,\
     STORAGES, PROXIES
 
 

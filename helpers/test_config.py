@@ -1,10 +1,10 @@
-import yaml
-from fuel_test.base_test_case import BaseTestCase
-from fuel_test.ci.ci_vm import CiVM
-from fuel_test.config import Config
-from fuel_test.manifest import Template
-
 import unittest
+
+from functions.base_test_case import BaseTestCase
+from ci.ci_vm import CiVM
+from functions.config import Config
+from functions.manifest import Template
+
 
 class TestConfig(BaseTestCase):
     """

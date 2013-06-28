@@ -21,10 +21,11 @@ Quickstart
      - fuel_test.cobbler.test_quantum_standalone_no_swift:QstTestCase.test_quantum_standalone_no_swift
      - fuel_test.cobbler.test_minimal:MinimalTestCase.test_minimal
      - fuel_test.cobbler.test_orchestration:CobblerCase.test_orchestrating_minimal
-     - TEMPEST
      - tempest/tempest/tests/network/test_network_basic_ops.py
      - tempest/tempest/tests/compute/servers/test_create_server.py:ServersTestJSON.test_can_log_into_created_server
      - tempest/tempest/tests/compute/floating_ips
+     - TEMPEST
+
 
   and ``erase`` with values
     
@@ -83,7 +84,7 @@ Shell script example
 
    export PARENT_PROXY=172.18.67.168
    export CIRROS_IMAGE=http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img
-   export ISO=/var/lib/libvirt/images/fuel-centos-6.3-x86_64.iso
+   export USE_ISO=
 
    export CONTROLLERS=1
    export COMPUTES=3

@@ -1,7 +1,7 @@
 import unittest
-from fuel_test.cobbler.vm_test_case import CobblerTestCase
-from fuel_test.manifest import Manifest
-from fuel_test.settings import PUPPET_AGENT_COMMAND
+from helpers.vm_test_case import CobblerTestCase
+from helpers.manifest import Manifest
+from settings import PUPPET_AGENT_COMMAND
 
 
 class SwiftCase(CobblerTestCase):
