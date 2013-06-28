@@ -1,5 +1,5 @@
 #!/usr/bin/env pyton
-#
+
 # 8 colors mode
 # 30 - 37 - Foreground color codes
 # 40 - 47 - Background color codes
@@ -18,7 +18,9 @@ class Color:
     """
     This class is used for coloring terminal output of Python programs
     """
-    def __init__(self, fgcode=None, bgcode=None, attrcode=0, enabled=True, brightfg=False, brightbg=False):
+
+    def __init__(self, foreground=None, background=None, attribute=0, enabled=True, bright_foreground=False,
+                 bright_background=False):
         """
         Constructor. Can take color settins when creating class.
         """
@@ -31,21 +33,21 @@ class Color:
         else:
             self.enabled = False
 
-        if brightfg:
-            self.brightfg = True
+        if bright_foreground:
+            self.bright_foreground = True
         else:
-            self.brightfg = False
+            self.bright_foreground = False
 
-        if brightbg:
-            self.brightbg = True
+        if bright_background:
+            self.bright_background = True
         else:
-            self.brightbg = False
+            self.bright_background = False
 
-        self.fgoffset = 30
-        self.bgoffset = 40
-        self.brightoffset = 60
+        self.foreground_offset = 30
+        self.background_offset = 40
+        self.bright_offset = 60
 
-        self.colortable = {
+        self.color_table = {
             'black': 0,
             'red': 1,
             'green': 2,
@@ -57,116 +59,117 @@ class Color:
             'off': None,
         }
 
-        self.attrtable = {
+        self.attribute_table = {
             'normal': 0,
             'bold': 1,
             'faint': 2,
-            'italic':    3,
+            'italic': 3,
             'underline': 4,
             'blink': 5,
-            'rblink':    6,
+            'rblink': 6,
             'negative': 7,
             'conceal': 8,
-            'crossed':   9,
+            'crossed': 9,
             'off': 0,
         }
 
-        self.setFG(fgcode)
-        self.setBG(bgcode)
-        self.setATTR(attrcode)
+        self.setForegroundColor(foreground)
+        self.setBackgroundColor(background)
+        self.setAttribute(attribute)
 
-    def toggleEnabled(self):
+    def setEnabled(self, status):
         """"
-        Toggle enable and disable all colors.
+        Enable or disable all colors.
         """
-        if self.enabled:
-            self.enabled = False
-        else:
+        if status:
             self.enabled = True
-
-    def toggleBrightFG(self):
-        """
-        Toggle enable and disable of bright foreground.
-        """
-        if self.brightfg:
-            self.brightfg = False
         else:
-            self.brightfg = True
+            self.enabled = False
 
-    def toggleBrightBG(self):
+    def setBrightForeground(self, status):
         """
-        Toggle enable and disable of bright background.
+        Enable and disable of bright foreground.
         """
-        if self.brightbg:
-            self.brightbg = False
+        if status:
+            self.bright_foreground = True
         else:
-            self.brightbg = True
+            self.bright_foreground = False
 
-    def setFG(self, color):
+    def setBrightBackground(self, status):
+        """
+        Enable and disable of bright background.
+        """
+        if status:
+            self.bright_background = True
+        else:
+            self.bright_background = False
+
+    def setForegroundColor(self, color):
         """
         Set foreground color or color code.
         """
         if type(color) == int:
-            self.fgcode = color
+            self.foreground = color
             return True
-        if self.colortable.has_key(color):
-            self.fgcode = self.colortable[color]
+        if self.color_table.has_key(color):
+            self.foreground = self.color_table[color]
             return True
-        self.fgcode = None
+        self.foreground = None
         return False
 
-    def setBG(self, color):
+    def setBackgroundColor(self, color):
         """
         Set background color or color code.
         """
         if type(color) == int:
-            self.bgcode = color
+            self.background = color
             return True
-        if self.colortable.has_key(color):
-            self.bgcode = self.colortable[color]
+        if self.color_table.has_key(color):
+            self.background = self.color_table[color]
             return True
-        self.bgcode = None
+        self.background = None
         return False
 
-    def setATTR(self, color):
+    def setAttribute(self, color):
         """
         Set additional text attribute code.
         """
         if type(color) == int:
-            self.attrcode = color
+            self.attribute = color
             return True
-        if self.attrtable.has_key(color):
-            self.attrcode = self.attrtable[color]
+        if self.attribute_table.has_key(color):
+            self.attribute = self.attribute_table[color]
             return True
-        self.attrcode = 0
+        self.attribute = 0
         return False
 
-    def escape(self):
+    def makeEscapes(self):
         """
         Print color enabling escape chars.
         """
         codes = []
-        attrcode = self.attrcode
+        attribute = self.attribute
 
-        if self.fgcode is not None:
-            fgcode = self.fgoffset + self.fgcode
-            if self.brightfg:
-                fgcode += self.brightoffset
+        if self.foreground is not None:
+            foreground = self.foreground_offset + self.foreground
+            if self.bright_foreground:
+                foreground += self.bright_offset
         else:
-            fgcode = None
+            foreground = None
 
-        if self.bgcode is not None:
-            bgcode = self.bgoffset + self.bgcode
-            if self.brightbg:
-                bgcode += self.brightoffset
+        if self.background is not None:
+            background = self.background_offset + self.background
+            if self.bright_background:
+                background += self.bright_offset
         else:
-            bgcode = None
+            background = None
 
-        codes.append(attrcode)
-        if fgcode:
-            codes.append(fgcode)
-        if bgcode:
-            codes.append(bgcode)
+        codes.append(attribute)
+
+        if foreground:
+            codes.append(foreground)
+        if background:
+            codes.append(background)
 
         escape_string = self.start + ";".join(map(str, codes)) + self.end
         return escape_string
@@ -177,32 +180,34 @@ class Color:
         """
         for fg in range(0, 7):
             for bg in range(0, 7):
-                for attr in sorted(self.attrtable.values()):
-                    democolor = Color(fgcode=fg, bgcode=bg, attrcode=attr, brightfg=False, brightbg=False)
-                    print democolor("Hello World!"), repr(democolor)
-                    democolor.brightfg = True
-                    print democolor("Hello World!"), repr(democolor)
-                    democolor.brightbg = True
-                    print democolor("Hello World!"), repr(democolor)
+                for attr in sorted(self.attribute_table.values()):
+                    demo_color = Color(foreground=fg, background=bg, attribute=attr,
+                                       bright_foreground=False, bright_background=False)
+                    print demo_color("Hello World!"), repr(demo_color)
+                    demo_color.bright_foreground = True
+                    print demo_color("Hello World!"), repr(demo_color)
+                    demo_color.bright_background = True
+                    print demo_color("Hello World!"), repr(demo_color)
 
     def __str__(self):
-        return self.escape()
+        return self.makeEscapes()
 
     def __repr__(self):
         return "Color(fgcode = %s, bgcode = %s, attrcode = %s, enabled = %s, brightfg = %s, brightbg = %s)" % (
-            str(self.fgcode),
-            str(self.bgcode),
-            str(self.attrcode),
+            str(self.foreground),
+            str(self.background),
+            str(self.attribute),
             str(self.enabled),
-            str(self.brightfg),
-            str(self.brightbg),
+            str(self.bright_foreground),
+            str(self.bright_background),
         )
 
     def __call__(self, input_string):
         if self.enabled:
-            return self.escape() + input_string + self.reset
+            return self.makeEscapes() + input_string + self.reset
         else:
             return input_string
+
 
 if __name__ == '__main__':
     CLR = Color()

@@ -3,7 +3,7 @@
 This module is used for controlling CLI program output and debug levels.
 """
 import sys
-from helpers.color import Color
+from color import Color
 
 
 class Interface:
@@ -12,26 +12,37 @@ class Interface:
     """
     def __init__(
             self,
-            debuglevel=1,
-            debugout="stderr",
-            errorout="stderr",
-            codepage="UTF-8",
-            errorcolor=Color(fgcode='red'),
-            debugcolor=Color(fgcode='blue')
+            debug_level=1,
+            debug_output="stderr",
+            error_output="stderr",
+            notify_output="stdout",
+            info_output="stdout",
+            encoding="UTF-8",
+            error_color=Color(foreground='red'),
+            debug_color=Color(foreground='green'),
+            notify_color=Color(foreground='cyan'),
+            info_color=Color(foreground='blue'),
     ):
-        self.debuglevel = debuglevel
-        self.debugout = debugout
-        self.errorout = errorout
-        self.codepage = codepage
-        self.offsetchar = "  "
-        self.errorcolor = errorcolor
-        self.debugcolor = debugcolor
+        """
+        Constructor.
+        """
+        self.debug_level = debug_level
+        self.debug_output = debug_output
+        self.error_output = error_output
+        self.notify_output = notify_output
+        self.info_output = info_output
+        self.encoding = encoding
+        self.offset_character = "  "
+        self.error_color = error_color
+        self.debug_color = debug_color
+        self.notify_color = notify_color
+        self.info_color = info_color
 
-    def out(self, output, message, color=None):
+    def __out(self, output, message, color=None):
         """
-        Message output
+        Message output.
         """
-        message = message.encode(self.codepage)
+        message = message.encode(self.encoding)
         if color:
             message = color(message)
         if output == "stderr":
@@ -43,7 +54,7 @@ class Interface:
 
     def fill(self, message, width):
         """
-        Fill string into column with width
+        Fill string into column with width. Useful for making text tables.
         """
         if type(message) != unicode:
             message = message.decode('UTF-8')
@@ -52,28 +63,63 @@ class Interface:
 
     def debug(self, message, level=1, offset=0):
         """
-        Output debug messages
+        Output debug messages. Arguments: message, (level), (offset)
+        Show messages if their level is less or equal to program's
+        debug level. If offset is not set then it is equal to debug level.
         """
-        color = self.debugcolor
+        color = self.debug_color
         level = int(level)
         offset = int(offset)
 
         if not offset:
             offset = level
 
-        if level <= self.debuglevel:
+        if level <= self.debug_level:
             if type(message) != unicode:
                 message = str(message).decode('UTF-8')
-            message = offset * self.offsetchar + message
-            self.out(self.debugout, message, color)
+            message = offset * self.offset_character + message
+            self.__out(self.debug_output, message, color)
 
     def error(self, message, code=0):
         """
-        Output error messages
+        Output error messages. Arguments: message, (code)
+        If code > 0 then exit program!
         """
-        color = self.errorcolor
+        color = self.error_color
         if type(message) != unicode:
             message = str(message).decode('UTF-8')
-        self.out(self.errorout, message, color)
+        self.__out(self.error_output, message, color)
         if int(code) > 0:
             sys.exit(code)
+
+    def notify(self, message, offset=0):
+        """
+        Output notify messages. Arguments: message, (offset_level)
+        """
+        color = self.notify_color
+        offset = int(offset)
+
+        if type(message) != unicode:
+            message = str(message).decode('UTF-8')
+        message = offset * self.offset_character + message
+        self.__out(self.notify_output, message, color)
+
+    def info(self, message, offset=0):
+        """
+        Output info messages. Arguments: message, (offset_level)
+        """
+        color = self.info_color
+        offset = int(offset)
+
+        if type(message) != unicode:
+            message = str(message).decode('UTF-8')
+        message = offset * self.offset_character + message
+        self.__out(self.info_output, message, color)
+
+if __name__ == '__main__':
+    INT = Interface()
+    message = 'Hello, World!'
+    INT.error('Error: ' + message)
+    INT.debug('Debug: ' + message)
+    INT.notify('Notify: ' + message)
+    INT.info('Info: ' + message)

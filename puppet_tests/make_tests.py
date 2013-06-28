@@ -27,7 +27,7 @@ class MakeTests:
         - *modules_path* (Optional) Use this path to modules on test host system instead of local_modules_path.
           Useful when path to puppet modules differ on machine where tests are made and where they are executed.
         """
-        self.interface = Interface(debuglevel=4)
+        self.interface = Interface(debug_level=4)
         self.interface.debug('Starting MakeTests', 1)
 
         if not os.path.isdir(local_modules_path):
