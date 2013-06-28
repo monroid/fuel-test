@@ -1,3 +1,0 @@
-[submodule "devops.git"]
-	path = devops.git
-	url = git@github.com:Mirantis/devops.git
