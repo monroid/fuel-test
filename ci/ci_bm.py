@@ -1,8 +1,7 @@
 import os
-from fuel_test.ci.ci_base import CiBase
-from fuel_test.node_roles import NodeRoles
-from fuel_test.settings import CONTROLLERS, COMPUTES,\
-    STORAGES, PROXIES
+from ci.ci_base import CiBase
+from node_roles import NodeRoles
+from settings import CONTROLLERS, COMPUTES, STORAGES, PROXIES
 
 
 class CiBM(CiBase):

@@ -1,14 +1,13 @@
 from time import sleep
 import unittest
 from ipaddr import IPNetwork
-from fuel_test import iso_master
-from fuel_test.base_test_case import BaseTestCase
-from fuel_test.ci.ci_vm import CiVM
-from fuel_test.cobbler.cobbler_client import CobblerClient
-from fuel_test.config import Config
-from fuel_test.helpers import tcp_ping, udp_ping, add_to_hosts, await_node_deploy, write_config
-from fuel_test.manifest import Manifest
-from fuel_test.settings import CLEAN, USE_ISO, INTERFACES, PARENT_PROXY, DOMAIN_NAME, CURRENT_PROFILE, PUPPET_MASTER_VERSION
+from base_test_case import BaseTestCase
+from ci.ci_vm import CiVM
+from cobbler.cobbler_client import CobblerClient
+from config import Config
+from helpers import tcp_ping, udp_ping, add_to_hosts, await_node_deploy, write_config
+import iso_master
+from settings import CLEAN, USE_ISO, INTERFACES, PARENT_PROXY, DOMAIN_NAME, CURRENT_PROFILE, PUPPET_MASTER_VERSION
 
 
 class CobblerTestCase(BaseTestCase):

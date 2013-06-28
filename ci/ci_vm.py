@@ -1,11 +1,11 @@
 from ipaddr import IPNetwork
 
 import os
-from fuel_test.ci.ci_base import CiBase
-from fuel_test.helpers import add_nmap
+from ci.ci_base import CiBase
+from helpers import add_nmap
 
-from fuel_test.node_roles import NodeRoles
-from fuel_test.settings import CONTROLLERS, COMPUTES,  STORAGES, PROXIES, EMPTY_SNAPSHOT, POOLS, INTERFACE_ORDER, \
+from node_roles import NodeRoles
+from settings import CONTROLLERS, COMPUTES,  STORAGES, PROXIES, EMPTY_SNAPSHOT, POOLS, INTERFACE_ORDER, \
     FORWARDING, DHCP, ISO_IMAGE, SETUP_TIMEOUT, COMPUTE_RAM_SIZE, QUANTUMS
 
 

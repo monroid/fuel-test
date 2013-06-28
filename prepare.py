@@ -1,7 +1,7 @@
 import argparse
 import os
-from fuel_test.prepare_tempest import PrepareTempest
-from fuel_test.prepare_tempest_ci import PrepareTempestCI
+from prepare_tempest import PrepareTempest
+from prepare_tempest_ci import PrepareTempestCI
 
 here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 REPOSITORY_ROOT = here('..')
