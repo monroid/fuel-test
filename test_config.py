@@ -7,6 +7,9 @@ from fuel_test.manifest import Template
 import unittest
 
 class TestConfig(BaseTestCase):
+    """
+    Self testing for astute config generation.
+    """
     def ci(self):
         if not hasattr(self, '_ci'):
             self._ci = CiVM()

@@ -5,20 +5,31 @@ from fuel_test.ci.ci_base import CiBase
 from fuel_test.helpers import add_nmap
 
 from fuel_test.node_roles import NodeRoles
-from fuel_test.settings import CONTROLLERS, COMPUTES, \
-    STORAGES, PROXIES, \
-    EMPTY_SNAPSHOT, POOLS, INTERFACE_ORDER, FORWARDING, DHCP, ISO_IMAGE, \
-    SETUP_TIMEOUT, COMPUTE_RAM_SIZE, QUANTUMS
+from fuel_test.settings import CONTROLLERS, COMPUTES,  STORAGES, PROXIES, EMPTY_SNAPSHOT, POOLS, INTERFACE_ORDER, \
+    FORWARDING, DHCP, ISO_IMAGE, SETUP_TIMEOUT, COMPUTE_RAM_SIZE, QUANTUMS
 
 
 class CiVM(CiBase):
-    def define(self):
-        self._environment.define()
-
+    """
+    Class for define virtual environment(kvm use).
+    """
     def __init__(self):
+        """
+        Constructor.
+        """
         super(CiVM, self).__init__()
 
+    def define(self):
+        """
+        Define environment.
+        """
+        self._environment.define()
+
     def node_roles(self):
+        """
+        Set node roles in environment.
+        The number of vms(nodes) is taken from settings.py.
+        """
         return NodeRoles(
             master_names=['master'],
             controller_names=['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)],
@@ -29,6 +40,9 @@ class CiVM(CiBase):
         )
 
     def env_name(self):
+        """
+        Set environment name.
+        """
         return os.environ.get('ENV_NAME', 'cobbler_grizzly')
 
     def describe_environment(self):
@@ -56,12 +70,21 @@ class CiVM(CiBase):
         return environment
 
     def get_startup_nodes(self):
+        """
+        Set the first vm(node) for boot, by default is master.
+        """
         return self.nodes().masters
 
     def client_nodes(self):
+        """
+        List of vms(nodes) except master.
+        """
         return self.nodes().controllers + self.nodes().computes + self.nodes().storages + self.nodes().proxies + self.nodes().quantums
 
     def setup_environment(self):
+        """
+        Define environment in libvirt notation.
+        """
         master_node = self.nodes().masters[0]
         master_node.disk_devices.get(device='cdrom').volume.upload(ISO_IMAGE)
         start_nodes = self.get_startup_nodes()

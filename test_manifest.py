@@ -8,7 +8,9 @@ import unittest
 
 
 class TestManifest(BaseTestCase):
-
+    """
+    Self testing for puppet manifest generating.
+    """
     def ci(self):
         if not hasattr(self, '_ci'):
             self._ci = CiVM()

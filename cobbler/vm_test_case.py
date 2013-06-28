@@ -12,17 +12,32 @@ from fuel_test.settings import CLEAN, USE_ISO, INTERFACES, PARENT_PROXY, DOMAIN_
 
 
 class CobblerTestCase(BaseTestCase):
+    """
+    Main class like unittest with common methods for deploy.
+    """
     def ci(self):
+        """
+        Define environment mode, by default uses CiVM().
+        """
         if not hasattr(self, '_ci'):
             self._ci = CiVM()
         return self._ci
 
     def setUp(self):
+        """
+        SetUp method -- update puppet modules on master node.
+        """
         if CLEAN:
             self.get_nodes_deployed_state()
         self.update_modules()
 
     def get_nodes_deployed_state(self):
+        """
+        Get or prepare vms(nodes) state:
+            update modules on master node
+            write /root/fuel.defaults
+            install OS (cobbler)
+        """
         if not self.environment().has_snapshot('nodes-deployed'):
             self.ci().get_empty_state()
             self.update_modules()
@@ -52,6 +67,9 @@ class CobblerTestCase(BaseTestCase):
             node.await('internal')
 
     def prepare_cobbler_environment(self):
+        """
+        Prepare vms(nodes) state with installed os.
+        """
         self.deploy_cobbler()
         if USE_ISO:
             self.configure_cobbler(self.ci().nodes().masters[0])
@@ -60,14 +78,13 @@ class CobblerTestCase(BaseTestCase):
         self.deploy_nodes()
 
     def deploy_cobbler(self):
+        """
+        Prepare vms(nodes) state with cobbler settings.
+        """
         if USE_ISO:
             nodes = self.nodes().masters
         else:
             nodes = self.nodes().cobblers
-
-        # Manifest().write_cobbler_manifest(self.remote(), self.ci(), nodes)
-
-        # self.validate(nodes, 'puppet agent --test --server master.localdomain')
 
         for node in nodes:
             self.assert_cobbler_ports(
@@ -75,6 +92,9 @@ class CobblerTestCase(BaseTestCase):
         self.environment().snapshot('cobbler', force=True)
 
     def assert_cobbler_ports(self, ip):
+        """
+        Check closed tcp|udp ports.
+        """
         closed_tcp_ports = filter(
             lambda port: not tcp_ping(self.remote().sudo.ssh, ip, port),
             [22, 53, 80, 443])
@@ -86,32 +106,11 @@ class CobblerTestCase(BaseTestCase):
             {'tcp': [], 'udp': []},
             {'tcp': closed_tcp_ports, 'udp': closed_udp_ports})
 
-    def deploy_stomp_node(self):
-        Manifest().generate_stomp_manifest()
-        self.validate(self.nodes().stomps, 'puppet agent --test')
-
-    def add_fake_nodes(self):
-        cobbler = self.ci().nodes().masters[0]
-        stomp_name = self.ci().nodes().stomps[0].name
-        client = CobblerClient(
-            cobbler.get_ip_address_by_network_name('internal'))
-        token = client.login('cobbler', 'cobbler')
-        for i in range(1, 100):
-            for j in range(1, 100):
-                self._add_node(
-                    client, token, cobbler,
-                    node_name='fake' + str(i),
-                    node_mac0="00:17:3e:{0:02x}:{1:02x}:01".format(i, j),
-                    node_mac1="00:17:3e:{0:02x}:{1:02x}:02".format(i, j),
-                    node_mac2="00:17:3e:{0:02x}:{1:02x}:03".format(i, j),
-                    node_ip="192.168.{0:d}.{1:d}".format(i, j),
-                    net_mask="255.255.0.0",
-                    stomp_name=stomp_name,
-                    gateway=self.ci().internal_router()
-                )
-
     def _add_node(self, client, token, cobbler, node_name, node_mac0, node_mac1,
                   node_mac2, node_ip, stomp_name, gateway, net_mask):
+        """
+
+        """
         system_id = client.new_system(token)
         profile = CURRENT_PROFILE
         client.modify_system_args(system_id, token,
@@ -152,6 +151,9 @@ class CobblerTestCase(BaseTestCase):
         )
 
     def configure_cobbler(self, cobbler):
+        """
+
+        """
         client = CobblerClient(cobbler.get_ip_address_by_network_name('internal'))
         token = client.login('cobbler', 'cobbler')
         master = self.environment().node_by_name('master')
@@ -176,17 +178,21 @@ class CobblerTestCase(BaseTestCase):
         self.environment().snapshot('cobbler-configured', force=True)
 
     def deploy_nodes(self):
+        """
+
+        """
         cobbler = self.ci().nodes().masters[0]
         for node in self.ci().client_nodes():
             node.start()
+
         for node in self.ci().client_nodes():
             await_node_deploy(cobbler.get_ip_address_by_network_name('internal'), node.name)
+
         for node in self.ci().client_nodes():
             node.await('internal')
+
         sleep(20)
-        #for node in self.ci().client_nodes():
-        #    node_remote = node.remote('internal', login='root', password='r00tme')
-        #puppet_apply(node_remote, 'class {rsyslog::client: log_remote => true, server => "%s"}' % cobbler_ip)
+
         self.environment().snapshot('nodes-deployed', force=True)
 
 
