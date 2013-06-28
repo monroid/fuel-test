@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+
 from helpers.vm_test_case import CobblerTestCase
 import unittest
-from config import Config
+from helpers.config import Config
 from helpers.functions import write_config
 from helpers.manifest import Manifest, Template
 from settings import ASTUTE_USE, PUPPET_AGENT_COMMAND

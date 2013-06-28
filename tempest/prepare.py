@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import os
 from tempest.prepare_tempest import PrepareTempest
@@ -6,6 +8,7 @@ from tempest.prepare_tempest_ci import PrepareTempestCI
 here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 REPOSITORY_ROOT = here('..')
 root = lambda *x: os.path.join(os.path.abspath(REPOSITORY_ROOT), *x)
+
 
 class Prepare(object):
     def __init__(self, username=None, password=None, tenant=None, public_ip=None, internal_ip=None, ci=False, mode=False):

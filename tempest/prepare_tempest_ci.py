@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from devops.helpers.helpers import ssh
 from time import sleep
 from ci.ci_vm import CiVM

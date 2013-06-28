@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 from time import sleep
 import keystoneclient.v2_0

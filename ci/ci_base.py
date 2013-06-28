@@ -5,7 +5,7 @@ from abc import abstractproperty, abstractmethod
 from devops.helpers.helpers import _get_file_size
 from ipaddr import IPNetwork
 from helpers.functions import  write_config, change_host_name, request_cerificate, setup_puppet_client, setup_puppet_master, add_nmap, switch_off_ip_tables, add_to_hosts
-from node_roles import NodeRoles, Nodes
+from helpers.node_roles import NodeRoles, Nodes
 from settings import EMPTY_SNAPSHOT, ISO_IMAGE, DEFAULT_RAM_SIZE
 from helpers.root import root
 from helpers.functions import load

@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+
 import unittest
 from helpers.vm_test_case import CobblerTestCase
+
 
 class NoopTestCase(CobblerTestCase):
     def test_apply_all_modules_with_noop(self):

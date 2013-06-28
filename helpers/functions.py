@@ -32,6 +32,7 @@ def tcp_ping(remote, host, port):
             return True
     return False
 
+
 def load(path):
     with open(path) as f:
         return f.read()
@@ -47,6 +48,7 @@ def write_config(remote, path, text):
     config.write(text)
     logging.info('Write config %s' % text)
     config.close()
+
 
 def retry(count, func, **kwargs):
     i = 0
