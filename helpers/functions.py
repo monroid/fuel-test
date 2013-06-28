@@ -9,8 +9,10 @@ import os
 import re
 from helpers.cobbler_client import CobblerClient
 from settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE, EXIST_TAR, USE_ISO
-from helpers.root import root
 
+here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+root = lambda *x: os.path.join(os.path.abspath(here('..')), *x)
 
 def get_file_as_string(path):
     with open(path) as f:
