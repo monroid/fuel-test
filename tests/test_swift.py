@@ -1,6 +1,6 @@
 import unittest
-from cobbler.vm_test_case import CobblerTestCase
-from manifest import Manifest
+from helpers.vm_test_case import CobblerTestCase
+from helpers.manifest import Manifest
 from settings import PUPPET_AGENT_COMMAND
 
 

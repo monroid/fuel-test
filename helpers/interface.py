@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+"""
+This module is used for controlling CLI program output and debug levels.
+"""
 import sys
-from Color import Color
+from helpers.color import Color
 
 
 class Interface:
     """
-    This class is used to control program's messages and logs
+    This class is used to control messages and logs
     """
     def __init__(
             self,

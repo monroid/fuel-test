@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 from base_test_case import BaseTestCase
 from ci.ci_vm import CiVM
 from config import Config
-from manifest import Template
-
+from helpers.manifest import Template
 import unittest
+
 
 class TestConfig(BaseTestCase):
     """

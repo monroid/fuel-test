@@ -1,6 +1,6 @@
 import unittest
-from cobbler.vm_test_case import CobblerTestCase
-from manifest import Manifest, Template
+from helpers.vm_test_case import CobblerTestCase
+from helpers.manifest import Manifest, Template
 
 
 class NovaSubClassesTestCase(CobblerTestCase):

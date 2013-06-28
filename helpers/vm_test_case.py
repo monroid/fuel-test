@@ -1,11 +1,13 @@
+#!/usr/bin/env python
+
 from time import sleep
 import unittest
 from ipaddr import IPNetwork
-from base_test_case import BaseTestCase
+from helpers.base_test_case import BaseTestCase
 from ci.ci_vm import CiVM
-from cobbler.cobbler_client import CobblerClient
+from helpers.cobbler_client import CobblerClient
 from config import Config
-from helpers import tcp_ping, udp_ping, add_to_hosts, await_node_deploy, write_config
+from helpers.functions import tcp_ping, udp_ping, add_to_hosts, await_node_deploy, write_config
 import iso_master
 from settings import CLEAN, USE_ISO, INTERFACES, PARENT_PROXY, DOMAIN_NAME, CURRENT_PROFILE, PUPPET_MASTER_VERSION
 

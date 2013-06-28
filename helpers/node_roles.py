@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 class NodeRoles(object):
     def __init__(self,
                  controller_names=None,

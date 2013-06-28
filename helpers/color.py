@@ -145,7 +145,7 @@ class Color:
         """
         Print color enabling escape chars.
         """
-        vars = []
+        codes = []
         attrcode = self.attrcode
 
         if self.fgcode is not None:
@@ -162,14 +162,14 @@ class Color:
         else:
             bgcode = None
 
-        vars.append(attrcode)
+        codes.append(attrcode)
         if fgcode:
-            vars.append(fgcode)
+            codes.append(fgcode)
         if bgcode:
-            vars.append(bgcode)
+            codes.append(bgcode)
 
-        escstr = self.start + ";".join(map(str, vars)) + self.end
-        return escstr
+        escape_string = self.start + ";".join(map(str, codes)) + self.end
+        return escape_string
 
     def printChart(self):
         """
@@ -189,20 +189,20 @@ class Color:
         return self.escape()
 
     def __repr__(self):
-        return "Color(fgcode = %d, bgcode = %d, attrcode = %d, enabled = %s, brightfg = %s, brightbg = %s)" % (
-            self.fgcode,
-            self.bgcode,
-            self.attrcode,
+        return "Color(fgcode = %s, bgcode = %s, attrcode = %s, enabled = %s, brightfg = %s, brightbg = %s)" % (
+            str(self.fgcode),
+            str(self.bgcode),
+            str(self.attrcode),
             str(self.enabled),
             str(self.brightfg),
             str(self.brightbg),
-            )
+        )
 
-    def __call__(self, str):
+    def __call__(self, input_string):
         if self.enabled:
-            return self.escape() + str + self.reset
+            return self.escape() + input_string + self.reset
         else:
-            return str
+            return input_string
 
 if __name__ == '__main__':
     CLR = Color()

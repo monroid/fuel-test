@@ -3,7 +3,7 @@ from time import sleep
 from ci.ci_vm import CiVM
 from helpers import install_packages, switch_off_ip_tables
 from prepare_tempest import PrepareTempest
-from root import root
+from helpers.root import root
 from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
@@ -28,6 +28,7 @@ class PrepareTempestCI():
         return self._ci
 
     def prepare(self):
+        print "in prepare"
         prepare = PrepareTempest(username=self.username,
                                       password=self.password,
                                       tenant=self.tenant,
@@ -47,6 +48,7 @@ class PrepareTempestCI():
         self.prepare.prepare_tempest_folsom(template_folsom)
 
     def prepare_tempest_grizzly(self, template_grizzly):
+        print "in grizzly tempest"
         self.prepare.prepare_tempest_grizzly(template_grizzly)
 
     def prepare_tempest_essex(self, template_essex):

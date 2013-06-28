@@ -1,9 +1,8 @@
-from base_test_case import BaseTestCase
+#!/usr/bin/env python
+
+from helpers.base_test_case import BaseTestCase
 from ci.ci_vm import CiVM
-from manifest import Manifest, Template
-
-__author__ = 'alan'
-
+from helpers.manifest import Manifest, Template
 import unittest
 
 

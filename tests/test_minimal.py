@@ -1,8 +1,8 @@
 import unittest
-from cobbler.vm_test_case import CobblerTestCase
+from helpers.vm_test_case import CobblerTestCase
 from config import Config
-from helpers import write_config
-from manifest import Template, Manifest
+from helpers.functions import write_config
+from helpers.manifest import Template, Manifest
 from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 

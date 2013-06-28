@@ -1,5 +1,5 @@
 import yaml
-from manifest import Manifest
+from helpers.manifest import Manifest
 from settings import CURRENT_PROFILE, PUPPET_VERSION, INTERFACES, DOMAIN_NAME
 
 
