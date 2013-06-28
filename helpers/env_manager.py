@@ -3,7 +3,7 @@
 from time import sleep
 import tarfile
 
-from helpers import root
+from helpers.functions import root
 from devops.manager import Manager
 
 

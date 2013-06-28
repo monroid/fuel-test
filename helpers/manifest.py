@@ -3,7 +3,7 @@
 from ipaddr import IPNetwork
 import re
 from helpers.functions import load, write_config
-from helpers.root import root
+from helpers.functions import root
 from settings import INTERFACES, TEST_REPO, DOMAIN_NAME
 
 

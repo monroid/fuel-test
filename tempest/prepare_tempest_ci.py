@@ -5,7 +5,7 @@ from time import sleep
 from ci.ci_vm import CiVM
 from helpers import install_packages, switch_off_ip_tables
 from prepare_tempest import PrepareTempest
-from helpers.root import root
+from helpers.functions import root
 from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
