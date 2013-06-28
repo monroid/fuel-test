@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+
 import os
 from ci.ci_base import CiBase
-from node_roles import NodeRoles
+from helpers.node_roles import NodeRoles
 from settings import CONTROLLERS, COMPUTES, STORAGES, PROXIES
 
 

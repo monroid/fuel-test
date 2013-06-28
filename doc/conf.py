@@ -18,9 +18,7 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-basedir = os.path.abspath('..')
-for subdir in ['puppet_tests']:
-    sys.path.append(os.path.join(basedir,subdir))
+sys.path.append(os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 

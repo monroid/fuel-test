@@ -1,1 +1,1 @@
-python MakeTests.py tests test_data
+python make_tests.py tests test_data

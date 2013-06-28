@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 from ipaddr import IPNetwork
 
 import os
 from ci.ci_base import CiBase
-from helpers import add_nmap
+from helpers.functions import add_nmap
 
-from node_roles import NodeRoles
+from helpers.node_roles import NodeRoles
 from settings import CONTROLLERS, COMPUTES,  STORAGES, PROXIES, EMPTY_SNAPSHOT, POOLS, INTERFACE_ORDER, \
     FORWARDING, DHCP, ISO_IMAGE, SETUP_TIMEOUT, COMPUTE_RAM_SIZE, QUANTUMS
 
