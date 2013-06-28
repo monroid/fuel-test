@@ -14,11 +14,6 @@ here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 root = lambda *x: os.path.join(os.path.abspath(here('..')), *x)
 
-def get_file_as_string(path):
-    with open(path) as f:
-        return f.read()
-
-
 def udp_ping(remote, host, port):
     result = remote.check_stderr('nmap -PU -sU -p%s %s' % (port, host))
     for line in result['stdout']:
