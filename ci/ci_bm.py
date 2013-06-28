@@ -6,7 +6,13 @@ from fuel_test.settings import CONTROLLERS, COMPUTES,\
 
 
 class CiBM(CiBase):
+    """
+    Class for define environment for bare metal.
+    """
     def define(self):
+        """
+
+        """
         pass
 
     def node_roles(self):

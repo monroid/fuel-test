@@ -7,7 +7,22 @@ from fuel_test.settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAN
 
 
 class FullTestCase(CobblerTestCase):
+    """
+    Deploy openstack in full mode.
+    Supports multiple deployment tool -- astute or puppet.
+    By default:
+        master x1
+        controller x3
+        compute x3
+        storage x3
+        proxy x2
+        quantum x0
+
+    """
     def deploy(self):
+        """
+        Deploy environment.
+        """
         if ASTUTE_USE:
             self.prepare_astute()
             self.deploy_by_astute()
@@ -15,6 +30,9 @@ class FullTestCase(CobblerTestCase):
             self.deploy_one_by_one()
 
     def deploy_one_by_one(self):
+        """
+        Deploy via puppet.
+        """
         manifest = Manifest().generate_openstack_manifest(
             template=Template.full(),
             ci=self.ci(),
@@ -36,9 +54,15 @@ class FullTestCase(CobblerTestCase):
         self.validate(self.nodes().computes, PUPPET_AGENT_COMMAND)
 
     def deploy_by_astute(self):
+        """
+        Run astute command.
+        """
         self.remote().check_stderr("astute -f /root/astute.yaml -v", True)
 
     def prepare_astute(self):
+        """
+        Prepare astute config.
+        """
         config = Config().generate(
             ci=self.ci(),
             nodes=self.nodes(),
@@ -56,6 +80,9 @@ class FullTestCase(CobblerTestCase):
         self.remote().check_stderr("openstack_system -c %s -o /etc/puppet/manifests/site.pp -a /root/astute.yaml" % config_path, True)
 
     def test_full(self):
+        """
+        Use unittest for deploy.
+        """
         self.deploy()
 
         if CREATE_SNAPSHOTS:
