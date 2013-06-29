@@ -73,11 +73,11 @@ class Color:
             'off': 0,
         }
 
-        self.setForegroundColor(foreground)
-        self.setBackgroundColor(background)
-        self.setAttribute(attribute)
+        self.set_foreground_color(foreground)
+        self.set_background_color(background)
+        self.set_attribute(attribute)
 
-    def setEnabled(self, status):
+    def set_enabled(self, status):
         """"
         Enable or disable all colors.
         """
@@ -86,7 +86,7 @@ class Color:
         else:
             self.enabled = False
 
-    def setBrightForeground(self, status):
+    def set_bright_foreground(self, status):
         """
         Enable and disable of bright foreground.
         """
@@ -95,7 +95,7 @@ class Color:
         else:
             self.bright_foreground = False
 
-    def setBrightBackground(self, status):
+    def set_bright_background(self, status):
         """
         Enable and disable of bright background.
         """
@@ -104,7 +104,7 @@ class Color:
         else:
             self.bright_background = False
 
-    def setForegroundColor(self, color):
+    def set_foreground_color(self, color):
         """
         Set foreground color or color code.
         """
@@ -117,7 +117,7 @@ class Color:
         self.foreground = None
         return False
 
-    def setBackgroundColor(self, color):
+    def set_background_color(self, color):
         """
         Set background color or color code.
         """
@@ -130,7 +130,7 @@ class Color:
         self.background = None
         return False
 
-    def setAttribute(self, color):
+    def set_attribute(self, color):
         """
         Set additional text attribute code.
         """
@@ -143,7 +143,7 @@ class Color:
         self.attribute = 0
         return False
 
-    def makeEscapes(self):
+    def make_escapes(self):
         """
         Print color enabling escape chars.
         """
@@ -174,7 +174,7 @@ class Color:
         escape_string = self.start + ";".join(map(str, codes)) + self.end
         return escape_string
 
-    def printChart(self):
+    def print_chart(self):
         """
         Prints demo color chart tot test terminal support.
         """
@@ -190,7 +190,7 @@ class Color:
                     print demo_color("Hello World!"), repr(demo_color)
 
     def __str__(self):
-        return self.makeEscapes()
+        return self.make_escapes()
 
     def __repr__(self):
         return "Color(fgcode = %s, bgcode = %s, attrcode = %s, enabled = %s, brightfg = %s, brightbg = %s)" % (
@@ -204,11 +204,11 @@ class Color:
 
     def __call__(self, input_string):
         if self.enabled:
-            return self.makeEscapes() + input_string + self.reset
+            return self.make_escapes() + input_string + self.reset
         else:
             return input_string
 
 
 if __name__ == '__main__':
     CLR = Color()
-    CLR.printChart()
+    CLR.print_chart()

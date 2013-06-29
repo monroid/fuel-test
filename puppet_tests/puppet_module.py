@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 import os
 import sys
-basedir = os.path.abspath('..')
-sys.path.append(basedir)
+
+path = os.path.abspath(__file__)
+path = os.path.dirname(path)
+path = os.path.dirname(path)
+sys.path.insert(0, path)
+
 from puppet_test import PuppetTest
 
 
@@ -21,9 +25,9 @@ class PuppetModule:
 
         self.__tests = []
 
-        self.findTests()
+        self.find_tests()
 
-    def findTests(self):
+    def find_tests(self):
         """
         Find all tests in this module and fill tests array with PuppetTest objects.
         """
@@ -49,19 +53,19 @@ class PuppetModule:
             except OSError as error:
                 self.interface.error("Cannot change directory to %s: %s" % (self.__local_module_path, error.message), 1)
 
-    def getTests(self):
+    def get_tests(self):
         """
         Return array of PuppetTest objects found in this module
         """
         return self.__tests
 
-    def getName(self):
+    def get_name(self):
         """
         Returns module's name
         """
         return self.__module_name
 
-    def getPath(self):
+    def get_path(self):
         """
         Returns full path to this module
         """
@@ -69,15 +73,15 @@ class PuppetModule:
 
     @property
     def tests(self):
-        return self.getTests()
+        return self.get_tests()
 
     @property
     def name(self):
-        return self.getName()
+        return self.get_name()
 
     @property
     def path(self):
-        return self.getPath()
+        return self.get_path()
 
     def __repr__(self):
         """
@@ -87,7 +91,7 @@ class PuppetModule:
         if len(self.tests) > 0:
             tests = [repr(test) for test in self.tests]
             tests_string += ", ".join(tests)
-        tpl = "PuppetModule(name=%s, path=%s, tests=[%s]" % (self.getName(), self.getPath(), tests_string)
+        tpl = "PuppetModule(name=%s, path=%s, tests=[%s]" % (self.get_name(), self.get_path(), tests_string)
 
         return tpl
 
