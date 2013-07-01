@@ -86,19 +86,19 @@ class EnvManager():
         """
         self.environment.erase()
 
-    def execute_cmd(self, command, node_name='node', net_name='public'):
+    def execute_cmd(self, command):
         """
         Execute command on node.
         """
         self._remote(node_name=self.env_node_name, net_name=self.env_net_public).execute(command)
 
-    def upload_files(self, source, dest, node_name='node', net_name='public'):
+    def upload_files(self, source, dest):
         """
         Upload file(s) to node.
         """
-        self._remote(node_name=node_name, net_name=net_name).upload(source, dest)
+        self._remote(node_name=self.env_node_name, net_name=self.env_net_public).upload(source, dest)
 
-    def upload_modules(self, node_name='node', remote_dir="/etc/puppet/modules/"):
+    def upload_modules(self, remote_dir="/etc/puppet/modules/"):
         """
         Upload puppet modules.
         """
