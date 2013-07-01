@@ -4,9 +4,15 @@ from settings import CURRENT_PROFILE, PUPPET_VERSION, INTERFACES, DOMAIN_NAME
 
 
 class Config():
+    """
+    Class for generate config.yaml.
+    """
     def generate(self, ci, nodes, template, quantums=None, cinder=True, quantum_netnode_on_cnt=True,
                  create_networks=True, quantum=True, swift=True, loopback="loopback", use_syslog=True,
                  cinder_nodes=None):
+        """
+        Return generated config.yaml.
+        """
         config = {
             "common":
                 {"orchestrator_common": self.orchestrator_common(ci, template=template),
@@ -29,6 +35,9 @@ class Config():
         return yaml.safe_dump(config, default_flow_style=False)
 
     def orchestrator_common(self, ci, template):
+        """
+        Return [orchestration common] section in config file.
+        """
         config = {"task_uuid": "deployment_task"}
         attributes = {"attributes": {"deployment_mode": template.deployment_mode, "deployment_engine": "simplepuppet"}}
         config.update(attributes)
@@ -37,6 +46,9 @@ class Config():
 
     def openstack_common(self, ci, nodes, quantums, cinder, quantum_netnode_on_cnt, create_networks, quantum, swift,
                          loopback, use_syslog, cinder_nodes):
+        """
+        Return [openctack common] section in config file.
+        """
         if not cinder_nodes: cinder_nodes = []
         if not quantums: quantums = []
 
@@ -81,6 +93,9 @@ class Config():
         return config
 
     def cobbler_common(self, ci):
+        """
+        Return [cobbler common] section in config file.
+        """
         config = {"gateway": str(ci.nodes().masters[0].get_ip_address_by_network_name('internal')),
                   "name-servers": str(ci.nodes().masters[0].get_ip_address_by_network_name('internal')),
                   "name-servers-search": "localdomain",
@@ -93,6 +108,9 @@ class Config():
         return config
 
     def get_ks_meta(self, puppet_master, mco_host):
+        """
+        Create ks_meta.
+        """
         return ("puppet_auto_setup=1 "
                 "puppet_master=%(puppet_master)s "
                 "puppet_version=%(puppet_version)s "
@@ -116,6 +134,9 @@ class Config():
                }
 
     def cobbler_nodes(self, ci, nodes):
+        """
+        Return [cobbler_nodes] section for config file.
+        """
         all_nodes = {}
         for node in nodes:
             interfaces = {

@@ -10,6 +10,9 @@ from helpers.functions import upload_recipes, upload_keys, write_config
 
 
 class BaseTestCase(unittest.TestCase):
+    """
+    BaseTestCase bases on unittest -- python library.
+    """
     @abstractproperty
     def ci(self):
         """
@@ -18,20 +21,35 @@ class BaseTestCase(unittest.TestCase):
         pass
 
     def environment(self):
+        """
+        Return environment.
+        """
         return self.ci().environment()
 
     def nodes(self):
+        """
+        Return list of nodes.
+        """
         return self.ci().nodes()
 
     def remote(self):
+        """
+        Return remote access to master node by login/password.
+        """
         return self.environment().node_by_name('master').remote('public', login='root', password='r00tme')
 
     def update_modules(self):
+        """
+        Update puppet modules and ssh keys on master node.
+        """
         upload_recipes(self.remote())
         upload_keys(self.remote())
 
 
     def assertResult(self, result):
+        """
+        Checking the result on error.
+        """
         stderr = filter(lambda x: x.find('PYCURL ERROR 22') == -1, result['stderr'])
         stderr = filter(lambda x: x.find('Trying other mirror.') == -1, stderr)
         self.assertEqual([], stderr, stderr)
@@ -40,6 +58,9 @@ class BaseTestCase(unittest.TestCase):
         self.assertEqual([], warnings, warnings)
 
     def parse_out(self, out):
+        """
+        Find errors in output.
+        """
         errors = []
         warnings = []
         for line in out:
@@ -54,11 +75,10 @@ class BaseTestCase(unittest.TestCase):
                         warnings.append(line)
         return errors, warnings
 
-    def update_config_yaml(self):
-        config = yaml.safe_dump(Config().generate(self.ci()), default_flow_style=False)
-        write_config(self.remote(), "/root/config.yaml", config)
-
     def do(self, nodes, command):
+        """
+        Execute command on nodes.
+        """
         results = []
         for node in nodes:
             print "node", node.get_ip_address_by_network_name("internal")
@@ -67,6 +87,9 @@ class BaseTestCase(unittest.TestCase):
         return results
 
     def validate(self, nodes, command):
+        """
+        Validate result with expected.
+        """
         results = self.do(nodes, command)
         for result in results:
             self.assertResult(result)
