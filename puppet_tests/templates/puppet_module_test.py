@@ -14,7 +14,7 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
 
     def setUp(self):
         self.env.revert_snapshot_env("before_test")
-        self.env.upload('{{ modules_path }}/{{ module.name }}', '{{ internal_modules_path }}')
+        self.env.upload_files('{{ modules_path }}/{{ module.name }}', '{{ internal_modules_path }}')
 
 {% for test in module.tests %}
     def test_{{ test.name|title }}(self):

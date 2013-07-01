@@ -16,6 +16,7 @@ class EnvManager():
     env_net_public = env_name + 'public'
     env_net_internal = env_name + 'internal'
     env_net_private = env_name + 'private'
+    env_vol = env_name + '_vol'
     login = "root"
     password = "r00tme"
 
@@ -38,11 +39,11 @@ class EnvManager():
         """
         Create environment with default settings.
         """
-        internal = self.manager.network_create(environment=self.environment, name='internal', pool=None)
-        external = self.manager.network_create(environment=self.environment, name='external', pool=None)
-        private = self.manager.network_create(environment=self.environment, name='private', pool=None)
+        internal = self.manager.network_create(environment=self.environment, name=self.env_net_internal, pool=None)
+        external = self.manager.network_create(environment=self.environment, name=self.env_net_external, pool=None)
+        private = self.manager.network_create(environment=self.environment, name=self.env_net_private, pool=None)
 
-        node = self.manager.node_create(name='node', environment=self.environment)
+        node = self.manager.node_create(name=self.env_node_name, environment=self.environment)
 
         self.manager.interface_create(node=node, network=internal)
         self.manager.interface_create(node=node, network=external)
@@ -50,7 +51,7 @@ class EnvManager():
 
         volume = self.manager.volume_get_predefined(self.base_image)
 
-        v3 = self.manager.volume_create_child('test_vol', backing_store=volume, environment=self.environment)
+        v3 = self.manager.volume_create_child(self.env_vol, backing_store=volume, environment=self.environment)
 
         self.manager.node_attach_volume(node=node, volume=v3)
 
@@ -58,11 +59,13 @@ class EnvManager():
 
         self.environment.start()
 
-    def _remote(self, node_name='test_env_node', net_name='test_env_public'):
+    def _remote(self):
         """
         Return remote access to node by name with default login/password.
         """
-        return self.environment().node_by_name(node_name).remote(net_name, login=self.login, password=self.password)
+        return self.environment().node_by_name(self.env_node_name).remote(self.env_net_public,
+                                                                          login=self.login,
+                                                                          password=self.password)
 
 
     def create_snapshot_env(self, snap_name="", description="", force=True):
@@ -87,7 +90,7 @@ class EnvManager():
         """
         Execute command on node.
         """
-        self._remote(node_name=node_name, net_name=net_name).execute(command)
+        self._remote(node_name=self.env_node_name, net_name=self.env_net_public).execute(command)
 
     def upload_files(self, source, dest, node_name='node', net_name='public'):
         """
@@ -99,9 +102,9 @@ class EnvManager():
         """
         Upload puppet modules.
         """
-        module_dir = root('deployment', 'puppet')
+        module_dir = root('fuel_test', 'deployment', 'puppet')
 
-        remote = self._remote(node_name=node_name)
+        remote = self._remote(node_name=self.env_node_name)
 
         tar_file = None
         try:
