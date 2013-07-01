@@ -135,44 +135,43 @@ fuel_test/config:
 
 
 Методы класса  MinimalTestCase:
-   (M) deploy --- запускает развертывание выбранным способом (через astute или без )
-   (M) deploy_one_by_one 	развертывание через манифесты puppet
-   (M) deploy_by_astute 	развертывание через astute
-   (M) prepare_astute 	создает конфигурационные файлы для astute и настраивает cobbler
-   (M) test_minimal  ---  запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
-
+ * deploy --- запускает развертывание выбранным способом (через astute или без )
+ * deploy_one_by_one 	развертывание через манифесты puppet
+ * deploy_by_astute 	развертывание через astute
+ * prepare_astute 	создает конфигурационные файлы для astute и настраивает cobbler
+ * test_minimal  ---  запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
 
 
 (С) SimpleTestCase  (  test_minimal.py )
 
 Методы класса MinimalTestCase:
-    (M) deploy 
-    (M) deploy_one_by_one 
-    (M) deploy_by_astute 
-    (M) prepare_only_site_pp 
-    (M) prepare_astute 
-    (M) test_simple 
+ * deploy 
+ * deploy_one_by_one 
+ * deploy_by_astute 
+ * prepare_only_site_pp 
+ * prepare_astute 
+ * test_simple 
 
 
 (С) SingleTestCase  (  test_single.py )
 
 Методы класса SingleTestCase:
-    (M) deploy 
-    (M) deploy_one_by_one 
-    (M) deploy_by_astute 
-    (M) prepare_only_site_pp 
-    (M) prepare_astute 
-    (M) test_single 
+ * deploy 
+ * deploy_one_by_one 
+ * deploy_by_astute 
+ * prepare_only_site_pp 
+ * prepare_astute 
+ * test_single 
 
 
 (С) MinimalTestCase  ( test_minimal.py )
 Методы класса     MinimalTestCase:
-    (M) deploy 
-    (M) deploy_one_by_one 
-    (M) deploy_by_astute 
-    (M) prepare_only_site_pp 
-    (M) prepare_astute 
-    (M) test_simple 
+ * deploy 
+ * deploy_one_by_one 
+ * deploy_by_astute 
+ * prepare_only_site_pp 
+ * prepare_astute 
+ * test_simple 
 
 ---
 
@@ -186,16 +185,16 @@ fuel_test/config:
 (С) NovaSubClassesTestCase ( test_nova_subclasses.py ) ---
 
 Методы класса    NovaSubClassesTestCase:
-    (M) setUp 
-    (M) test_deploy_nova_compute 
-    (M) test_deploy_nova_api_compute 
-    (M) test_deploy_nova_api_controller 
-    (M) test_deploy_nova_network 
-    (M) test_deploy_nova_consoleauth 
-    (M) test_deploy_nova_rabbitmq 
-    (M) test_deploy_nova_utilities 
-    (M) test_deploy_nova_vncproxy 
-    (M) test_deploy_nova_volume 
+ * setUp 
+ * test_deploy_nova_compute 
+ * test_deploy_nova_api_compute 
+ * test_deploy_nova_api_controller 
+ * test_deploy_nova_network 
+ * test_deploy_nova_consoleauth 
+ * test_deploy_nova_rabbitmq 
+ * test_deploy_nova_utilities 
+ * test_deploy_nova_vncproxy 
+ * test_deploy_nova_volume 
 
 ---
 
@@ -275,73 +274,41 @@ SwiftCase ( test_swift.py ) --- класс для тестирования SWIFT
 
 
 Модуль  helpers.py ( переименован в functions.py)
-   содержит вспомогательные функции 
-
-    (F) get_file_as_string --- считывает файл и выдает его содержимое ( удалено )
-
-    (F) udp_ping --- проверяет доступность заденного UDP порта
-
-    (F) tcp_ping --- проверяет доступность заденного TCP порта
-
-    (F) load  ---  считывает файл и выдает его содержимое
-
-    (F) extract_virtual_ips ---  извлекает IP-адреса из строки в dict
-
-    (F) write_config  ---  записывает конфиг. файл на заданный удаленный хост
-
-    (F) retry  ---  повторяет выполнение заданной функции до тех пор пока она не выполнится или истечет число возможных попыток. Между выполнениями делает 1 сек пауза.
-
-    (F) install_packages2  ---  устанавливает на заданных хостах пакеты
-
-    (F) install_packages  ---  устанавливает на заданном хосте пакеты
-
-    (F) update_pms  ---  обновляет метаданные репозиториев на заданных хостах
-
-    (F) update_pm  ---  обновляет метаданные репозиториев на заданном хосте
-
-    (F) add_nmap  ---  устанавливает пакет nmap на заданном хосте
-
-    (F) add_epel_repo_yum  ---  добавляет репозиторий EPEL на хост ( через установку пакета epel-release-6-8.noarch.rpm )
-    (F) delete_epel_repo_yum  ---   удаляет репозиторий EPEL с заданного хоста 
-
-    (F) add_puppet_lab_repo  ---  добавляет репозиторий puppetlabs на хост ( через установку пакета )
-    (F) remove_puppetlab_repo ---  удаляет репозиторий puppetlabs с хоста
-
-    (F) setup_puppet_client  ---  запускает  puppet на заданном хосте
-
-    (F) start_puppet_master  ---   запускает  puppet на заданном хосте
-
-    (F) start_puppet_agent  ---  запускает  puppet на заданном хосте
-
-    (F) request_cerificate  ---  проверяет наличие сертификата на хосте
-
-    (F) switch_off_ip_tables  ---  удаляет все правила на хосте ( через iptables -F )
-
-    (F) puppet_apply  --- выполняет  puppet apply на  заданном хосте 
-
-    (F) setup_puppet_master  ---  настраивает и запускает puppet на заданном хосте 
-
-    (F) upload_recipes  ---  загружает модули puppet  в /etc/puppet/modules/ ( через recipes.tar )
-
-    (F) upload_keys  ---  загружает ssh-ключи на заданный хост 
-
-    (F) change_host_name  ---  задает имя удаленного хоста
-
-    (F) update_host_name_centos  ---  задает имя удаленного хоста через /etc/sysconfig/network
-
-    (F) update_host_name_ubuntu  ---  задает имя удаленного хоста через /etc/hostname
-
-    (F) add_to_hosts  ---  добавляет строчку в /etc/hosts на удаленном хосте
-
-    (F) check_node_ready  ---  проверяет через cobbler готовность ноды
-
-    (F) await_node_deploy  ---  проверяет через cobbler доступность ноды
-
-    (F) build_astute  ---  собирает astute.gem на хосте используя gem и gemspec
-
-    (F) install_astute  ---  устанавливает astute через gem
-
-    (F) is_not_essex  ---  проверяет версию OpenStack используя переменные окружения
+   содержит вспомогательные функции:
+     *  get_file_as_string --- считывает файл и выдает его содержимое ( удалено )
+     *  udp_ping --- проверяет доступность заденного UDP порта
+     *  tcp_ping --- проверяет доступность заденного TCP порта
+     *  load  ---  считывает файл и выдает его содержимое
+     *  extract_virtual_ips ---  извлекает IP-адреса из строки в dict
+     *  write_config  ---  записывает конфиг. файл на заданный удаленный хост
+     *  retry  ---  повторяет выполнение заданной функции до тех пор пока она не выполнится или истечет число возможных попыток. Между выполнениями делает 1 сек пауза.
+     *  install_packages2  ---  устанавливает на заданных хостах пакеты
+     *  install_packages  ---  устанавливает на заданном хосте пакеты
+     *  update_pms  ---  обновляет метаданные репозиториев на заданных хостах
+     *  update_pm  ---  обновляет метаданные репозиториев на заданном хосте
+     *  add_nmap  ---  устанавливает пакет nmap на заданном хосте
+     *  add_epel_repo_yum  ---  добавляет репозиторий EPEL на хост ( через установку пакета epel-release-6-8.noarch.rpm )
+     *  delete_epel_repo_yum  ---   удаляет репозиторий EPEL с заданного хоста 
+     *  add_puppet_lab_repo  ---  добавляет репозиторий puppetlabs на хост ( через установку пакета )
+     *  remove_puppetlab_repo ---  удаляет репозиторий puppetlabs с хоста
+     *  setup_puppet_client  ---  запускает  puppet на заданном хосте
+     *  start_puppet_master  ---   запускает  puppet на заданном хосте
+     *  start_puppet_agent  ---  запускает  puppet на заданном хосте
+     *  request_cerificate  ---  проверяет наличие сертификата на хосте
+     *  switch_off_ip_tables  ---  удаляет все правила на хосте ( через iptables -F )
+     *  puppet_apply  --- выполняет  puppet apply на  заданном хосте 
+     *  setup_puppet_master  ---  настраивает и запускает puppet на заданном хосте 
+     *  upload_recipes  ---  загружает модули puppet  в /etc/puppet/modules/ ( через recipes.tar )
+     *  upload_keys  ---  загружает ssh-ключи на заданный хост 
+     *  change_host_name  ---  задает имя удаленного хоста
+     * update_host_name_centos  ---  задает имя удаленного хоста через /etc/sysconfig/network
+     * update_host_name_ubuntu  ---  задает имя удаленного хоста через /etc/hostname
+     * add_to_hosts  ---  добавляет строчку в /etc/hosts на удаленном хосте
+     * check_node_ready  ---  проверяет через cobbler готовность ноды
+     * await_node_deploy  ---  проверяет через cobbler доступность ноды
+     * build_astute  ---  собирает astute.gem на хосте используя gem и gemspec
+     * install_astute  ---  устанавливает astute через gem
+     * is_not_essex  ---  проверяет версию OpenStack используя переменные окружения
 
 
 ---
