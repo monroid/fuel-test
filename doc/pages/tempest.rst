@@ -1,7 +1,6 @@
-::
-
-Grizzly CI TEMPEST parameterized job example
-==============================================
+============================================
+Grizzly CI TEMPEST parametrized job example
+============================================
 
 This is an example of grizzly TEMPEST job for CI cycle, i.e. commit & verify.
 
@@ -35,13 +34,14 @@ Quickstart
 - Configure shell command to execute
 - Run the job
 
-Shell env. varaibles used for job
+Shell env. variables used for job
 ---------------------------------
 
 Accepted values for ``test_name`` parameter are
 
 - TEMPEST = full tempest run onto lab was deployed before
-- tempest/tempest/tests/.../ModuleName.py:ClassName.MethodName = run single tempest test specified only, e.g. tempest/tempest/tests/compute/servers/test_create_server.py:ServersTestJSON.test_can_log_into_created_server
+- tempest/tempest/tests/.../ModuleName.py:ClassName.MethodName = run single tempest test specified only
+  e.g. tempest/tempest/tests/compute/servers/test_create_server.py:ServersTestJSON.test_can_log_into_created_server
 - Any other = redeploy lab from 'nodes-deployed' snapshots have been made after BM by cobbler have finished (uncomented dos.py would cause full erase and redeploy with BM including vm networks recreation)
 
 Accepted values for ``erase`` parameter are

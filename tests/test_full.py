@@ -11,15 +11,15 @@ from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
 class FullTestCase(CobblerTestCase):
     """
     Deploy openstack in full mode.
-    Supports multiple deployment tool -- astute or puppet.
+    Supports multiple deployment tool --- astute or puppet.
     By default:
-        master x1
-        controller x3
-        compute x3
-        storage x3
-        proxy x2
-        quantum x0
 
+    - master x1
+    - controller x3
+    - compute x3
+    - storage x3
+    - proxy x2
+    - quantum x0
     """
     def deploy(self):
         """

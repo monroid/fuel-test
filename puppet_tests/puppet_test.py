@@ -16,19 +16,19 @@ class PuppetTest:
         self.__test_file_name = os.path.basename(self.__test_file_path)
         self.__test_name = self.__test_file_name.replace('.pp', '')
 
-    def getPath(self):
+    def get_path(self):
         """
         Returns path to directory of this test
         """
         return self.__tests_path
 
-    def getFile(self):
+    def get_file(self):
         """
         Returns file name of this test
         """
         return self.__test_file_name
 
-    def getName(self):
+    def get_name(self):
         """
         Returns name of this test
         """
@@ -36,19 +36,19 @@ class PuppetTest:
 
     @property
     def path(self):
-        return self.getPath()
+        return self.get_path()
 
     @property
     def file(self):
-        return self.getFile()
+        return self.get_file()
 
     @property
     def name(self):
-        return self.getName()
+        return self.get_name()
 
     def __repr__(self):
         """
         String representation of PuppetTest
         """
-        return "PuppetTest(name=%s, path=%s, file=%s)" % (self.getName(), self.getPath(), self.getFile())
+        return "PuppetTest(name=%s, path=%s, file=%s)" % (self.get_name(), self.get_path(), self.get_file())
 

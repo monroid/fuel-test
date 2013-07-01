@@ -6,6 +6,9 @@
    :maxdepth: 2
 
    pages/introduction
-   pages/testing_types
-   pages/integration_tests
+   pages/syntax_style_check
+   pages/unit_testing
+   pages/integration_testing
+   pages/system_testing
    pages/reference
+   pages/tempest

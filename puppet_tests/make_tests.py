@@ -6,9 +6,13 @@ MakeTests is a script to create tests scripts for every Puppet module using jinj
 import jinja2
 import os
 import sys
+import argparse
 
-basedir = os.path.abspath('..')
-sys.path.append(basedir)
+path = os.path.abspath(__file__)
+path = os.path.dirname(path)
+path = os.path.dirname(path)
+sys.path.insert(0, path)
+
 from helpers.interface import Interface
 from puppet_module import PuppetModule
 
@@ -18,7 +22,7 @@ class MakeTests:
     This is main class. It finds all modules in the given directory and creates tests for them.
     """
 
-    def __init__(self, tests_directory_path, local_modules_path, modules_path=None):
+    def __init__(self, tests_directory_path, local_modules_path, modules_path = None, debug_level = 0):
         """
         You should give to this constructor following arguments:
 
@@ -27,7 +31,7 @@ class MakeTests:
         - *modules_path* (Optional) Use this path to modules on test host system instead of local_modules_path.
           Useful when path to puppet modules differ on machine where tests are made and where they are executed.
         """
-        self.interface = Interface(debuglevel=4)
+        self.interface = Interface(debug_level = debug_level)
         self.interface.debug('Starting MakeTests', 1)
 
         if not os.path.isdir(local_modules_path):
@@ -49,24 +53,24 @@ class MakeTests:
         self.__module_templates = {}
         self.__make_tests_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.setTemplatesDir('templates')
-        self.setInternalModulesPath('/etc/puppet/modules')
-        self.setInternalManifestsPath('/etc/puppet/manifests')
+        self.set_templates_dir('templates')
+        self.set_internal_modules_path('/etc/puppet/modules')
+        self.set_internal_manifests_path('/etc/puppet/manifests')
 
-        self.findModules()
+        self.find_modules()
 
-    def setTemplatesDir(self, template_dir):
+    def set_templates_dir(self, template_dir):
         """
         Set directory to take templates from
         """
         if not os.path.isdir(template_dir):
             self.interface.error("No such dir: " + template_dir)
-        self.__template_loader = jinja2.FileSystemLoader(searchpath=template_dir)
+        self.__template_loader = jinja2.FileSystemLoader(searchpath = template_dir)
         self.__template_environment = templateEnv = jinja2.Environment(
-            loader=self.__template_loader,
+            loader = self.__template_loader,
         )
 
-    def setModuleTemplates(self, module_templates_dictionary):
+    def set_module_template_overrides(self, module_templates_dictionary):
         """
         Set module template file override dictionary
         """
@@ -75,31 +79,31 @@ class MakeTests:
         else:
             self.interface.error("Argument is not Dictionary")
 
-    def setDefaultTemplateFile(self, template_file):
+    def set_default_template_file(self, template_file):
         """
         Set default script template file
         """
         self.__default_template_file = template_file
 
-    def setInternalModulesPath(self, internal_modules_path):
+    def set_internal_modules_path(self, internal_modules_path):
         """
         Set path to modules inside virtual machine
         """
         self.__internal_modules_path = internal_modules_path
 
-    def setInternalManifestsPath(self, internal_manifests_path):
+    def set_internal_manifests_path(self, internal_manifests_path):
         """
         Set path to manifests directory inside virtual machine
         """
         self.__internal_manifests_path = internal_manifests_path
 
-    def getModulesList(self):
+    def get_modules_list(self):
         """
         Get list of PuppetModule objects
         """
         return self.__modules
 
-    def findModules(self):
+    def find_modules(self):
         """
         Find all Puppet modules in module_library_path
         and create array of PuppetModule objects
@@ -114,11 +118,11 @@ class MakeTests:
             puppet_module = PuppetModule(full_local_module_path, self.interface)
             self.__modules.append(puppet_module)
 
-    def compileScript(self, module):
+    def compile_script(self, module):
         """
         Compile script template for given module and return it
         """
-        template_file = self.__module_templates.get(module.getName(), self.__default_template_file)
+        template_file = self.__module_templates.get(module.get_name(), self.__default_template_file)
         template = self.__template_environment.get_template(template_file)
         general = {
             'modules_path': self.__modules_path,
@@ -127,21 +131,21 @@ class MakeTests:
             'internal_manifests_path': self.__internal_manifests_path,
             'tests_directory_path': self.__tests_directory_path,
         }
-        compiled_template = template.render(module=module, **general)
+        compiled_template = template.render(module = module, **general)
         return compiled_template
 
-    def saveScript(self, module):
+    def save_script(self, module):
         """
         Saves compiled script to a file
         """
-        file_name = self.__test_file_name_prefix + module.getName().title() + '.py'
+        file_name = self.__test_file_name_prefix + module.get_name().title() + '.py'
         full_file_path = os.path.join(self.__tests_directory_path, file_name)
-        script_content = self.compileScript(module)
+        script_content = self.compile_script(module)
         script_file = open(full_file_path, 'w+')
         script_file.write(script_content)
         script_file.close()
 
-    def makeAllScripts(self):
+    def make_all_scripts(self):
         """
         Compile and save to tests_directory_path all the test scripts. Main procedure.
         """
@@ -151,11 +155,11 @@ class MakeTests:
         except OSError as error:
             self.interface.error("Cannot change directory to %s: %s" % (self.__make_tests_dir, error.message))
             return None
-        for module in self.getModulesList():
-            self.interface.debug('Processing module: "%s"' % module.getName(), 3)
-            self.saveScript(module)
+        for module in self.get_modules_list():
+            self.interface.debug('Processing module: "%s"' % module.get_name(), 3)
+            self.save_script(module)
 
-    def removeAllTests(self):
+    def remove_all_tests(self):
         """
         Remove all tests from tests_directory_path
         """
@@ -172,11 +176,14 @@ class MakeTests:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 3:
-        MT = MakeTests(sys.argv[1], sys.argv[2], sys.argv[3])
-    else:
-        MT = MakeTests(sys.argv[1], sys.argv[2])
-
-    MT.setModuleTemplates({'motd': 'motd_module_custom_test.py'})
-    MT.removeAllTests()
-    MT.makeAllScripts()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("tests", type = str, help = "Directory to save tests")
+    parser.add_argument("modules", type = str, help = "Path to Puppet modules")
+    parser.add_argument("-m", "--modules_path", type = str, help = "Path to Puppet modules on the test server", default=None)
+    parser.add_argument("-d", "--debug", type = int, choices = [0, 1, 2, 3],
+                          help = "Set debug level (0-3)", default = 0)
+    args = parser.parse_args()
+    MT = MakeTests(args.tests, args.modules, args.modules_path, args.debug)
+    #MT.set_module_template_overrides({'motd': 'motd_module_custom_test.py'})
+    MT.remove_all_tests()
+    MT.make_all_scripts()

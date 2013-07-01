@@ -1,3 +1,4 @@
+=====================
 Справочная информация
 =====================
 
@@ -13,7 +14,6 @@
 
 .. automodule:: tests
 .. automodule:: tests.test_apply_noop
-.. automodule:: tests.test_cobbler
 .. automodule:: tests.test_compact
 .. automodule:: tests.test_full
 .. automodule:: tests.test_minimal
@@ -26,12 +26,12 @@
 Скрипт MakeTests
 ----------------
 
-.. automodule:: puppet_tests.PuppetModule
-.. automodule:: puppet_tests.PuppetTest
-.. automodule:: puppet_tests.MakeTests
+.. automodule:: puppet_tests.puppet_module
+.. automodule:: puppet_tests.puppet_test
+.. automodule:: puppet_tests.make_tests
 
 Вспомогательные классы
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 .. automodule:: helpers.color
 .. automodule:: helpers.interface

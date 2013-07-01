@@ -11,15 +11,15 @@ from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
 class MinimalTestCase(CobblerTestCase):
     """
     Deploy openstack in minimal mode.
-    Supports multiple deployment tool -- astute or puppet.
+    Supports multiple deployment tool --- astute or puppet.
     By default:
-        master x1
-        controller x?
-        compute x?
-        storage x?
-        proxy x?
-        quantum x0
 
+    - master x1
+    - controller x?
+    - compute x?
+    - storage x?
+    - proxy x?
+    - quantum x0
     """
     def deploy(self):
         """

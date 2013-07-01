@@ -48,3 +48,5 @@ nosetests.xml
 
 #log files
 *.log
+
+devops
