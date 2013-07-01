@@ -178,7 +178,7 @@ fuel_test/config:
 (С) NoopTestCase	прогон всех модулей puppet из /etc/puppet/modules с опцией --noop
 
 Методы класса    NoopTestCase:
-    (M) test_apply_all_modules_with_noop --- прогон всех модулей puppet из /etc/puppet/modules с опцией --noop ( т.е. тест всех  модулей puppet типа  syntax check / dependencies check / etc. без фактического внесения изменений в систему )
+ * test_apply_all_modules_with_noop --- прогон всех модулей puppet из /etc/puppet/modules с опцией --noop ( т.е. тест всех  модулей puppet типа  syntax check / dependencies check / etc. без фактического внесения изменений в систему )
 
 ---
 
@@ -225,7 +225,7 @@ SwiftCase ( test_swift.py ) --- класс для тестирования SWIFT
 Вспомогательные модули, классы и их методы
 Классы:
 
-(С) Astute ( astute.py) --- 
+(С) Astute ( astute.py)
     (F) config
     (F) test_minimal_config 
     (F) __init__	
@@ -315,8 +315,12 @@ SwiftCase ( test_swift.py ) --- класс для тестирования SWIFT
 
 
 
-PrepareTempest - ???
-PrepareTempestCI - ???
+Класс PrepareTempest 
+--------------------
+
+
+Класс PrepareTempestCI
+----------------------
 
 
 
