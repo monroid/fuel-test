@@ -20,16 +20,17 @@ from puppet_module import PuppetModule
 class MakeTests:
     """
     This is main class. It finds all modules in the given directory and creates tests for them.
-    """
-
-    def __init__(self, tests_directory_path, local_modules_path, modules_path = None, debug_level = 0):
-        """
-        You should give to this constructor following arguments:
+    You should give constructor following arguments:
 
         - *local_modules_path* Path to puppet modules which will be scanned for test files
         - *tests_directory_path* Output directory where files will be written
         - *modules_path* (Optional) Use this path to modules on test host system instead of local_modules_path.
           Useful when path to puppet modules differ on machine where tests are made and where they are executed.
+    """
+
+    def __init__(self, tests_directory_path, local_modules_path, modules_path = None, debug_level = 0):
+        """
+        Constructor
         """
         self.interface = Interface(debug_level = debug_level)
         self.interface.debug('Starting MakeTests', 1)
