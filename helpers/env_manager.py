@@ -11,6 +11,11 @@ class EnvManager():
     """
     Class for create environment in puppet modules testing.
     """
+    env_name = "puppet_integration"
+    env_node_name = env_name + "node"
+    env_net_public = env_name + 'public'
+    env_net_internal = env_name + 'internal'
+    env_net_private = env_name + 'private'
     login = "root"
     password = "r00tme"
 
@@ -19,11 +24,17 @@ class EnvManager():
         Constructor for create environment.
         """
         self.manager = Manager()
-        self.environment = self.manager.environment_create('test_env')
+        self.environment = self.manager.environment_create(self.env_name)
         self.base_image = base_image
-        self._create_env()
+        self.create_env()
 
-    def _create_env(self):
+    def create_env(self):
+        try:
+            return self.manager.environment_get(self.env_name)
+        except:
+            self._define_env()
+
+    def _define_env(self):
         """
         Create environment with default settings.
         """
@@ -47,7 +58,7 @@ class EnvManager():
 
         self.environment.start()
 
-    def _remote(self, node_name='node', net_name='public'):
+    def _remote(self, node_name='test_env_node', net_name='test_env_public'):
         """
         Return remote access to node by name with default login/password.
         """
@@ -78,7 +89,7 @@ class EnvManager():
         """
         self._remote(node_name=node_name, net_name=net_name).execute(command)
 
-    def upload(self, source, dest, node_name='node', net_name='public'):
+    def upload_files(self, source, dest, node_name='node', net_name='public'):
         """
         Upload file(s) to node.
         """
