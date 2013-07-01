@@ -81,9 +81,10 @@ fuel_test/config:
 *CiBase* - базовый класс для подготовки тестового окружения (группа VM) для интеграционного тестирования (CI)
 
 *CiVM* -  класс для развертывания тестового окружения на виртуальных машинах (VM)
+
 *CiBM* -  класс для развертывания тестового окружения на физических машинах (BM=Bare Metal)
 
-Эти классы используются в нижеописанных FullTestCase, CompactTestCase, SimpleTestCase,   SingleTestCase и прочих для тестов по развертыванию OpenStack в соответствующих вариантах ( deployment mode ).
+Эти классы используются в нижеописанных FullTestCase, CompactTestCase, SimpleTestCase, SingleTestCase и прочих тестах на развертывание OpenStack в соответствующих вариантах ( deployment mode ).
 
 
 
@@ -95,38 +96,26 @@ fuel_test/config:
 (С) FullTestCase - класс для развертывания тестового окружения для интеграционного тестирования (CI). Данный класс реализует метод-тест test_full который предполагается запускать через nosetests ( https://nose.readthedocs.org ). Метод выполняет развертывание OpenStack в варианте “Multi node HA Standalone” посредством Fuel. Фактически тут один тест, который ничего кроме деплоймета OpenStack не выполняет. Также реализованы и все остальные классы CompactTestCase, MinimalTestCase, SimpleTestCase,  SingleTestCase для других вариантов развертывания.
 
 Методы класса  FullTestCase :
- *  (M) deploy	запускает развертывание одним из выбранных способом (через astute или без )
- *  (M)  deploy_one_by_one	развертывание через манифесты puppet
- *  (M)  deploy_by_astute	развертывание через astute
- *  (M)  prepare_astute	создает конфигурационные файлы для astute и настраивает cobbler
- *  (M)  test_full 	запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
-
-
+ *  deploy	запускает развертывание одним из выбранных способом (через astute или без )
+ *  deploy_one_by_one	развертывание через манифесты puppet
+ *  deploy_by_astute	развертывание через astute
+ *  prepare_astute	создает конфигурационные файлы для astute и настраивает cobbler
+ *  test_full 	запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
 
 
 
 (С) CompactTestCase  (  test_compact.py ) -  класс реализует раличные варианты развертывания OpenStack в варианте Multi-node (HA) deployment (Compact) посредством Fuel.
 
-Методы класса  CompactTestCase :
-
-  (M)  deploy_compact	запускает развертывание на нодах через puppet agent, метод используется во всех методах-тестах 
-
-  (M)  test_deploy_compact_quantum    тест на развертывание с Quantum на контроллерах
-
-  (M) test_deploy_compact_quantum_standalone тест на развертывание с Quantum на отдельной ноде
-
-  (M) test_deploy_compact_wo_quantum --- тест на  развертывание без Quantum 
-
-  (M) test_deploy_compact_wo_quantum_cinder_all_by_ipaddr --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются списком ip-адресов нод
-
-  (M) test_deploy_compact_wo_quantum_cinder_all --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются через cinder_nodes=['all']
-
-  (M) test_deploy_compact_wo_loopback --- --- тест на  развертывание с Cinder на контроллерах, с параметром SWIFT loopback
-
-
-  (M) test_deploy_compact_wo_ha_provider ---  на  развертывание с Cinder на контроллерах, без HA
-
-  (M) deploy_by_astute	развертывание через astute ( КМК метод дублируется в нескольких классах и напрашивается на рефакторинг )
+Методы класса  CompactTestCase:
+ * deploy_compact	запускает развертывание на нодах через puppet agent, метод используется во всех методах-тестах 
+ * test_deploy_compact_quantum    тест на развертывание с Quantum на контроллерах
+ * test_deploy_compact_quantum_standalone тест на развертывание с Quantum на отдельной ноде
+ * test_deploy_compact_wo_quantum --- тест на  развертывание без Quantum 
+ * test_deploy_compact_wo_quantum_cinder_all_by_ipaddr --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются списком ip-адресов нод
+ * test_deploy_compact_wo_quantum_cinder_all --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются через cinder_nodes=['all']
+ * test_deploy_compact_wo_loopback --- --- тест на  развертывание с Cinder на контроллерах, с параметром SWIFT loopback
+ * test_deploy_compact_wo_ha_provider ---  на  развертывание с Cinder на контроллерах, без HA
+ * deploy_by_astute	развертывание через astute ( КМК метод дублируется в нескольких классах и напрашивается на рефакторинг )
 
 
 
