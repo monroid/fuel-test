@@ -20,3 +20,5 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+{% include 'debug_template.txt' -%}

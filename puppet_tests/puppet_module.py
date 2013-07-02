@@ -27,10 +27,11 @@ class PuppetModule:
         self.__tests = []
         self.__dependencies = []
 
-        self.find_tests()
-
         self.__comment_regexp = re.compile(r'^\s*#')
         self.__dependency_regexp = re.compile(r'^\s*dependency\s*[\'\"]*([^\'\"]+)[\'\"]*')
+
+        self.find_tests()
+        self.find_dependencies()
 
     def find_dependencies(self):
         """
