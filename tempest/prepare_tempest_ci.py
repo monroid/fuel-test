@@ -30,7 +30,6 @@ class PrepareTempestCI():
         return self._ci
 
     def prepare(self):
-        print "in prepare"
         prepare = PrepareTempest(username=self.username,
                                       password=self.password,
                                       tenant=self.tenant,
@@ -50,7 +49,6 @@ class PrepareTempestCI():
         self.prepare.prepare_tempest_folsom(template_folsom)
 
     def prepare_tempest_grizzly(self, template_grizzly):
-        print "in grizzly tempest"
         self.prepare.prepare_tempest_grizzly(template_grizzly)
 
     def prepare_tempest_essex(self, template_essex):
