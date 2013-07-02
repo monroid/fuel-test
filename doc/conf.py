@@ -97,9 +97,9 @@ pygments_style = 'sphinx'
 
 autodoc_default_flags = [
     'members',
-#    'undoc-members',
+    'undoc-members',
     'private-members',
-    'special-members',
+#    'special-members',
 #    'inherited-members',
 #    'show-inheritance'
 ]
