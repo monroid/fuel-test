@@ -10,5 +10,6 @@
    pages/unit_testing
    pages/integration_testing
    pages/system_testing
+   pages/fuel_test_classes.rst
    pages/reference
    pages/tempest
