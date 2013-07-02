@@ -9,7 +9,7 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
     def setUpClass(self):
         self.env = EnvManager()
         self.env.await()
-        if not self.env.snapshot_exist(snap_name="bet"):
+        if not self.env.snapshot_exist(snap_name="before_test"):
             self.env.create_snapshot_env(snap_name="before_test")
 
     def setUp(self):
