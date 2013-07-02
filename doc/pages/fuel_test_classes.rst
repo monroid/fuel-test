@@ -5,7 +5,8 @@
 Набор тестов для Fuel и инфраструктура 
 ---------------------------------------
 
-Тесты сводятся к созданию виртуального окружения и развертывания в нем OpenStack при помощи Fuel. Также это используется для подготовки окружения для прогона  набора тестов Tempest [1]_.
+Тесты сводятся к созданию виртуального окружения и развертывания в нем OpenStack при помощи Fuel. 
+Также эти тесты используются для подготовки окружения для прогона  набора тестов Tempest [1]_.
 
 директории fuel_test  ( в том же репозитории, что и Fuel: https://github.com/Mirantis/fuel.git	 ):
  * ci		классы реализующие окружения для CI-тестов
@@ -20,9 +21,9 @@
 остальные файлы:
  * settings.py	общие настройки для всех тестов развертывания OpenStack
  * prepare.py	конфигурационные файлы для tempest* test suite
+ * pip-requires	список зависимостей для тестов
 
 .. [1]  Tempest --- это набор интеграционных тестов для Openstack (  https://github.com/openstack/tempest )
-
 
 
 Библиотека devops
@@ -37,52 +38,20 @@
  * docs	заготовки для документации (пустые), getstart.rst (как начать работу)
  * samples	примеры как создавать виртуальные окружения при помощи devops
 
-Файлы:
- * fuel_test
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * astute.py	формирует конфигурационный Yaml для Astute
- * base_test_case.py	абстрактный базовый класс для тестов
- * config.py	класс реализующий конфиг. файлы для astute, openstack
- * helpers.py	кt
- * iso_master.py	кt
- * manifest.py	кt
- * node_roles.py	краткая инструкция по настройке и применению fuel-test
- * pip-requires	краткая инструкция по настройке и применению fuel-test
- * prepare.py	кt
- * prepare_tempest_ci.py	кt
- * prepare_tempest.py	краткая инструкция по настройке и применению fuel-test
- * root.py	краткая инструкция по настройке и применению fuel-test
- * settings.py	краткая инструкция по настройке и применению fuel-test
- * test_config.py	кt
- * test_manifest.py	кt
-
-fuel_test/ci:  
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
-
-fuel_test/cobbler:  
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
-
-fuel_test/config:  
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
- * README.rst	краткая инструкция по настройке и применению fuel-test
-
 
 Классы и методы
 ----------------
 
-Классы для создания виртуальных окружений
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*CiBase* - базовый класс для подготовки тестового окружения (группа VM) для интеграционного тестирования (CI)
 
-*CiVM* -  класс для развертывания тестового окружения на виртуальных машинах (VM)
+Классы для создания виртуальных окружений ( fuel_test/ci )  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*CiBM* -  класс для развертывания тестового окружения на физических машинах (BM=Bare Metal)
+*CiBase* ( ci_base.py )  --- базовый класс для подготовки тестового окружения (группа VM) для интеграционного тестирования (CI)
+
+*CiVM* ( ci_bm.py  ) ---  класс для развертывания тестового окружения на виртуальных машинах (VM)
+
+*CiBM* ( ci_vm.py ) ---  класс для развертывания тестового окружения на физических машинах (BM=Bare Metal)
 
 Эти классы используются в нижеописанных FullTestCase, CompactTestCase, SimpleTestCase, SingleTestCase и прочих тестах на развертывание OpenStack в соответствующих вариантах ( deployment mode ).
 
@@ -117,19 +86,6 @@ fuel_test/config:
  * test_deploy_compact_wo_ha_provider ---  на  развертывание с Cinder на контроллерах, без HA
  * deploy_by_astute	развертывание через astute ( КМК метод дублируется в нескольких классах и напрашивается на рефакторинг )
 
-
-
-
-
-
-
-
-
-
-
-
-
-	
 
 (С) MinimalTestCase (  test_minimal.py ) ---  класс реализует развертывание OpenStack в варианте Multi-node (HA) deployment (Compact) посредством Fuel.
 
@@ -198,7 +154,8 @@ fuel_test/config:
 
 ---
 
-SwiftCase ( test_swift.py ) --- класс для тестирования SWIFT.   НЕ ИСПОЛЬЗУЕТСЯ!
+SwiftCase ( test_swift.py )
+    класс для тестирования SWIFT.   НЕ ИСПОЛЬЗУЕТСЯ!
 
 
 ---
@@ -206,19 +163,23 @@ SwiftCase ( test_swift.py ) --- класс для тестирования SWIFT
 
 
 
-(С) CobblerClient ( cobbler_client.py ) --- взаимодействие с Cobbler через его  XML RPC 
+(С) CobblerClient ( cobbler_client.py ) 
+    взаимодействие с Cobbler через его  XML RPC 
  
 ---
 
-(С) CobblerTestCase ( vm_test_case.py ) --- базовый класс на основе которого реализуются классы для тест-кейсов по развертыванию в разных вариантах ( “Single node”, “Multi node HA Standalone”,  “Multi node HA Compact SWIFT”, и т.д. )
+(С) CobblerTestCase ( vm_test_case.py )
+    базовый класс на основе которого реализуются классы для тест-кейсов по развертыванию в разных вариантах ( “Single node”, “Multi node HA Standalone”,  “Multi node HA Compact SWIFT”, и т.д. )
  
 ---
 
-(C) CobblerTestCase ( test_cobbler.py ) --- ненужный тест класс-пустышка (  Настя уже удалила из репозитория )
+(C) CobblerTestCase ( test_cobbler.py )
+     ненужный тест класс-пустышка (  Настя уже удалила из репозитория )
  
 ---
 
-(C) BaseTestCase ( base_test_case.py ) --- базовый родительский класс производный от TestCase из модуля TestCase на основе которого построен  CobblerTestCase ( vm_test_case.py )  и далее по иерархии  все остальные классы-тесты.
+(C) BaseTestCase ( base_test_case.py )
+    базовый родительский класс производный от TestCase из модуля TestCase на основе которого построен  CobblerTestCase ( vm_test_case.py )  и далее по иерархии  все остальные классы-тесты.
  
 ---
 
