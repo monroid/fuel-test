@@ -100,7 +100,7 @@ class EnvManager():
         """
         Execute command on node.
         """
-        self.remote().execute(command)
+        return self.remote().execute(command)['exit_code']
 
     def upload_files(self, source, dest):
         """
