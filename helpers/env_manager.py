@@ -75,6 +75,8 @@ class EnvManager():
         """
         return self._ssh()
 
+    def snapshot_exist(self, snap_name="before_test"):
+        return self.environment.has_snapshot(name=snap_name)
 
     def create_snapshot_env(self, snap_name="", description="", force=True):
         """
@@ -98,7 +100,7 @@ class EnvManager():
         """
         Execute command on node.
         """
-        self.remote().execute(command)
+        return self.remote().execute(command)['exit_code']
 
     def upload_files(self, source, dest):
         """
