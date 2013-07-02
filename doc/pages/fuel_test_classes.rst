@@ -89,7 +89,6 @@
 
 (С) MinimalTestCase (  test_minimal.py ) ---  класс реализует развертывание OpenStack в варианте Multi-node (HA) deployment (Compact) посредством Fuel.
 
-
 Методы класса  MinimalTestCase:
  * deploy --- запускает развертывание выбранным способом (через astute или без )
  * deploy_one_by_one 	развертывание через манифесты puppet
@@ -119,15 +118,6 @@
  * prepare_astute 
  * test_single 
 
-
-(С) MinimalTestCase  ( test_minimal.py )
-Методы класса     MinimalTestCase:
- * deploy 
- * deploy_one_by_one 
- * deploy_by_astute 
- * prepare_only_site_pp 
- * prepare_astute 
- * test_simple 
 
 ---
 
