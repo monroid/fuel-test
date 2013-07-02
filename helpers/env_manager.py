@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from time import sleep
 import tarfile
+from time import sleep
+from devops.helpers.helpers import ssh, tcp_ping, wait
 
 from helpers.functions import root
 from devops.manager import Manager
@@ -11,12 +12,12 @@ class EnvManager():
     """
     Class for create environment in puppet modules testing.
     """
-    env_name = "puppet_integration"
-    env_node_name = env_name + "node"
-    env_net_public = env_name + 'public'
-    env_net_internal = env_name + 'internal'
-    env_net_private = env_name + 'private'
-    env_vol = env_name + '_vol'
+    env_name = "puppet-integration"
+    env_node_name = "node"
+    env_net_public = 'public'
+    env_net_internal = 'internal'
+    env_net_private = 'private'
+    env_vol = 'vol'
     login = "root"
     password = "r00tme"
 
@@ -25,22 +26,23 @@ class EnvManager():
         Constructor for create environment.
         """
         self.manager = Manager()
-        self.environment = self.manager.environment_create(self.env_name)
         self.base_image = base_image
-        self.create_env()
+        self.environment = self.create_env()
 
     def create_env(self):
         try:
             return self.manager.environment_get(self.env_name)
         except:
-            self._define_env()
+            return self._define_env()
 
     def _define_env(self):
         """
         Create environment with default settings.
         """
+        self.environment = self.manager.environment_create(self.env_name)
+
         internal = self.manager.network_create(environment=self.environment, name=self.env_net_internal, pool=None)
-        external = self.manager.network_create(environment=self.environment, name=self.env_net_external, pool=None)
+        external = self.manager.network_create(environment=self.environment, name=self.env_net_public, pool=None)
         private = self.manager.network_create(environment=self.environment, name=self.env_net_private, pool=None)
 
         node = self.manager.node_create(name=self.env_node_name, environment=self.environment)
@@ -59,13 +61,19 @@ class EnvManager():
 
         self.environment.start()
 
-    def _remote(self):
+        return self.environment
+
+    def _get_public_ip(self):
+        return self.environment.node_by_name(self.env_node_name).get_ip_address_by_network_name(self.env_net_public)
+
+    def _ssh(self):
+        return ssh(self._get_public_ip(), username=self.login, password=self.password).sudo.ssh
+
+    def remote(self):
         """
         Return remote access to node by name with default login/password.
         """
-        return self.environment().node_by_name(self.env_node_name).remote(self.env_net_public,
-                                                                          login=self.login,
-                                                                          password=self.password)
+        return self._ssh()
 
 
     def create_snapshot_env(self, snap_name="", description="", force=True):
@@ -90,13 +98,13 @@ class EnvManager():
         """
         Execute command on node.
         """
-        self._remote(node_name=self.env_node_name, net_name=self.env_net_public).execute(command)
+        self.remote().execute(command)
 
     def upload_files(self, source, dest):
         """
         Upload file(s) to node.
         """
-        self._remote(node_name=self.env_node_name, net_name=self.env_net_public).upload(source, dest)
+        self.remote().upload(source, dest)
 
     def upload_modules(self, remote_dir="/etc/puppet/modules/"):
         """
@@ -104,7 +112,7 @@ class EnvManager():
         """
         module_dir = root('fuel_test', 'deployment', 'puppet')
 
-        remote = self._remote(node_name=self.env_node_name)
+        remote = self.remote()
 
         tar_file = None
         try:
@@ -119,16 +127,21 @@ class EnvManager():
             if tar_file:
                 tar_file.close()
 
+    def await(self, timeout=1200):
+        wait(
+            lambda: tcp_ping(self._get_public_ip(), 22), timeout=timeout)
+
 
 if __name__ == "__main__":
     env = EnvManager()
 
-    sleep(600) #TODO: add await method
+    sleep(600)
 
     env.create_snapshot_env(snap_name="test1")
 
     env.execute_cmd('apt-get install mc')
 
     env.erase_env()
+
 
 

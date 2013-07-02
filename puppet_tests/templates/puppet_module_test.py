@@ -8,7 +8,7 @@ LOG = logging.getLogger(__name__)
 class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
     def setUpClass(self):
         self.env = EnvManager()
-        sleep(120)
+        self.env.await()
         if not self.env.snapshot_exist(snap_name="bet"):
             self.env.create_snapshot_env(snap_name="before_test")
 
