@@ -15,7 +15,8 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
 
 {% for test in module.tests %}
     def test_{{ test.name|title }}(self):
-        self.env.execute_cmd("puppet apply --verbose --detailed-exitcodes --modulepath='{{ internal_modules_path }}' '{{ internal_modules_path }}/{{ module.name }}/{{ test.path }}/{{ test.file }}'")
+        result = self.env.execute_cmd("puppet apply --verbose --detailed-exitcodes --modulepath='{{ internal_modules_path }}' '{{ internal_modules_path }}/{{ module.name }}/{{ test.path }}/{{ test.file }}'")
+        self.assertNotIn(result, [6, 4])
 {% endfor %}
 
     def tearDown(self):
