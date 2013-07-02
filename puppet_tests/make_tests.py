@@ -126,7 +126,7 @@ class MakeTests:
             'internal_manifests_path': self.__internal_manifests_path,
             'tests_directory_path': self.__tests_directory_path,
         }
-        compiled_template = template.render(module = module, **general)
+        compiled_template = template.render(module=module, **general)
         return compiled_template
 
     def save_script(self, module):
