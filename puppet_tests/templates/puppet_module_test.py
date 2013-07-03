@@ -14,10 +14,7 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
         if not self.env.snapshot_exist(snap_name="before_test"):
             self.env.create_snapshot_env(snap_name="before_test")
 
-        self.env.upload_files('{{ modules_path }}/{{ module.name }}', '{{ internal_modules_path }}')
-{%- for dependency in module.dependencies %}
-        self.env.upload_files('{{ modules_path }}/{{ dependency }}', '{{ internal_modules_path }}')
-{%- endfor %}
+        self.env.upload_modules('{{ modules_path }}', '{{ internal_modules_path }}')
 {% for test in module.tests %}
     def test_{{ test.name|title }}(self):
         manifest = "{{ internal_modules_path }}/{{ module.name }}/{{ test.path }}/{{ test.file }}"
