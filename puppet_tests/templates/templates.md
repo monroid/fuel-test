@@ -19,6 +19,7 @@ PuppetModule
 * module.name - Module's name
 * module.path - Path to module on system where tests are made
 * module.tests - List of PuppetTest objects
+* module.dependencies - List of module names this module depends on
 
 PuppetTest
 ----------

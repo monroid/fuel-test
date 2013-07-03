@@ -18,32 +18,41 @@ class PuppetTest:
 
     def get_path(self):
         """
-        Returns path to directory of this test
+        Return path to directory of this test
         """
         return self.__tests_path
 
     def get_file(self):
         """
-        Returns file name of this test
+        Return file name of this test
         """
         return self.__test_file_name
 
     def get_name(self):
         """
-        Returns name of this test
+        Return name of this test
         """
         return self.__test_name
 
     @property
     def path(self):
+        """
+        Property returns path to this test relative to module and excluding file name
+        """
         return self.get_path()
 
     @property
     def file(self):
+        """
+        Property returns this tests' file name
+        """
         return self.get_file()
 
     @property
     def name(self):
+        """
+        Property returns name of this test
+        """
         return self.get_name()
 
     def __repr__(self):
@@ -51,4 +60,3 @@ class PuppetTest:
         String representation of PuppetTest
         """
         return "PuppetTest(name=%s, path=%s, file=%s)" % (self.get_name(), self.get_path(), self.get_file())
-
