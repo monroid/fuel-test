@@ -108,12 +108,10 @@ class EnvManager():
         """
         self.remote().upload(source, dest)
 
-    def upload_modules(self, remote_dir="/etc/puppet/modules/"):
+    def upload_modules(self, local_dir, remote_dir="/etc/puppet/modules/"):
         """
         Upload puppet modules.
         """
-        module_dir = root('fuel_test', 'deployment', 'puppet')
-
         remote = self.remote()
 
         tar_file = None
@@ -121,7 +119,7 @@ class EnvManager():
             tar_file = remote.open('/tmp/recipes.tar', 'wb')
 
             with tarfile.open(fileobj=tar_file, mode='w', dereference=True) as tar:
-                tar.add(module_dir, arcname='')
+                tar.add(local_dir, arcname='')
 
             remote.mkdir(remote_dir)
             remote.check_call('tar xmf /tmp/recipes.tar --overwrite -C %s' % remote_dir)
@@ -137,7 +135,9 @@ class EnvManager():
 if __name__ == "__main__":
     env = EnvManager()
 
-    sleep(600)
+    env.await()
+
+    env.upload_modules('/home/alan/fuel/deployment/puppet')
 
     env.create_snapshot_env(snap_name="test1")
 
