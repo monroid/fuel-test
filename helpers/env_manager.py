@@ -96,11 +96,11 @@ class EnvManager():
         """
         self.environment.erase()
 
-    def execute_cmd(self, command):
+    def execute_cmd(self, command, debug=True):
         """
         Execute command on node.
         """
-        return self.remote().execute(command, verbose=True)['exit_code']
+        return self.remote().execute(command, verbose=debug)['exit_code']
 
     def upload_files(self, source, dest):
         """
