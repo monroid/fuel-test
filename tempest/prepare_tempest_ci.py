@@ -3,16 +3,15 @@
 from devops.helpers.helpers import ssh
 from time import sleep
 from ci.ci_vm import CiVM
-from helpers import install_packages, switch_off_ip_tables
 from prepare_tempest import PrepareTempest
-from helpers.functions import root
+from helpers.functions import root, install_packages, switch_off_ip_tables
 from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
 class PrepareTempestCI():
     def __init__(self, ha=False):
-        self.controllers = self.ci().nodes().controllers
         if not ha:
+            self.controllers = self.ci().nodes().controllers
             self.public_ip = self.controllers[0].get_ip_address_by_network_name('public')
             self.internal_ip = self.controllers[0].get_ip_address_by_network_name('internal')
         else:

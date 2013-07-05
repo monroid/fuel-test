@@ -59,8 +59,8 @@ ADMIN_TENANT_ESSEX = 'openstack'
 ADMIN_TENANT_FOLSOM = 'admin'
 
 CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 3))
-COMPUTES = int(os.environ.get('COMPUTES', 3))
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
+COMPUTES = int(os.environ.get('COMPUTES', 0))
 STORAGES = int(os.environ.get('STORAGES', 0))
 PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
@@ -116,7 +116,7 @@ TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
 EXIST_TAR = os.environ.get('EXIST_TAR', None)
 CREATE_SNAPSHOTS = os.environ.get('CREATE_SNAPSHOTS', 'true') == 'true'
 CLEAN = os.environ.get('CLEAN', 'true') == 'true'
-ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
+ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/alan/fuel-centos-6.4-x86_64-3.0.iso')
 USE_ISO = os.environ.get('USE_ISO', 'true') == 'true'
 PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
 PROFILES_COBBLER_COMMON = {
