@@ -50,6 +50,7 @@ class MakeTests:
         self.set_templates_dir('puppet_tests/templates')
         self.set_internal_modules_path('/etc/puppet/modules')
         self.set_internal_manifests_path('/etc/puppet/manifests')
+        self.set_image_path(None)
 
         self.find_modules()
 
@@ -64,6 +65,13 @@ class MakeTests:
         self.__template_environment = templateEnv = jinja2.Environment(
             loader=self.__template_loader,
         )
+
+
+    def set_image_path(self, image_path):
+        """
+
+        """
+        self.__image_path = image_path
 
     def set_module_template_overrides(self, module_templates_dictionary):
         """
@@ -125,6 +133,7 @@ class MakeTests:
             'internal_modules_path': self.__internal_modules_path,
             'internal_manifests_path': self.__internal_manifests_path,
             'tests_directory_path': self.__tests_directory_path,
+            'image_path': self.__image_path,
         }
         compiled_template = template.render(module = module, **general)
         return compiled_template

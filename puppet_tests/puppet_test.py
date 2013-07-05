@@ -15,6 +15,7 @@ class PuppetTest:
         self.__tests_path = os.path.dirname(self.__test_file_path)
         self.__test_file_name = os.path.basename(self.__test_file_path)
         self.__test_name = self.__test_file_name.replace('.pp', '')
+        self.verify_file = '123'
 
     def get_path(self):
         """

@@ -21,13 +21,14 @@ class EnvManager():
     login = "root"
     password = "r00tme"
 
-    def __init__(self, base_image='/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-base.qcow2'):
+    def __init__(self, base_image=None):
         """
         Constructor for create environment.
         """
         self.manager = Manager()
-        self.base_image = base_image
+        self.base_image = base_image or '/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-base.qcow2'
         self.environment = self.create_env()
+
 
     def create_env(self):
         try:
