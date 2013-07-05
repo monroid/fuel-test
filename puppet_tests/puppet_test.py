@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import os
+from glob import glob
+import stat
 
 
 class PuppetTest:
@@ -15,7 +17,31 @@ class PuppetTest:
         self.__tests_path = os.path.dirname(self.__test_file_path)
         self.__test_file_name = os.path.basename(self.__test_file_path)
         self.__test_name = self.__test_file_name.replace('.pp', '')
-        self.verify_file = '123'
+        self.find_verify_file()
+        
+    def find_verify_file(self):
+        """
+        Get verify script for this test if there is one.
+        """
+        pattern = os.path.join(self.__tests_path, self.__test_name) + '*'
+        verify_files = glob(pattern)
+        verify_files = [ os.path.basename(verify_file) for verify_file in verify_files if not verify_file.endswith('.pp') ]
+        if verify_files:
+            self.__verify_file = verify_files[0]
+            self.make_verify_executable()
+        else:
+            self.__verify_file = None
+
+    def make_verify_executable(self):
+        """
+        Set file's executable bit
+        """
+        file_path = os.path.join(self.__tests_path, self.__verify_file)
+        if not os.path.isfile(file_path):
+            return False
+        file_stat = os.stat(file_path)
+        result_code = os.chmod(file_path, file_stat.st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH )
+        return True
 
     def get_path(self):
         """
@@ -34,6 +60,12 @@ class PuppetTest:
         Return name of this test
         """
         return self.__test_name
+
+    def get_verify_file(self):
+        """
+        Return verify file name
+        """
+        return self.__verify_file
 
     @property
     def path(self):
@@ -55,6 +87,13 @@ class PuppetTest:
         Property returns name of this test
         """
         return self.get_name()
+
+    @property
+    def verify_file(self):
+        """
+        Property returns verify file name
+        """
+        return self.get_verify_file()
 
     def __repr__(self):
         """
