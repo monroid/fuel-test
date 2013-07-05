@@ -8,9 +8,10 @@ class TestPuppetModule{{ module.name|title }}(unittest.TestCase):
     def setUp(self):
         self.env = EnvManager({{ image_path }})
         self.env.await()
+        self.puppet_apply = "puppet apply --verbose --detailed-exitcodes --modulepath='{{ internal_modules_path }}'"
+
         if not self.env.snapshot_exist(snap_name="before_test"):
             self.env.create_snapshot_env(snap_name="before_test")
-        self.env.upload_files('{{ modules_path }}/{{ module.name }}', '{{ internal_modules_path }}')
 
 {% for test in module.tests %}
     def test_{{ test.name|title }}(self):

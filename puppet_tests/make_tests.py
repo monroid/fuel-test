@@ -1,11 +1,6 @@
 #!/usr/bin/env python
-"""
-MakeTests is a script to create tests scripts for every Puppet module using jinja2 templates.
-"""
-
 import jinja2
 import os
-
 from helpers.interface import Interface
 from puppet_module import PuppetModule
 
@@ -135,7 +130,7 @@ class MakeTests:
             'tests_directory_path': self.__tests_directory_path,
             'image_path': self.__image_path,
         }
-        compiled_template = template.render(module = module, **general)
+        compiled_template = template.render(module=module, **general)
         return compiled_template
 
     def save_script(self, module):
