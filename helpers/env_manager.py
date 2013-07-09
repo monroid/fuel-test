@@ -134,17 +134,14 @@ class EnvManager():
 
 
 if __name__ == "__main__":
-    env = EnvManager()
-
-    env.await()
-
-    env.upload_modules('/home/alan/fuel/deployment/puppet')
-
+    env = EnvManager('/var/lib/libvirt/images/centos64noswap_test06.qcow2')
+    #env.await()
+    #env.upload_modules('/home/alan/fuel/deployment/puppet')
     env.create_snapshot_env(snap_name="test1")
 
-    env.execute_cmd('apt-get install mc')
+    #env.execute_cmd('apt-get install mc')
 
-    env.erase_env()
+    #env.erase_env()
 
 
 
