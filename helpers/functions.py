@@ -8,7 +8,7 @@ from devops.helpers.helpers import _wait
 import os
 import re
 from helpers.cobbler_client import CobblerClient
-from settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE, EXIST_TAR, USE_ISO
+from settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE
 
 here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
@@ -69,7 +69,7 @@ def install_packages2(remotes, packages):
 
 
 def install_packages(remote, packages):
-    if OS_FAMILY == "centos" or USE_ISO:
+    if OS_FAMILY == "centos":
         remote.sudo.ssh.check_call('yum -y install %s' % packages)
     else:
         remote.sudo.ssh.check_call(
@@ -131,33 +131,22 @@ def setup_puppet_client(remote):
     install_packages(remote, PUPPET_CLIENT_PACKAGE)
     remove_puppetlab_repo(remote)
 
-
 def start_puppet_master(remote):
     remote.sudo.ssh.execute(
         'puppet resource service %s ensure=running enable=true' % PUPPET_MASTER_SERVICE)
 
-
 def start_puppet_agent(remote):
-    remote.sudo.ssh.execute(
-        'puppet resource service puppet ensure=running enable=true')
-
-
-#def sign_all_node_certificates(remote):
-#    remote.sudo.ssh.execute('puppet cert sign --all')
-
+    remote.sudo.ssh.execute('puppet resource service puppet ensure=running enable=true')
 
 def request_cerificate(remote):
     remote.sudo.ssh.execute('puppet agent --waitforcert 0 --test')
 
-
 def switch_off_ip_tables(remote):
     remote.sudo.ssh.execute('iptables -F')
-
 
 def puppet_apply(remote, script, module_path="/tmp/puppet/modules/"):
     remote.sudo.ssh.check_call(
         "puppet apply --modulepath %s -e '%s'" % (module_path, script))
-
 
 def setup_puppet_master(remote):
     add_puppet_lab_repo(remote)
@@ -178,22 +167,23 @@ def setup_puppet_master(remote):
     remote.sudo.ssh.check_call("service %s restart" % PUPPET_MASTER_SERVICE)
 
 
-def upload_recipes(remote, remote_dir="/etc/puppet/modules/"):
-    recipes_dir = root('deployment', 'puppet')
+def upload_recipes(remote, local_dir=None, remote_dir="/etc/puppet/modules/"):
+    """
+    Upload puppet modules.
+    """
+    recipes_dir = local_dir or root('deployment', 'puppet')
     tar_file = None
     try:
-        if EXIST_TAR:
-            remote.upload(EXIST_TAR, '/tmp/recipes.tar')
-        else:
-            tar_file = remote.open('/tmp/recipes.tar', 'wb')
-            with tarfile.open(fileobj=tar_file, mode='w', dereference=True) as tar:
-                tar.add(recipes_dir, arcname='')
+        tar_file = remote.open('/tmp/recipes.tar', 'wb')
+
+        with tarfile.open(fileobj=tar_file, mode='w', dereference=True) as tar:
+            tar.add(recipes_dir, arcname='')
+
         remote.mkdir(remote_dir)
         remote.check_call('tar xmf /tmp/recipes.tar --overwrite -C %s' % remote_dir)
     finally:
         if tar_file:
             tar_file.close()
-
 
 def upload_keys(remote, remote_dir="/var/lib/puppet/"):
     ssh_keys_dir = root('fuel_test', 'config', 'ssh_keys')

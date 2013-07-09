@@ -5,7 +5,7 @@ from helpers.vm_test_case import CobblerTestCase
 from helpers.config import Config
 from helpers.functions import write_config
 from helpers.manifest import Manifest, Template
-from settings import OPENSTACK_SNAPSHOT, CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
+from settings import ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 
 class SimpleTestCase(CobblerTestCase):
@@ -66,8 +66,7 @@ class SimpleTestCase(CobblerTestCase):
     def test_simple(self):
         self.deploy()
 
-        if CREATE_SNAPSHOTS:
-            self.environment().snapshot(OPENSTACK_SNAPSHOT, force=True)
+        self.environment().snapshot('simple', force=True)
 
 if __name__ == '__main__':
     unittest.main()
