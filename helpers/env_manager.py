@@ -111,7 +111,8 @@ class EnvManager():
         Upload puppet modules.
         """
         upload_recipes(remote=self.remote(),
-                       local_dir=local_dir)
+                       local_dir=local_dir,
+                       remote_dir=remote_dir)
 
     def await(self, timeout=1200):
         wait(

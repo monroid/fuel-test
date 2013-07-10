@@ -2,9 +2,7 @@
 
 import unittest
 from abc import abstractproperty
-import yaml
 from ci.ci_base import CiBase
-from config import Config
 from settings import ERROR_PREFIX, WARNING_PREFIX
 from helpers.functions import upload_recipes, upload_keys, write_config
 
