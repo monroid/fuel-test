@@ -1,6 +1,6 @@
-=====================
-Справочная информация
-=====================
+=================================
+Appendix C -- PyDocs of Fuel-test
+=================================
 
 Библиотека окружений ci
 -----------------------
@@ -18,7 +18,6 @@
 .. automodule:: tests.test_nova_subclasses
 .. automodule:: tests.test_puppet_module
 .. automodule:: tests.test_compact
-.. automodule:: tests.test_apply_noop
 .. automodule:: tests.test_single
 .. automodule:: tests.test_minimal
 

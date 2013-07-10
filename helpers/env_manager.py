@@ -119,7 +119,7 @@ class EnvManager():
 
 
 if __name__ == "__main__":
-    env = EnvManager('/var/lib/libvirt/images/centos63-cobbler-base.qcow2')
+    env = EnvManager('/var/lib/libvirt/images/centos64noswap_test06.qcow2')
 
     env.await()
 
