@@ -265,9 +265,7 @@ class Manifest(object):
 
     def generate_swift_manifest(self, controllers,
                              proxies=None):
-        template = Template(
-            root('deployment', 'puppet', 'swift', 'examples',
-                'site.pp'))
+        template = Template(root('deployment', 'puppet', 'swift', 'examples', 'site.pp'))
         template.replace(
             swift_proxy_address=proxies[0].get_ip_address_by_network_name(
                 'internal'),

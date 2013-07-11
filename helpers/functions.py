@@ -10,7 +10,7 @@ import re
 from helpers.cobbler_client import CobblerClient
 from settings import OS_FAMILY, PUPPET_CLIENT_PACKAGE, PUPPET_VERSION, PUPPET_MASTER_SERVICE
 
-here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+here = lambda *x: os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)), *x)
 
 root = lambda *x: os.path.join(os.path.abspath(here('..')), *x)
 
