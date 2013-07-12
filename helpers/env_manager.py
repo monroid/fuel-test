@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 from devops.helpers.helpers import ssh, tcp_ping, wait
 from devops.manager import Manager
 from helpers.functions import upload_recipes
@@ -9,7 +10,7 @@ class EnvManager():
     """
     Class for create environment in puppet modules testing.
     """
-    env_name = "puppet-integration"
+    env_name = os.environ.get('ENV_NAME', "puppet-integration")
     env_node_name = "node"
     env_net_public = NET_PUBLIC
     env_net_internal = NET_INTERNAL
