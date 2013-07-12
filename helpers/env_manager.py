@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from devops.helpers.helpers import ssh, tcp_ping, wait
 from devops.manager import Manager
 from helpers.functions import upload_recipes
@@ -120,8 +119,9 @@ class EnvManager():
 
 
 if __name__ == "__main__":
-    env = EnvManager('/var/lib/libvirt/images/centos64noswap_test06.qcow2')
-
+    env = EnvManager(base_image='/var/lib/libvirt/images/centos6.4-base.qcow2')
+    from time import sleep
+    sleep(6000)
     env.await()
 
     env.upload_modules('/home/alan/fuel/deployment/puppet')

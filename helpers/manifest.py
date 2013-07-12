@@ -48,12 +48,12 @@ class Template(object):
 
     def _replace(self, template, **kwargs):
         for key, value in kwargs.items():
-            template, count = re.subn(
-                '^(\$' + str(key) + ')\s*=.*', "\\1 = " + self.p_(value),
-                template,
-                flags=re.MULTILINE)
-            if count == 0:
-                raise Exception("Variable ${0:>s} not found".format(key))
+            template, count = re.subn('^(\$' + str(key) + ')\s*=.*',
+                                      "\\1 = " + self.p_(value),
+                                      template,
+                                      flags=re.MULTILINE)
+            #if count == 0:
+            #    raise Exception("Variable ${0:>s} not found".format(key))
         return template
 
     def replace(self, **kwargs):

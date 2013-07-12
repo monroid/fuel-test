@@ -5,7 +5,7 @@ OS_FAMILY = os.environ.get('OS_FAMILY', "centos")
 
 DEFAULT_IMAGES = {
     'centos': '/var/lib/libvirt/images/centos6.4-base.qcow2',
-    'ubuntu': '/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-base.qcow2',
+    'ubuntu': '/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-p2.qcow2',
 }
 
 BASE_IMAGE = os.environ.get('BASE_IMAGE', DEFAULT_IMAGES.get(OS_FAMILY))
@@ -42,10 +42,10 @@ ADMIN_TENANT_FOLSOM = 'admin'
 CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
 
 #[nodes]
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 3))
-COMPUTES = int(os.environ.get('COMPUTES', 3))
-STORAGES = int(os.environ.get('STORAGES', 3))
-PROXIES = int(os.environ.get('PROXIES', 2))
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
+COMPUTES = int(os.environ.get('COMPUTES', 0))
+STORAGES = int(os.environ.get('STORAGES', 0))
+PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
 DEFAULT_RAM_SIZE = int(os.environ.get('DEFAULT_RAM_SIZE', 1024))
 COMPUTE_RAM_SIZE = int(os.environ.get('COMPUTE_RAM_SIZE', 2048))
