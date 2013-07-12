@@ -3,4 +3,5 @@ PyYAML
 python-glanceclient
 python-keystoneclient
 python-quantumclient>=2.1
+sphinx
 git+https://git@github.com/Mirantis/devops.git
