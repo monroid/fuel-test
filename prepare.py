@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 
 import argparse
-import os
-from tempest.prepare_tempest import PrepareTempest
+from tempest.prepare_tempest import PrepareTempest, root
 from tempest.prepare_tempest_ci import PrepareTempestCI
-
-here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
-REPOSITORY_ROOT = here('..')
-root = lambda *x: os.path.join(os.path.abspath(REPOSITORY_ROOT), *x)
 
 
 class Prepare(object):
@@ -22,11 +17,11 @@ class Prepare(object):
             self.prepare_tempest = PrepareTempestCI(ha=mode)
 
     def prepare_tempest_folsom(self):
-        template = root('fuel_test', 'config', 'tempest.conf.folsom.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.folsom.sample')
         self.prepare_tempest.prepare_tempest_folsom(template)
 
     def prepare_tempest_grizzly(self):
-        template = root('fuel_test', 'config', 'tempest.conf.grizzly.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.grizzly.sample')
         self.prepare_tempest.prepare_tempest_grizzly(template)
 
 def main():

@@ -89,16 +89,12 @@ class Template(object):
     @classmethod
     def simple(cls):
         return cls(
-            root(
-                'deployment', 'puppet', 'openstack', 'examples',
-                'site_openstack_simple.pp'))
+            root('deployment', 'puppet', 'openstack', 'examples', 'site_openstack_simple.pp'))
 
     @classmethod
     def single(cls):
         return cls(
-            root(
-                'deployment', 'puppet', 'openstack', 'examples',
-                'site_openstack_single.pp'))
+            root('deployment', 'puppet', 'openstack', 'examples', 'site_openstack_single.pp'))
 
 
 class Manifest(object):
@@ -263,16 +259,12 @@ class Manifest(object):
             template.replace(swift_loopback=self.loopback(loopback))
         return template
 
-    def generate_swift_manifest(self, controllers,
-                             proxies=None):
+    def generate_swift_manifest(self, controllers, proxies=None):
         template = Template(root('deployment', 'puppet', 'swift', 'examples', 'site.pp'))
-        template.replace(
-            swift_proxy_address=proxies[0].get_ip_address_by_network_name(
-                'internal'),
-            controller_node_public=controllers[
-                                   0].get_ip_address_by_network_name(
-                'public'),
+        template.replace(swift_proxy_address=proxies[0].get_ip_address_by_network_name('internal'),
+                         controller_node_public=controllers[0].get_ip_address_by_network_name('public'),
         )
+
         return template
 
     def generate_cobbler_manifest(self, ci, cobblers):
@@ -281,14 +273,14 @@ class Manifest(object):
         cobbler_address = cobbler.get_ip_address_by_network_name('internal')
         network = IPNetwork(ci.environment().network_by_name('internal').ip_network)
         self.replace = site_pp.replace(server=cobbler_address,
-            name_server=cobbler_address,
-            next_server=cobbler_address,
-            dhcp_start_address=network[5],
-            dhcp_end_address=network[-1],
-            dhcp_netmask=network.netmask,
-            dhcp_gateway=network[1],
-            pxetimeout='3000',
-            mirror_type=self.mirror_type(),
+                                       name_server=cobbler_address,
+                                       next_server=cobbler_address,
+                                       dhcp_start_address=network[5],
+                                       dhcp_end_address=network[-1],
+                                       dhcp_netmask=network.netmask,
+                                       dhcp_gateway=network[1],
+                                       pxetimeout='3000',
+                                       mirror_type=self.mirror_type(),
         )
 
     def generate_stomp_manifest(self):

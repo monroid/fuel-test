@@ -55,12 +55,12 @@ class PrepareTempestCI():
 
     def prepare_tempest_essex_minimal(self):
         self.make_shared_storage()
-        template = root('fuel_test', 'config', 'tempest.conf.essex.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.essex.sample')
         self.prepare.prepare_tempest_essex(template)
 
     def prepare_tempest_folsom_minimal(self):
         self.make_shared_storage()
-        template = root('fuel_test', 'config', 'tempest.conf.folsom.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.folsom.sample')
         self.prepare.prepare_tempest_folsom(template)
 
     def tempest_share_glance_images(self, network):

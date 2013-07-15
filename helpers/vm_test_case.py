@@ -162,9 +162,7 @@ class CobblerTestCase(BaseTestCase):
                           net_mask=self.ci().internal_net_mask()
             )
 
-        remote = master.remote('internal',
-                               login='root',
-                               password='r00tme')
+        remote = master.remote('internal', login='root', password='r00tme')
         add_to_hosts(
             remote,
             master.get_ip_address_by_network_name('internal'),

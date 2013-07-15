@@ -152,7 +152,7 @@ class CiBase(object):
         """
         Make the basic settings for default vm(node).
         """
-        agent_config = load(root('fuel_test', 'config', 'puppet.agent.config'))
+        agent_config = load(root('fuel-test', 'config', 'puppet.agent.config'))
         for node in nodes:
             if node.name != 'master':
                 remote = node.remote('public', login='root', password='r00tme')

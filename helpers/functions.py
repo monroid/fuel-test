@@ -186,7 +186,7 @@ def upload_recipes(remote, local_dir=None, remote_dir="/etc/puppet/modules/"):
             tar_file.close()
 
 def upload_keys(remote, remote_dir="/var/lib/puppet/"):
-    ssh_keys_dir = root('fuel_test', 'config', 'ssh_keys')
+    ssh_keys_dir = root('fuel-test', 'config', 'ssh_keys')
     remote.upload(ssh_keys_dir, remote_dir)
 
 
@@ -231,9 +231,7 @@ def build_astute():
 
 
 def install_astute(remote):
-    remote.upload(
-        root('deployment', 'mcollective', 'astute', 'astute-0.0.1.gem'),
-        '/tmp/astute-0.0.1.gem')
+    remote.upload(root('deployment', 'mcollective', 'astute', 'astute-0.0.1.gem'), '/tmp/astute-0.0.1.gem')
     remote.check_stderr('gem install /tmp/astute-0.0.1.gem')
 
 
