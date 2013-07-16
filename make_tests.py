@@ -14,9 +14,10 @@ parser.add_argument("-t", "--templates_path", type=str, help="Path to the test s
 parser.add_argument("-f", "--template_file", type=str, help="Default template file name", default=None)
 parser.add_argument("-k", "--keep_tests", action='store_true', help="Keep previous test files", default=False)
 parser.add_argument("-d", "--debug", type=int, choices=[0, 1, 2, 3], help="Set debug level (0-3)", default=0)
+parser.add_argument("-i", "--image", type=str, help="Set image-path in libvirt", default=None)
 
 args = parser.parse_args()
-MT = MakeTests(args.tests, args.modules, args.modules_path, args.debug)
+MT = MakeTests(args.tests, args.modules, args.modules_path, args.debug, )
 if args.templates_path is not None:
     MT.set_templates_dir(args.templates_path)
 if args.template_file is not None:

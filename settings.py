@@ -1,15 +1,57 @@
 import os
 
+#[main]
 OS_FAMILY = os.environ.get('OS_FAMILY', "centos")
-PUPPET_GEN = os.environ.get('PUPPET_GEN', "2")
 
 DEFAULT_IMAGES = {
-    'centos': '/var/lib/libvirt/images/centos63-cobbler-base.qcow2',
-    'ubuntu': '/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-base.qcow2',
+    'centos': '/var/lib/libvirt/images/centos6.4-base.qcow2',
+    'ubuntu': '/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-p2.qcow2',
 }
 
 BASE_IMAGE = os.environ.get('BASE_IMAGE', DEFAULT_IMAGES.get(OS_FAMILY))
 
+TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
+
+ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
+
+PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
+
+PROFILES_COBBLER_COMMON = {
+    'centos': 'centos64_x86_64',
+    'ubuntu': 'ubuntu_1204_x86_64'
+}
+
+CURRENT_PROFILE = PROFILES_COBBLER_COMMON.get(OS_FAMILY)
+
+ASTUTE_USE = os.environ.get('ASTUTE_USE', 'false') == 'true'
+
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', '.localdomain')
+
+PUPPET_AGENT_COMMAND = 'puppet agent -tvd --evaltrace 2>&1'
+
+SETUP_TIMEOUT = int(os.environ.get('SETUP_TIMEOUT', 600))
+
+EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
+
+#[tempest]
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = 'nova'
+ADMIN_TENANT_ESSEX = 'openstack'
+ADMIN_TENANT_FOLSOM = 'admin'
+
+CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
+
+#[nodes]
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
+COMPUTES = int(os.environ.get('COMPUTES', 0))
+STORAGES = int(os.environ.get('STORAGES', 0))
+PROXIES = int(os.environ.get('PROXIES', 0))
+QUANTUMS = int(os.environ.get('QUANTUMS', 0))
+DEFAULT_RAM_SIZE = int(os.environ.get('DEFAULT_RAM_SIZE', 1024))
+COMPUTE_RAM_SIZE = int(os.environ.get('COMPUTE_RAM_SIZE', 2048))
+
+#[puppet]
+PUPPET_GEN = os.environ.get('PUPPET_GEN', "2")
 PUPPET_VERSIONS = {
     'centos': {
         "2": '2.7.19-1.el6',
@@ -36,7 +78,9 @@ PUPPET_CLIENT_PACKAGES = {
 }
 
 PUPPET_CLIENT_PACKAGE = PUPPET_CLIENT_PACKAGES.get(OS_FAMILY).get(PUPPET_GEN)
+PUPPET_MASTER_SERVICE = 'thin'
 
+#[errors]
 ERROR_PREFIXES = {
     "2": "err: ",
     "3": "Error: ",
@@ -51,43 +95,35 @@ WARNING_PREFIXES = {
 
 WARNING_PREFIX = WARNING_PREFIXES.get(PUPPET_GEN)
 
-PUPPET_MASTER_SERVICE = 'thin'
+#[network]
+NET_PUBLIC = 'public'
 
-ADMIN_USERNAME = 'admin'
-ADMIN_PASSWORD = 'nova'
-ADMIN_TENANT_ESSEX = 'openstack'
-ADMIN_TENANT_FOLSOM = 'admin'
+NET_INTERNAL = 'internal'
 
-CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 3))
-COMPUTES = int(os.environ.get('COMPUTES', 3))
-STORAGES = int(os.environ.get('STORAGES', 0))
-PROXIES = int(os.environ.get('PROXIES', 0))
-QUANTUMS = int(os.environ.get('QUANTUMS', 0))
-DEFAULT_RAM_SIZE = int(os.environ.get('DEFAULT_RAM_SIZE', 1024))
-COMPUTE_RAM_SIZE = int(os.environ.get('COMPUTE_RAM_SIZE', 2048))
+NET_PRIVATE = 'private'
 
-EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
-OPENSTACK_SNAPSHOT = os.environ.get('OPENSTACK_SNAPSHOT', 'openstack')
-
-INTERFACE_ORDER = ('public', 'internal', 'private')
+INTERFACE_ORDER = (
+    NET_PUBLIC,
+    NET_INTERNAL,
+    NET_PRIVATE
+)
 
 INTERFACES = {
-    'public': 'eth0',
-    'internal': 'eth1',
-    'private': 'eth2',
+    NET_PUBLIC: 'eth0',
+    NET_INTERNAL: 'eth1',
+    NET_PRIVATE: 'eth2',
 }
 
 FORWARDING = {
-    'public': os.environ.get('PUBLIC_FORWARD', 'nat'),
-    'internal': None,
-    'private': None,
+    NET_PUBLIC: os.environ.get('PUBLIC_FORWARD', 'nat'),
+    NET_INTERNAL: None,
+    NET_PRIVATE: None,
 }
 
 DHCP = {
-    'public': True,
-    'internal': False,
-    'private': False,
+    NET_PUBLIC: True,
+    NET_INTERNAL: False,
+    NET_PRIVATE: False,
 }
 
 DEFAULT_POOLS = {
@@ -104,30 +140,7 @@ DEFAULT_POOLS = {
 }
 
 POOLS = {
-    'public': os.environ.get('PUBLIC_POOL',
-                             DEFAULT_POOLS.get(OS_FAMILY).get('public')).split(':'),
-    'private': os.environ.get('PRIVATE_POOL',
-                              DEFAULT_POOLS.get(OS_FAMILY).get('private')).split(':'),
-    'internal': os.environ.get('INTERNAL_POOL',
-                               DEFAULT_POOLS.get(OS_FAMILY).get('internal')).split(':')
+    NET_PUBLIC: os.environ.get('PUBLIC_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('public')).split(':'),
+    NET_PRIVATE: os.environ.get('PRIVATE_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('private')).split(':'),
+    NET_INTERNAL: os.environ.get('INTERNAL_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('internal')).split(':')
 }
-
-TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
-EXIST_TAR = os.environ.get('EXIST_TAR', None)
-CREATE_SNAPSHOTS = os.environ.get('CREATE_SNAPSHOTS', 'true') == 'true'
-CLEAN = os.environ.get('CLEAN', 'true') == 'true'
-ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
-USE_ISO = os.environ.get('USE_ISO', 'true') == 'true'
-PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
-PROFILES_COBBLER_COMMON = {
-    'centos': 'centos64_x86_64',
-    'ubuntu': 'ubuntu_1204_x86_64'
-}
-
-CURRENT_PROFILE = PROFILES_COBBLER_COMMON.get(OS_FAMILY)
-
-ASTUTE_USE = os.environ.get('ASTUTE_USE', 'false') == 'true'
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME', '.localdomain')
-PUPPET_AGENT_COMMAND = 'puppet agent -tvd --evaltrace 2>&1'
-SETUP_TIMEOUT = int(os.environ.get('SETUP_TIMEOUT', 600))
-

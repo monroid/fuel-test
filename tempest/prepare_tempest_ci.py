@@ -3,16 +3,15 @@
 from devops.helpers.helpers import ssh
 from time import sleep
 from ci.ci_vm import CiVM
-from helpers import install_packages, switch_off_ip_tables
 from prepare_tempest import PrepareTempest
-from helpers.functions import root
+from helpers.functions import root, install_packages, switch_off_ip_tables
 from settings import OS_FAMILY, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_TENANT_FOLSOM
 
 
 class PrepareTempestCI():
     def __init__(self, ha=False):
-        self.controllers = self.ci().nodes().controllers
         if not ha:
+            self.controllers = self.ci().nodes().controllers
             self.public_ip = self.controllers[0].get_ip_address_by_network_name('public')
             self.internal_ip = self.controllers[0].get_ip_address_by_network_name('internal')
         else:
@@ -56,12 +55,12 @@ class PrepareTempestCI():
 
     def prepare_tempest_essex_minimal(self):
         self.make_shared_storage()
-        template = root('fuel_test', 'config', 'tempest.conf.essex.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.essex.sample')
         self.prepare.prepare_tempest_essex(template)
 
     def prepare_tempest_folsom_minimal(self):
         self.make_shared_storage()
-        template = root('fuel_test', 'config', 'tempest.conf.folsom.sample')
+        template = root('fuel-test', 'config', 'tempest.conf.folsom.sample')
         self.prepare.prepare_tempest_folsom(template)
 
     def tempest_share_glance_images(self, network):

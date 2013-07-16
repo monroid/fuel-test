@@ -5,7 +5,7 @@ from helpers.vm_test_case import CobblerTestCase
 from helpers.config import Config
 from helpers.functions import write_config
 from helpers.manifest import Manifest, Template
-from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
+from settings import ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 
 class FullTestCase(CobblerTestCase):
@@ -87,8 +87,7 @@ class FullTestCase(CobblerTestCase):
         """
         self.deploy()
 
-        if CREATE_SNAPSHOTS:
-            self.environment().snapshot('full', force=True)
+        self.environment().snapshot('full', force=True)
 
 if __name__ == '__main__':
     unittest.main()

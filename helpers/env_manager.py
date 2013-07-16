@@ -1,32 +1,30 @@
 #!/usr/bin/env python
-
-import tarfile
-from time import sleep
+import os
 from devops.helpers.helpers import ssh, tcp_ping, wait
-
-from helpers.functions import root
 from devops.manager import Manager
+from helpers.functions import upload_recipes
+from settings import BASE_IMAGE, NET_PUBLIC, NET_INTERNAL, NET_PRIVATE
 
 
 class EnvManager():
     """
     Class for create environment in puppet modules testing.
     """
-    env_name = "puppet-integration"
+    env_name = os.environ.get('ENV_NAME', "puppet-integration")
     env_node_name = "node"
-    env_net_public = 'public'
-    env_net_internal = 'internal'
-    env_net_private = 'private'
+    env_net_public = NET_PUBLIC
+    env_net_internal = NET_INTERNAL
+    env_net_private = NET_PRIVATE
     env_vol = 'vol'
     login = "root"
     password = "r00tme"
 
-    def __init__(self, base_image='/var/lib/libvirt/images/ubuntu-12.04.1-server-amd64-base.qcow2'):
+    def __init__(self, base_image=None):
         """
         Constructor for create environment.
         """
         self.manager = Manager()
-        self.base_image = base_image
+        self.base_image = base_image or BASE_IMAGE
         self.environment = self.create_env()
 
     def create_env(self):
@@ -112,20 +110,9 @@ class EnvManager():
         """
         Upload puppet modules.
         """
-        remote = self.remote()
-
-        tar_file = None
-        try:
-            tar_file = remote.open('/tmp/recipes.tar', 'wb')
-
-            with tarfile.open(fileobj=tar_file, mode='w', dereference=True) as tar:
-                tar.add(local_dir, arcname='')
-
-            remote.mkdir(remote_dir)
-            remote.check_call('tar xmf /tmp/recipes.tar --overwrite -C %s' % remote_dir)
-        finally:
-            if tar_file:
-                tar_file.close()
+        upload_recipes(remote=self.remote(),
+                       local_dir=local_dir,
+                       remote_dir=remote_dir)
 
     def await(self, timeout=1200):
         wait(
@@ -133,8 +120,9 @@ class EnvManager():
 
 
 if __name__ == "__main__":
-    env = EnvManager()
-
+    env = EnvManager(base_image='/var/lib/libvirt/images/centos6.4-base.qcow2')
+    from time import sleep
+    sleep(6000)
     env.await()
 
     env.upload_modules('/home/alan/fuel/deployment/puppet')

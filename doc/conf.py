@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Fuel Testing Suit documentation build configuration file, created by
+# Fuel Test documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun 27 16:28:34 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -49,7 +49,7 @@ source_encoding = 'utf-8'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Fuel Testing Suit'
+project = u'Fuel-test Documentation'
 copyright = u'2013, Mirantis'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -120,7 +120,7 @@ html_theme = 'default'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = u'Документация Fuel Testing Suit'
+html_title = u'Документация по Fuel-test'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -181,7 +181,7 @@ html_show_copyright = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'FuelTestingSuitdoc'
+htmlhelp_basename = 'FuelTestDoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -200,7 +200,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'FuelTestingSuit.tex', u'Fuel Testing Suit Documentation',
+  ('index', 'FuelTest.tex', u'Fuel Test Documentation',
    u'Mirantis', 'manual'),
 ]
 
@@ -230,7 +230,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'fueltestingsuit', u'Fuel Testing Suit Documentation',
+    ('index', 'fueltest', u'Fuel Test Documentation',
      [u'Mirantis'], 1)
 ]
 
@@ -244,8 +244,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'FuelTestingSuit', u'Fuel Testing Suit Documentation',
-   u'Mirantis', 'FuelTestingSuit', 'One line description of project.',
+  ('index', 'FuelTest', u'Fuel Test Documentation',
+   u'Mirantis', 'FuelTest', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -262,7 +262,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'Fuel Testing Suit'
+epub_title = u'Fuel Test'
 epub_author = u'Mirantis'
 epub_publisher = u'Mirantis'
 epub_copyright = u'2013, Mirantis'

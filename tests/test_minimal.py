@@ -5,7 +5,7 @@ from helpers.vm_test_case import CobblerTestCase
 from helpers.config import Config
 from helpers.functions import write_config
 from helpers.manifest import Template, Manifest
-from settings import CREATE_SNAPSHOTS, ASTUTE_USE, PUPPET_AGENT_COMMAND
+from settings import ASTUTE_USE, PUPPET_AGENT_COMMAND
 
 
 class MinimalTestCase(CobblerTestCase):
@@ -79,8 +79,7 @@ class MinimalTestCase(CobblerTestCase):
         """
         self.deploy()
 
-        if CREATE_SNAPSHOTS:
-            self.environment().snapshot('minimal', force=True)
+        self.environment().snapshot('minimal', force=True)
 
 if __name__ == '__main__':
     unittest.main()

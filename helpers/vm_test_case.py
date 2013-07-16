@@ -9,7 +9,7 @@ from helpers.cobbler_client import CobblerClient
 from config import Config
 from helpers.functions import tcp_ping, udp_ping, add_to_hosts, await_node_deploy, write_config
 import iso_master
-from settings import CLEAN, USE_ISO, INTERFACES, PARENT_PROXY, DOMAIN_NAME, CURRENT_PROFILE, PUPPET_MASTER_VERSION
+from settings import INTERFACES, PARENT_PROXY, DOMAIN_NAME, CURRENT_PROFILE, PUPPET_MASTER_VERSION
 
 
 class CobblerTestCase(BaseTestCase):
@@ -28,8 +28,7 @@ class CobblerTestCase(BaseTestCase):
         """
         SetUp method -- update puppet modules on master node.
         """
-        if CLEAN:
-            self.get_nodes_deployed_state()
+        self.get_nodes_deployed_state()
         self.update_modules()
 
     def get_nodes_deployed_state(self):
@@ -72,20 +71,16 @@ class CobblerTestCase(BaseTestCase):
         Prepare vms(nodes) state with installed os.
         """
         self.deploy_cobbler()
-        if USE_ISO:
-            self.configure_cobbler(self.ci().nodes().masters[0])
-        else:
-            self.configure_cobbler(self.ci().nodes().cobblers[0])
+
+        self.configure_cobbler(self.ci().nodes().masters[0])
+
         self.deploy_nodes()
 
     def deploy_cobbler(self):
         """
         Prepare vms(nodes) state with cobbler settings.
         """
-        if USE_ISO:
-            nodes = self.nodes().masters
-        else:
-            nodes = self.nodes().cobblers
+        nodes = self.nodes().masters
 
         for node in nodes:
             self.assert_cobbler_ports(
@@ -167,9 +162,7 @@ class CobblerTestCase(BaseTestCase):
                           net_mask=self.ci().internal_net_mask()
             )
 
-        remote = master.remote('internal',
-                               login='root',
-                               password='r00tme')
+        remote = master.remote('internal', login='root', password='r00tme')
         add_to_hosts(
             remote,
             master.get_ip_address_by_network_name('internal'),

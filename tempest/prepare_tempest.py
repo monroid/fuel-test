@@ -11,9 +11,9 @@ CIRROS_IMAGE = 'cirros-0.3.0-x86_64-disk.img'
 CIRROS_IMAGE_URL = 'http://srv08-srt.srt.mirantis.net/' + 'cirros-0.3.0-x86_64-disk.img'
 IMAGE_NAME = 'cirros_0.3.0'
 
-here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
-REPOSITORY_ROOT = here('..')
-root = lambda *x: os.path.join(os.path.abspath(REPOSITORY_ROOT), *x)
+here = lambda *x: os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)), *x)
+
+root = lambda *x: os.path.join(os.path.abspath(here('..')), *x)
 
 
 class PrepareTempest():
@@ -63,7 +63,7 @@ class PrepareTempest():
         self._tempest_write_config(self._tempest_config_folsom(template=template_folsom,
                                                                image_ref=image_ref,
                                                                image_ref_alt=image_ref_alt,
-                                                               path_to_private_key=root('fuel_test', 'config', 'ssh_keys', 'openstack'),
+                                                               path_to_private_key=root('fuel-test', 'config', 'ssh_keys', 'openstack'),
                                                                compute_db_uri='mysql://nova:nova@%s/nova' % self.internal_ip)
         )
 
@@ -74,7 +74,7 @@ class PrepareTempest():
                                                                 image_ref_alt=image_ref_alt,
                                                                 public_network_id=net_id,
                                                                 public_router_id=router_id,
-                                                                path_to_private_key=root('fuel_test', 'config', 'ssh_keys', 'openstack'),
+                                                                path_to_private_key=root('fuel-test', 'config', 'ssh_keys', 'openstack'),
                                                                 compute_db_uri='mysql://nova:nova@%s/nova' % self.internal_ip)
         )
 
