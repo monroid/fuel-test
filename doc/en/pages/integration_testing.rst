@@ -1,29 +1,27 @@
-======================
+====================
  Integration testing
-======================
+====================
 
- Integration testing provides functional testing for one single puppet module or for group of modules.
- You need to prepare special testing manifests in the tests directory for each module.
+Integration testing provides functional testing for a single Puppet module or for a group of modules. To run this
+tests you have to prepare a special testing manifests in the *tests* directory of your module.
 
+These manifests usually can also be an good example how the module can be used. Usually each of these tests check
+one of module's parts, functions or common use cases.
 
- These manifests should expose how module can be invoked.
- So they provide not only suite of tests but also good examples how to use this module.
+Fuel-test contains some scripts to make use of this testing manifests. They can run all of the module's tests and
+collect their results into Jenkins using **xUnit** XML format.
 
-For this tests we should develop scripts to implement testing environment, to tun all this tests and to collect results
- into Jenkins as **xUnit**.
+Integration tests provide much wider coverage than modular ones. They can check functionality of one or more modules
+in required environments. So both code consistency and functionality are tested.
 
-Integration tests provide wider coverage than modular ones.  They check functionality of one or more modules
-on required environments. So both code consistency and functionality are tested.
+Test manifests are relatively easy to write and integration testing is also much more useful for developers. So
+it would be better to focus ot it rather then on unit testing.
 
-It is easier to create test manifests than to implement  **Rspec** tests. And integration testing is much more useful
- so it is better to focus on it rather than on modular testing.
+Testing algorithm
+-----------------
 
-
- Testing algorithm
----------------------
-
-In order to  implement integration testing at first you should create special testing environment.
-Then apply the puppet module inside this environment and check the result.
+In order to implement integration testing you should create special testing environment fist.
+Then you can start to apply the Puppet module inside this environment and check the results.
 
 The process of testing can be described by the following steps:
 
@@ -32,44 +30,41 @@ The process of testing can be described by the following steps:
    :align: center
 
 1. Create virtual system from prepared image with supported operating system.
-2. Take a snapshot with clean state of operating system so you are able to revert.
-3. Run the first test in the testing environment and save the result.
-4. Revert to the snapshot with clean state.
+2. Take a snapshot of the clean state of operating system in order to be able to revert it.
+3. Run the first test in the testing environment and save the results.
+4. Revert to the snapshot of the clean state.
 5. Run the next test, save the result and revert once again.
 6. Collect all the test results as xUnit and put it into Jenkins.
 
+Implementing test
+-----------------
 
-Implementig test
-----------------
+To implement integration testing with Jenkins you need to create a set of test scripts for each puppet module.
+Every test script should create testing environment and run all the tests for its module.
+To simplify creating of such set of test scripts it is a good idea to utilize the power of template engine.
 
-To implement  integration testing with Jenkins you need to create a set of test scripts for each puppet module.
-Each test script should create testing environment and run all the tests for the module.
-To simplify creating of such a set of test scripts it is a good idea to utilize the power of templating system.
-
-
-Рассмотрим схему его работы:
+This is the scheme of this process:
 
 .. image:: images/make_tests_templates.png
    :alt: Схема интеграционного теста
    :align: center
 
-- At first you should prepare the script implementing the aforementioned testing algorithm and make it as template.
+- First you should prepare the script implementing the aforementioned testing algorithm and make it as template.
 - Then use MakeTests script to scan directory containing Puppet modules and find all the test manifests.
-- It takes script template expanding paths and names for each module and creating method for running each test manifests.
-- All the built scripts are saved in special directory
-- The Jenkins' job is created. It should run all the test methods for each script and save the results.
-
+- It takes script's template expands paths and names for each module and creates a method to run each test manifest.
+- All of these scripts are saved into a special directory.
+- The Jenkins' job is created. It should run all test method of every test script and collect their results as XML file.
 
 Using MakeTests script
--------------------------------
+----------------------
 
- MakeTests script has 5 classes:
+MakeTests script has 5 classes:
 
 - **MakeTests** - main class of the script. It provides the program startup, reading and writing of files.
 - **PuppetModule** - represents each Puppet module.  MakeTests object creates list of objects for each Puppet module.
 - **PuppetTest** -  represents single test. PuppetModule object creates list of these objects for each test manifest.
-- **Interface** - auxillary class.  Provides features for error and debug messages output.
-- **Color** - auxillary class. For colorizing text output on terminal.
+- **Interface** - helper class.  Provides features for error and debug messages output.
+- **Color** - helper class. For colorizing text output on terminal.
 
 MakeTests accepts the following arguments:
 
@@ -77,51 +72,52 @@ mandatory:
 - Path to directory to store the scripts built from templates.
 - Path to directory with Puppet modules to be tested.
 optional:
-- (-m) path to directory with puppet modules on the testing environment. Если тесты создаются на той же самой
-  системе, то этот путь будет таким же, как и предыдущий, и его можно не указывать.
+- (-m) path to directory with puppet modules on the testing environment. It is useful when you create tests not on the
+system you intend to run them.
 - (-t) path to the directory with templates.
 - (-f) file with default template
 - (-k) keep all the  previous tests
 
-
 Using templates
-----------------------
+---------------
 
 MakeTests uses the **jinja2** template engine. It uses by default template from **templates** directory.
 You can specify another template using the -f option.
 
+You can use this set of variables inside your template:
 
-В шаблоне можно использовать набор переменных, который передаётся ему скриптом.
+**General variables**
 
-**Общие переменные**
-
-- *modules_path* - Путь до модулей Puppet на хост-системе тестирования.
-- *local_modules_path* - Путь до модулей Puppet на той системе, где были собраны тесты. Может быть равно modules_path.
-- *internal_modules_path* - Путь до модулей Puppet внутри гостевой системы.
-- *internal_manifests_path* - Путь до манифестов внутри гостевой системы.
-- *tests_directory_path* - Путь до каталога, в который были сохранены файлы тестов.
+- *modules_path* - Path to puppet modules on testing host system.
+- *local_modules_path* - Path to modules on the system where tests were created. Usually equals to modules_path.
+- *internal_modules_path* - Path to modules inside a guest virtual system.
+- *internal_manifests_path* - Path to manifests inside a guest virtual system.
+- *tests_directory_path* - Path to the directory containing test files.
 
 **PuppetModule**
 
-- *module.name* - Название этого модуля
-- *module.path* - Путь до модуля на той системе, гда были собраны тесты
-- *module.tests* - Список объектов PuppetTest этого модуля.
-- *module.dependencies* - Список модулей, от которых зависит этот модуль
+- *module.name* - Name of this Puppet module.
+- *module.path* - Path to the Puppet module on the system where tests were built.
+- *module.tests* - A list of PuppetTest objects representing every test file of this module.
+- *module.dependencies* - List of direct dependencies this module depends on.
 
 **PuppetTest**
 
-- *test.name* - Название этого теста.
-- *test.path* - Путь до этого теста. Относительно корня модуля и не включая имя файла.
-- *test.file* - Имя файла этого теста.
+- *test.name* - Name of this test.
+- *test.path* - Path to this test. Relative to module and excluding file name.
+- *test.file* - NAme of the file which this test represents.
 
-Файлы шаблонов могуть включать друг друга, позволяя собирать сложный скрипт из нескольких кусков, которые могут быть
-общими для нескольких скриптов. Шаблон может расши рять другой шаблон, заменяя в нём некоторые блоки кода.
+Template files can include other template files giving you an ability to make a complex script from many pieces. Some
+of these pieces can be shared by several scripts. Templates can also extend other templates by replacing some of
+its blocks.
 
-В шаблонах можно использовать циклы, условные конструкции, переменные и фильтры. Про использование шаблонизатора
-**jinja2** можно узнать больше здесь http://jinja.pocoo.org и в этой документации, которая
-хорошо описывает синтаксис, который можно использовать в шаблонах http://jinja.pocoo.org/docs/jinja-docs.pdf
+Inside your template you can use loops, control logic and different filters. You can learn more about **jinja2**
+template engine here http://jinja.pocoo.org and learn all its syntax from this
+file http://jinja.pocoo.org/docs/jinja-docs.pdf
 
 Jenkins
-----------------------
+-------
+
+** This task is made to support integration testing **
 
 http://jenkins-product.srt.mirantis.net:8080/view/puppet_integration/
