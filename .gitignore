@@ -1,5 +1,5 @@
 # sphinx builds
-doc/_build
+_build
 doc/*.pdf
 
 # editor's tmp files
