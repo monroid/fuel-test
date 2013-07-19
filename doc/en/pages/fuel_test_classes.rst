@@ -1,136 +1,133 @@
-============================================
-Appendix B -- Структура директорий Fuel-test
-============================================
+===========================================
+Appendix B -- Fuel-test directory structure
+===========================================
 
-Набор тестов для Fuel и инфраструктура 
----------------------------------------
+Fuel test suit and infrastructure
+---------------------------------
 
-Тесты сводятся к созданию виртуального окружения и развертывания в нем OpenStack при помощи Fuel. 
-Также эти тесты используются для подготовки окружения для прогона  набора тестов Tempest [1]_.
+All tests consist of creating virtual environments and deploying OpenStack inside it and then running Tempest [1]_
+to do acceptance testing.
 
-директории fuel_test  ( в том же репозитории, что и Fuel: https://github.com/Mirantis/fuel.git	 ):
- * ci		классы реализующие окружения для CI-тестов
- * config	конфигурационные файлы для tempest* test suite
- * doc		документация 
- * helpers	вспомогательные модули и функции
- * puppet_tests	скрипты для интеграционного тестирования модулей puppet
- * tempest	скрипты для подготовки и прогона набора тестов Tempest
- * tests	тесты для разных вариантов развертывания OpenStack
+Directories inside fuel-test repositories:
 
+ * ci		classes implementing test environments
+ * config	Tempest test suit configuration files
+ * doc		documentation folder
+ * helpers	addition modules and functions used by other modules
+ * puppet_tests	scripts for creation of integration Puppet tests using templates
+ * tempest	scripts to prepare and run Tempest tests
+ * tests	tests for different OpenStack reference architectures
 
-остальные файлы:
- * settings.py	общие настройки для всех тестов развертывания OpenStack
- * prepare.py	конфигурационные файлы для tempest* test suite
- * pip-requires	список зависимостей для тестов
+other files:
 
-.. [1]  Tempest --- это набор интеграционных тестов для Openstack (  https://github.com/openstack/tempest )
+ * settings.py	general settings for all OpenStack deployment scripts
+ * prepare.py	Tempest test suit configuration file
+ * pip-requires	list of test suit dependencies
 
+.. [1]  Tempest --- OpenStack Acceptance Testing Suit (https://github.com/openstack/tempest)
 
-Библиотека devops
------------------
+Devops library
+--------------
 
-Библиотека позволяет создавать виртульные окружения через libvirt для тестирования.
+This library allows to create virtual environments using libvirt and KVM as a hypervizor. It can be found in this
+separate repository https://github.com/Mirantis/devops.git
 
-Структура директорий:
- * devops ( в отдельном репозитории https://github.com/Mirantis/devops.git  )
- * bin	dos.py --- оболочка для управления виртуальными окружениями
- * devops	файлы библиотеки Devops
- * docs	заготовки для документации (пустые), getstart.rst (как начать работу)
- * samples	примеры как создавать виртуальные окружения при помощи devops
+Directory structure:
 
+ * bin dos.py -- virtual environments control tool
+ * devops -- Devops library files
+ * docs	-- documentation stubs, getstart.rst (quick start guide)
+ * samples -- examples of virtual environment creation
 
-Классы и методы
-----------------
+Classes and methods
+-------------------
 
+Virtual environment creation classes (fuel_test/ci)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+ * *CiBase* (ci_base.py)  --- basic class for preparation of CI environments
+ * *CiVM* (ci_bm.py) ---  class for deployment testing environment on Bare Metal (physical) servers
+ * *CiBM* (ci_vm.py) ---  class for deployment testing environment on virtual machines
 
-Классы для создания виртуальных окружений ( fuel_test/ci )  
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This classes are used by all deployment classes FullTestCase, CompactTestCase, SimpleTestCase, SingleTestCase and
+other deployment modes.
 
-*CiBase* ( ci_base.py )  --- базовый класс для подготовки тестового окружения (группа VM) для интеграционного тестирования (CI)
+Classes to run testing scripts(fuel_test/tests)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*CiVM* ( ci_bm.py  ) ---  класс для развертывания тестового окружения на виртуальных машинах (VM)
+(С) FullTestCase --- continuous integration environment deployment class. This class implements ``test_full`` method
+that should be run using nosetests (https://nose.readthedocs.org). It deploys OpenStack it "Multi node HA Standalone"
+variant using Fuel. Actually there is only one test that does nothing but OpenStack deployment.
+There are also classes for other architecture variants such as CompactTestCase, MinimalTestCase, SimpleTestCase,
+SingleTestCase and others.
 
-*CiBM* ( ci_vm.py ) ---  класс для развертывания тестового окружения на физических машинах (BM=Bare Metal)
+FullTestCase methods:
 
-Эти классы используются в нижеописанных FullTestCase, CompactTestCase, SimpleTestCase, SingleTestCase и прочих тестах на развертывание OpenStack в соответствующих вариантах ( deployment mode ).
+ *  deploy -- run deployment using selected method (with astute or without it)
+ *  deploy_one_by_one -- deploy using Puppet manifests
+ *  deploy_by_astute -- deploy using astute
+ *  prepare_astute -- creates astute configuration files and configures *Cobbler*
+ *  test_full -- runs deployment test using deploy method and creates virtual machines snapshots
 
+(С) CompactTestCase (test_compact.py) --- this class implements OpenStack Multi-node (HA) deployment (Compact) modes.
 
+CompactTestCase class methods:
 
+ * deploy_compact -- run deployment  of managed nodes using Puppet agent. This method is used by all other tests.
+ * test_deploy_compact_quantum -- deployment test with Quantum on controller nodes.
+ * test_deploy_compact_quantum_standalone -- deployment test with Quantum as a separate node.
+ * test_deploy_compact_wo_quantum -- deployment test without Quantum.
+ * test_deploy_compact_wo_quantum_cinder_all_by_ipaddr -- deployment test with Cinder on all nodes but without Quantum.
+   Cinder nodes are defined by IP address lists.
+ * test_deploy_compact_wo_quantum_cinder_all -- deployment test with Cinder on all nodes but without Quantum.
+   Cinder nodes are defined by ``cinder_nodes=['all']``
+ * test_deploy_compact_wo_loopback -- deployment test with Cinder on controller nodes with Swift loopback parameter.
+ * test_deploy_compact_wo_ha_provider -- deployment test with Cinder on controller nodes but without HA setup.
+ * deploy_by_astute	-- deploy using astute (duplicated in some classes and should be refactored)
 
+(С) MinimalTestCase (test_minimal.py) --- this class implements OpenStack Multi-node (HA) deployment (Minimal) modes.
 
-Классы для запуска тестовых сценариев ( fuel_test/tests )
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MinimalTestCase class methods:
 
-(С) FullTestCase - класс для развертывания тестового окружения для интеграционного тестирования (CI). Данный класс реализует метод-тест test_full который предполагается запускать через nosetests ( https://nose.readthedocs.org ). Метод выполняет развертывание OpenStack в варианте “Multi node HA Standalone” посредством Fuel. Фактически тут один тест, который ничего кроме деплоймета OpenStack не выполняет. Также реализованы и все остальные классы CompactTestCase, MinimalTestCase, SimpleTestCase,  SingleTestCase для других вариантов развертывания.
+ * deploy -- run deployment using selected method (with astute or without it)
+ * deploy_one_by_one -- deploy using Puppet manifests
+ * deploy_by_astute -- deploy using astute
+ * prepare_astute -- creates astute configuration files and configures *Cobbler*
+ * test_minimal -- runs deployment test using deploy method and creates virtual machines snapshots
 
-Методы класса  FullTestCase :
- *  deploy	запускает развертывание одним из выбранных способом (через astute или без )
- *  deploy_one_by_one	развертывание через манифесты puppet
- *  deploy_by_astute	развертывание через astute
- *  prepare_astute	создает конфигурационные файлы для astute и настраивает cobbler
- *  test_full 	запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
+(С) SimpleTestCase  (test_minimal.py)
 
+SimpleTestCase class methods:
 
-
-(С) CompactTestCase  (  test_compact.py ) -  класс реализует раличные варианты развертывания OpenStack в варианте Multi-node (HA) deployment (Compact) посредством Fuel.
-
-Методы класса  CompactTestCase:
- * deploy_compact	запускает развертывание на нодах через puppet agent, метод используется во всех методах-тестах 
- * test_deploy_compact_quantum    тест на развертывание с Quantum на контроллерах
- * test_deploy_compact_quantum_standalone тест на развертывание с Quantum на отдельной ноде
- * test_deploy_compact_wo_quantum --- тест на  развертывание без Quantum 
- * test_deploy_compact_wo_quantum_cinder_all_by_ipaddr --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются списком ip-адресов нод
- * test_deploy_compact_wo_quantum_cinder_all --- тест на  развертывание с Cinder на всех нодах, но без Quantum, Cinder-ные ноды задаются через cinder_nodes=['all']
- * test_deploy_compact_wo_loopback --- --- тест на  развертывание с Cinder на контроллерах, с параметром SWIFT loopback
- * test_deploy_compact_wo_ha_provider ---  на  развертывание с Cinder на контроллерах, без HA
- * deploy_by_astute	развертывание через astute ( КМК метод дублируется в нескольких классах и напрашивается на рефакторинг )
-
-
-(С) MinimalTestCase (  test_minimal.py ) ---  класс реализует развертывание OpenStack в варианте Multi-node (HA) deployment (Compact) посредством Fuel.
-
-Методы класса  MinimalTestCase:
- * deploy --- запускает развертывание выбранным способом (через astute или без )
- * deploy_one_by_one 	развертывание через манифесты puppet
- * deploy_by_astute 	развертывание через astute
- * prepare_astute 	создает конфигурационные файлы для astute и настраивает cobbler
- * test_minimal  ---  запускает тест на развертывание используя метод deploy, делает снимки состояния виртуальных машин
-
-
-(С) SimpleTestCase  (  test_minimal.py )
-
-Методы класса MinimalTestCase:
- * deploy 
- * deploy_one_by_one 
- * deploy_by_astute 
+ * deploy -- run deployment using selected method (with astute or without it)
+ * deploy_one_by_one -- deploy using Puppet manifests
+ * deploy_by_astute -- deploy using astute
  * prepare_only_site_pp 
- * prepare_astute 
- * test_simple 
+ * prepare_astute -- creates astute configuration files and configures *Cobbler*
+ * test_simple -- runs deployment test using deploy method and creates virtual machines snapshots
 
+(С) SingleTestCase (test_single.py)
 
-(С) SingleTestCase  (  test_single.py )
+SingleTestCase class methods:
 
-Методы класса SingleTestCase:
- * deploy 
- * deploy_one_by_one 
- * deploy_by_astute 
+ * deploy -- run deployment using selected method (with astute or without it)
+ * deploy_one_by_one -- deploy using Puppet manifests
+ * deploy_by_astute -- deploy using astute
  * prepare_only_site_pp 
- * prepare_astute 
- * test_single 
+ * prepare_astute -- creates astute configuration files and configures *Cobbler*
+ * test_single -- runs deployment test using deploy method and creates virtual machines snapshots
 
+(С) NoopTestCase
 
----
+NoopTestCase class methods:
 
-(С) NoopTestCase	прогон всех модулей puppet из /etc/puppet/modules с опцией --noop
+ * test_apply_all_modules_with_noop -- run all Puppet manifests with ``--noop`` (No Operation) option without any real
+   changes to virtual system.
 
-Методы класса    NoopTestCase:
- * test_apply_all_modules_with_noop --- прогон всех модулей puppet из /etc/puppet/modules с опцией --noop ( т.е. тест всех  модулей puppet типа  syntax check / dependencies check / etc. без фактического внесения изменений в систему )
+(С) NovaSubClassesTestCase (test_nova_subclasses.py)
 
----
+NovaSubClassesTestCase class methods:
 
-(С) NovaSubClassesTestCase ( test_nova_subclasses.py ) ---
-
-Методы класса    NovaSubClassesTestCase:
  * setUp 
  * test_deploy_nova_compute 
  * test_deploy_nova_api_compute 
@@ -140,49 +137,27 @@ Appendix B -- Структура директорий Fuel-test
  * test_deploy_nova_rabbitmq 
  * test_deploy_nova_utilities 
  * test_deploy_nova_vncproxy 
- * test_deploy_nova_volume 
+ * test_deploy_nova_volume
 
----
+(C) SwiftCase (test_swift.py) --- Swift testing class (Not Used!)
+(С) CobblerClient (cobbler_client.py) -- working with *Cobbler* using its RPC.
+(С) CobblerTestCase ( vm_test_case.py ) -- base class used to implement other test case deployments ("Single node",
+    Multi node HA Standalone", "Multi node HA Compact Swift" and others)
 
-SwiftCase ( test_swift.py )
-    класс для тестирования SWIFT.   НЕ ИСПОЛЬЗУЕТСЯ!
+(C) BaseTestCase (base_test_case.py) -- basic parent class delivered from TestCase module used to build CobblerTestCase
+    (vm_test_case.py) and other test classes.
 
+Helper modules classes and their methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
----
+Classes:
 
-
-
-
-(С) CobblerClient ( cobbler_client.py ) 
-    взаимодействие с Cobbler через его  XML RPC 
- 
----
-
-(С) CobblerTestCase ( vm_test_case.py )
-    базовый класс на основе которого реализуются классы для тест-кейсов по развертыванию в разных вариантах ( “Single node”, “Multi node HA Standalone”,  “Multi node HA Compact SWIFT”, и т.д. )
- 
----
-
-(C) CobblerTestCase ( test_cobbler.py )
-     ненужный тест класс-пустышка (  Настя уже удалила из репозитория )
- 
----
-
-(C) BaseTestCase ( base_test_case.py )
-    базовый родительский класс производный от TestCase из модуля TestCase на основе которого построен  CobblerTestCase ( vm_test_case.py )  и далее по иерархии  все остальные классы-тесты.
- 
----
-
-Вспомогательные модули, классы и их методы
-Классы:
-
-(С) Astute ( astute.py)
+(С) Astute (astute.py)
     (F) config
     (F) test_minimal_config 
     (F) __init__	
 
-
-(С) Config ( config.py ) --- 
+(С) Config (config.py)
     (F) generate
     (F) yaml.safe_dump
     (F) orchestrator_common
@@ -192,86 +167,51 @@ SwiftCase ( test_swift.py )
     (F) get_ks_meta
     (F) cobbler_nodes
 
-
-
-(С) SelfTest ( iso_master.py ) --- 
+(С) SelfTest (iso_master.py)
     (F) get_config
     (F) _get_config
-    (F) test_config 
+    (F) test_config
 
+(С) Manifest (manifest.py)
+(С) Template (manifest.py)
+(С) Nodes (node_roles.py)
+(С) NodeRoles (node_roles.py)
+(С) Prepare (prepare.py)
+(С) TestConfig (test_config.py)
+(С) TestManifest (test_manifest.py)
 
-(С) Manifest ( manifest.py ) --- 
+Module functions.py --- contains many useful functions:
 
-
-(С) Template ( manifest.py ) ---
- 
-(С) Nodes ( node_roles.py  ) --- 
-
-(С) NodeRoles ( node_roles.py  ) --- 
-
-(С) Prepare  ( prepare.py ) --- 
-
-(С) TestConfig  ( test_config.py ) --- 
-
-(С) TestManifest  ( test_manifest.py ) --- 
-
-
-
-
-
-
-
-
-
-
-Модуль  helpers.py ( переименован в functions.py)
-   содержит вспомогательные функции:
-     *  get_file_as_string --- считывает файл и выдает его содержимое ( удалено )
-     *  udp_ping --- проверяет доступность заденного UDP порта
-     *  tcp_ping --- проверяет доступность заденного TCP порта
-     *  load  ---  считывает файл и выдает его содержимое
-     *  extract_virtual_ips ---  извлекает IP-адреса из строки в dict
-     *  write_config  ---  записывает конфиг. файл на заданный удаленный хост
-     *  retry  ---  повторяет выполнение заданной функции до тех пор пока она не выполнится или истечет число возможных попыток. Между выполнениями делает 1 сек пауза.
-     *  install_packages2  ---  устанавливает на заданных хостах пакеты
-     *  install_packages  ---  устанавливает на заданном хосте пакеты
-     *  update_pms  ---  обновляет метаданные репозиториев на заданных хостах
-     *  update_pm  ---  обновляет метаданные репозиториев на заданном хосте
-     *  add_nmap  ---  устанавливает пакет nmap на заданном хосте
-     *  add_epel_repo_yum  ---  добавляет репозиторий EPEL на хост ( через установку пакета epel-release-6-8.noarch.rpm )
-     *  delete_epel_repo_yum  ---   удаляет репозиторий EPEL с заданного хоста 
-     *  add_puppet_lab_repo  ---  добавляет репозиторий puppetlabs на хост ( через установку пакета )
-     *  remove_puppetlab_repo ---  удаляет репозиторий puppetlabs с хоста
-     *  setup_puppet_client  ---  запускает  puppet на заданном хосте
-     *  start_puppet_master  ---   запускает  puppet на заданном хосте
-     *  start_puppet_agent  ---  запускает  puppet на заданном хосте
-     *  request_cerificate  ---  проверяет наличие сертификата на хосте
-     *  switch_off_ip_tables  ---  удаляет все правила на хосте ( через iptables -F )
-     *  puppet_apply  --- выполняет  puppet apply на  заданном хосте 
-     *  setup_puppet_master  ---  настраивает и запускает puppet на заданном хосте 
-     *  upload_recipes  ---  загружает модули puppet  в /etc/puppet/modules/ ( через recipes.tar )
-     *  upload_keys  ---  загружает ssh-ключи на заданный хост 
-     *  change_host_name  ---  задает имя удаленного хоста
-     * update_host_name_centos  ---  задает имя удаленного хоста через /etc/sysconfig/network
-     * update_host_name_ubuntu  ---  задает имя удаленного хоста через /etc/hostname
-     * add_to_hosts  ---  добавляет строчку в /etc/hosts на удаленном хосте
-     * check_node_ready  ---  проверяет через cobbler готовность ноды
-     * await_node_deploy  ---  проверяет через cobbler доступность ноды
-     * build_astute  ---  собирает astute.gem на хосте используя gem и gemspec
-     * install_astute  ---  устанавливает astute через gem
-     * is_not_essex  ---  проверяет версию OpenStack используя переменные окружения
-
-
----
-
-
-
-Класс PrepareTempest 
---------------------
-
-
-Класс PrepareTempestCI
-----------------------
-
-
-
+  *  udp_ping --- checks availability of given UDP port
+  *  tcp_ping --- checks availability of given UDP port
+  *  load --- reads a file and returns its content
+  *  extract_virtual_ips --- extracts IP address from a string to dictionary
+  *  write_config --- writes config file on given remote host
+  *  retry --- repeats given function with 1 second interval until it pass successfully or until retry count runs out
+  *  install_packages2 --- installs packages on given hosts
+  *  install_packages --- installs packages on given hosts
+  *  update_pms --- update repository metadata on the given hosts
+  *  update_pm --- update repository metadata on the given host
+  *  add_nmap --- installs ``nmap`` package on the given host
+  *  add_epel_repo_yum --- ads epel repositoiry to the given host by installing ``epel-release-6-8.noarch.rpm`` package
+  *  delete_epel_repo_yum --- remove epel repository from the given host
+  *  add_puppet_lab_repo --- adds puppetlabs repository to the given host by installing its package.
+  *  remove_puppetlab_repo --- removes puppetlabs repository from the given host.
+  *  setup_puppet_client --- runs puppet client on the given host
+  *  start_puppet_master --- runs puppet master on the given host
+  *  start_puppet_agent --- runs puppet agent on the given host
+  *  request_cerificate --- checks if a certificate is present on the given host
+  *  switch_off_ip_tables --- removes all iptables rules on the given host (by iptables -F)
+  *  puppet_apply --- executes ``puppet apply`` on the given host
+  *  setup_puppet_master  ---  configures and runs puppet master on the given host
+  *  upload_recipes --- upload puppet modules to the /etc/puppet/modules/ directory on the given host (using recipes.tar)
+  *  upload_keys --- uploads ssh keys to the given host
+  *  change_host_name --- changes hostname of the given host
+  * update_host_name_centos --- changes name of the given host using /etc/sysconfig/network (for Red Hat based systems)
+  * update_host_name_ubuntu --- changes name of the given host using /etc/hostname (for Debian bases systems)
+  * add_to_hosts --- adds line to /etc/hosts file on remote host
+  * check_node_ready --- checks if this node is ready using *Cobbler*
+  * await_node_deploy --- checks if this node is ready using *Cobbler* waiting for the end of its deployment
+  * build_astute --- assemble astute.gem on the given host using gem and gemspec
+  * install_astute --- installs astute using gem
+  * is_not_essex --- check OpenStack version using environment variables
