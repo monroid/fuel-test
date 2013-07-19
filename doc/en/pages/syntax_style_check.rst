@@ -1,6 +1,6 @@
-=======================
- Syntax and Style Check
-=======================
+======================
+Syntax and Style Check
+======================
 
 This is the simplest type of testing. It just checks puppet modules and manifests for syntax errors using the Puppet
 agent in parse mode. You can do it with this command::
@@ -29,7 +29,7 @@ All these checks can be performed with modern integrated IDE environments like G
 Jenkins
 -------
 
-** Jenkins jobs provided for syntax and style checking of Puppet files **
+Jenkins jobs provided for syntax and style checking of Puppet files
 
 - http://jenkins-product.srt.mirantis.net:8080/view/fuel/job/fuel-puppet-3.0.1-parseonly-essex/
 - http://jenkins-product.srt.mirantis.net:8080/view/fuel/job/fuel-puppet-3.0.1-parseonly-folsom/

@@ -46,7 +46,7 @@ To simplify creating of such set of test scripts it is a good idea to utilize th
 This is the scheme of this process:
 
 .. image:: images/make_tests_templates.png
-   :alt: Схема интеграционного теста
+   :alt: Scheme of the integration testing
    :align: center
 
 - First you should prepare the script implementing the aforementioned testing algorithm and make it as template.
@@ -118,6 +118,6 @@ file http://jinja.pocoo.org/docs/jinja-docs.pdf
 Jenkins
 -------
 
-** This task is made to support integration testing **
+This task is made to support integration testing
 
 http://jenkins-product.srt.mirantis.net:8080/view/puppet_integration/

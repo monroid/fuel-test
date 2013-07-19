@@ -2,37 +2,32 @@
 Appendix C -- PyDocs of Fuel-test
 =================================
 
-.. automodule:: fuel-test.make_tests
-.. automodule:: fuel-test.tests.test_minimal
-.. automodule:: fuel-test.tests.test_simple
-.. automodule:: fuel-test.tests.test_nova_subclasses
-.. automodule:: fuel-test.tests.test_full
-.. automodule:: fuel-test.tests.test_compact
-.. automodule:: fuel-test.tests.test_single
-.. automodule:: fuel-test.tests.test_swift
-.. automodule:: fuel-test.settings
-.. automodule:: fuel-test.doc.en.conf
-.. automodule:: fuel-test.doc.ru.conf
-.. automodule:: fuel-test.helpers.color
-.. automodule:: fuel-test.helpers.cobbler_client
-.. automodule:: fuel-test.helpers.config
-.. automodule:: fuel-test.helpers.iso_master
-.. automodule:: fuel-test.helpers.node_roles
-.. automodule:: fuel-test.helpers.test_manifest
-.. automodule:: fuel-test.helpers.interface
-.. automodule:: fuel-test.helpers.test_config
-.. automodule:: fuel-test.helpers.base_test_case
-.. automodule:: fuel-test.helpers.vm_test_case
-.. automodule:: fuel-test.helpers.manifest
-.. automodule:: fuel-test.helpers.env_manager
-.. automodule:: fuel-test.helpers.functions
-.. automodule:: fuel-test.puppet_tests.make_tests
-.. automodule:: fuel-test.puppet_tests.puppet_module
-.. automodule:: fuel-test.puppet_tests.puppet_test
-.. automodule:: fuel-test.puppet_tests.templates.puppet_module_test
-.. automodule:: fuel-test.ci.ci_bm
-.. automodule:: fuel-test.ci.ci_vm
-.. automodule:: fuel-test.ci.ci_base
-.. automodule:: fuel-test.tempest.prepare_tempest_ci
-.. automodule:: fuel-test.tempest.prepare_tempest
-.. automodule:: fuel-test.prepare
+.. automodule:: tests.test_minimal
+.. automodule:: tests.test_simple
+.. automodule:: tests.test_nova_subclasses
+.. automodule:: tests.test_full
+.. automodule:: tests.test_compact
+.. automodule:: tests.test_single
+.. automodule:: tests.test_swift
+
+.. automodule:: helpers.color
+.. automodule:: helpers.cobbler_client
+.. automodule:: helpers.config
+.. automodule:: helpers.iso_master
+.. automodule:: helpers.node_roles
+.. automodule:: helpers.test_manifest
+.. automodule:: helpers.interface
+.. automodule:: helpers.test_config
+.. automodule:: helpers.base_test_case
+.. automodule:: helpers.vm_test_case
+.. automodule:: helpers.manifest
+.. automodule:: helpers.env_manager
+.. automodule:: helpers.functions
+
+.. automodule:: puppet_tests.make_tests
+.. automodule:: puppet_tests.puppet_module
+.. automodule:: puppet_tests.puppet_test
+
+.. automodule:: ci.ci_bm
+.. automodule:: ci.ci_vm
+.. automodule:: ci.ci_base
