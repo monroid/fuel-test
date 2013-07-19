@@ -55,7 +55,7 @@ other deployment modes.
 Classes to run testing scripts(fuel_test/tests)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(С) FullTestCase --- continuous integration environment deployment class. This class implements ``test_full`` method
+(C) FullTestCase --- continuous integration environment deployment class. This class implements ``test_full`` method
 that should be run using nosetests (https://nose.readthedocs.org). It deploys OpenStack it "Multi node HA Standalone"
 variant using Fuel. Actually there is only one test that does nothing but OpenStack deployment.
 There are also classes for other architecture variants such as CompactTestCase, MinimalTestCase, SimpleTestCase,
@@ -69,7 +69,7 @@ FullTestCase methods:
  *  prepare_astute -- creates astute configuration files and configures *Cobbler*
  *  test_full -- runs deployment test using deploy method and creates virtual machines snapshots
 
-(С) CompactTestCase (test_compact.py) --- this class implements OpenStack Multi-node (HA) deployment (Compact) modes.
+(C) CompactTestCase (test_compact.py) --- this class implements OpenStack Multi-node (HA) deployment (Compact) modes.
 
 CompactTestCase class methods:
 
@@ -85,7 +85,7 @@ CompactTestCase class methods:
  * test_deploy_compact_wo_ha_provider -- deployment test with Cinder on controller nodes but without HA setup.
  * deploy_by_astute	-- deploy using astute (duplicated in some classes and should be refactored)
 
-(С) MinimalTestCase (test_minimal.py) --- this class implements OpenStack Multi-node (HA) deployment (Minimal) modes.
+(C) MinimalTestCase (test_minimal.py) --- this class implements OpenStack Multi-node (HA) deployment (Minimal) modes.
 
 MinimalTestCase class methods:
 
@@ -95,7 +95,7 @@ MinimalTestCase class methods:
  * prepare_astute -- creates astute configuration files and configures *Cobbler*
  * test_minimal -- runs deployment test using deploy method and creates virtual machines snapshots
 
-(С) SimpleTestCase  (test_minimal.py)
+(C) SimpleTestCase  (test_minimal.py)
 
 SimpleTestCase class methods:
 
@@ -106,7 +106,7 @@ SimpleTestCase class methods:
  * prepare_astute -- creates astute configuration files and configures *Cobbler*
  * test_simple -- runs deployment test using deploy method and creates virtual machines snapshots
 
-(С) SingleTestCase (test_single.py)
+(C) SingleTestCase (test_single.py)
 
 SingleTestCase class methods:
 
@@ -117,14 +117,14 @@ SingleTestCase class methods:
  * prepare_astute -- creates astute configuration files and configures *Cobbler*
  * test_single -- runs deployment test using deploy method and creates virtual machines snapshots
 
-(С) NoopTestCase
+(C) NoopTestCase
 
 NoopTestCase class methods:
 
  * test_apply_all_modules_with_noop -- run all Puppet manifests with ``--noop`` (No Operation) option without any real
    changes to virtual system.
 
-(С) NovaSubClassesTestCase (test_nova_subclasses.py)
+(C) NovaSubClassesTestCase (test_nova_subclasses.py)
 
 NovaSubClassesTestCase class methods:
 
@@ -140,8 +140,8 @@ NovaSubClassesTestCase class methods:
  * test_deploy_nova_volume
 
 (C) SwiftCase (test_swift.py) --- Swift testing class (Not Used!)
-(С) CobblerClient (cobbler_client.py) -- working with *Cobbler* using its RPC.
-(С) CobblerTestCase ( vm_test_case.py ) -- base class used to implement other test case deployments ("Single node",
+(C) CobblerClient (cobbler_client.py) -- working with *Cobbler* using its RPC.
+(C) CobblerTestCase ( vm_test_case.py ) -- base class used to implement other test case deployments ("Single node",
     Multi node HA Standalone", "Multi node HA Compact Swift" and others)
 
 (C) BaseTestCase (base_test_case.py) -- basic parent class delivered from TestCase module used to build CobblerTestCase
@@ -152,12 +152,12 @@ Helper modules classes and their methods
 
 Classes:
 
-(С) Astute (astute.py)
+(C) Astute (astute.py)
     (F) config
     (F) test_minimal_config 
     (F) __init__	
 
-(С) Config (config.py)
+(C) Config (config.py)
     (F) generate
     (F) yaml.safe_dump
     (F) orchestrator_common
@@ -167,18 +167,18 @@ Classes:
     (F) get_ks_meta
     (F) cobbler_nodes
 
-(С) SelfTest (iso_master.py)
+(C) SelfTest (iso_master.py)
     (F) get_config
     (F) _get_config
     (F) test_config
 
-(С) Manifest (manifest.py)
-(С) Template (manifest.py)
-(С) Nodes (node_roles.py)
-(С) NodeRoles (node_roles.py)
-(С) Prepare (prepare.py)
-(С) TestConfig (test_config.py)
-(С) TestManifest (test_manifest.py)
+(C) Manifest (manifest.py)
+(C) Template (manifest.py)
+(C) Nodes (node_roles.py)
+(C) NodeRoles (node_roles.py)
+(C) Prepare (prepare.py)
+(C) TestConfig (test_config.py)
+(C) TestManifest (test_manifest.py)
 
 Module functions.py --- contains many useful functions:
 

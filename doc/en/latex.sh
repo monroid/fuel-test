@@ -4,12 +4,12 @@ cd "${dir}" || exit 1
 make latex
 cd "_build/latex" || exit 1
 make
-mv "FuelTestingSuit.pdf" "../.."
+mv "FuelTest.pdf" "../.."
 cd "../.."
 if [ "`uname`" = "Darwin" ]; then
-  open "FuelTestingSuit.pdf"
+  open "FuelTest.pdf"
 elif [ "`uname`" = "Linux" ]; then
-  xdg-open "FuelTestingSuit.pdf"
+  xdg-open "FuelTest.pdf"
 else
   exit 1
 fi
