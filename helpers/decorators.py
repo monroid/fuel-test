@@ -61,9 +61,9 @@ def snapshot_errors(func):
             name = 'error-%s' % func.__name__
             description = "Failed in method '%s'" % func.__name__
             logging.debug("Snapshot %s %s" % (name, description))
-            if args[0].env.environment is not None:
-                args[0].env.environment.suspend(verbose=False)
-                args[0].env.environment.snapshot(name=name[-50:], description=description, force=True,)
+            if args[0].env.get_env() is not None:
+                args[0].env.get_env().suspend(verbose=False)
+                args[0].env.get_env().snapshot(name=name[-50:], description=description, force=True,)
             raise
     return wrapper
 

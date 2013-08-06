@@ -16,21 +16,20 @@ class FuelEnvironment(Environment):
     def __init__(self):
         self.name = os.environ.get('ENV_NAME', 'fuel')
         super(FuelEnvironment, self).__init__(self.name)
+        self.environment = super(FuelEnvironment, self).get_env()
 
     def wait_bootstrap(self):
         logging.info("Waiting while bootstrapping is in progress")
         log_path = "/var/log/puppet/bootstrap_admin_node.log"
         wait(
             lambda: not
-            self.nodes().admin.remote('internal', 'root', 'r00tme').execute(
-                "grep 'Finished catalog run' '%s'" % log_path
-           )['exit_code'],
+            self.get_master_ssh().execute("grep 'Finished catalog run' '%s'" % log_path)['exit_code'],
             timeout=self.puppet_timeout
         )
 
-    def get_keys(self, node):
+    def get_keys(self):
         params = {
-            'ip': node.get_ip_address_by_network_name('internal'),
+            'ip': self.get_master_ip(),
             'mask': self.get_netmask_by_netname('internal'),
             'gw': self.get_router_by_netname('internal'),
             'hostname': '.'.join(('master', DOMAIN_NAME))
@@ -49,14 +48,14 @@ class FuelEnvironment(Environment):
 
         return keys
 
-    def get_environment(self):
-        return self.get_empty_state() or self._prepared_environment()
+    def get_empty_state(self):
+        return super(FuelEnvironment, self).get_empty_state() or self._prepared_environment()
 
     def _prepared_environment(self):
         self.start()
         time.sleep(20)
         admin = self.nodes().admin
-        admin.send_keys(self.get_keys(admin))
+        admin.send_keys(self.get_keys())
         admin.await('internal', timeout=10 * 60)
         self.wait_bootstrap()
         time.sleep(10)

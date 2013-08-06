@@ -8,15 +8,17 @@ from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDIN
 
 
 class Environment(object):
-    CAPACITY = 20 * 1024 * 1024 * 1024
-    BOOT = ['hd', 'cdrom']
-    environment = None
+    capacity = 20 * 1024 * 1024 * 1024
+    boot = ['hd', 'cdrom']
+    login = "root"
+    password = "r00tme"
     name = 'fuel'
 
-    def __init__(self, name=name):
+    def __init__(self, name=name, base_image=None):
         self.manager = Manager()
         self.name = name
         self.environment = self._get_or_create()
+        self.base_image = base_image
 
     def _get_or_create(self):
         try:
@@ -36,7 +38,10 @@ class Environment(object):
 
         return None
 
-    def add_empty_volume(self, node, name, capacity=CAPACITY, device='disk', bus='virtio', format='qcow2'):
+    def get_env(self):
+        return self.environment
+
+    def add_empty_volume(self, node, name, capacity=capacity, device='disk', bus='virtio', format='qcow2'):
         self.manager.node_attach_volume(node=node,
                                         volume=self.manager.volume_create(name=name,
                                                                           capacity=capacity,
@@ -55,11 +60,16 @@ class Environment(object):
         for network in networks:
             self.manager.interface_create(network, node=node)
 
-    def describe_admin_node(self, name, networks, memory=1024, boot=BOOT):
+    def describe_admin_node(self, name, networks, memory=2048, boot=boot):
         node = self.add_node(memory=memory, name=name, boot=boot)
         self.create_interfaces(node, networks)
-        self.add_empty_volume(node, name + '-system')
-        self.add_empty_volume(node, name + '-iso', capacity=_get_file_size(ISO_PATH), format='raw', device='cdrom', bus='ide')
+        if self.base_image is None:
+            self.add_empty_volume(node, name + '-system')
+            self.add_empty_volume(node, name + '-iso', capacity=_get_file_size(ISO_PATH), format='raw', device='cdrom', bus='ide')
+        else:
+            volume = self.manager.volume_get_predefined(self.base_image)
+            v = self.manager.volume_create_child(name + '-system', backing_store=volume, environment=self.environment)
+            self.manager.node_attach_volume(node=node, volume=v)
 
         return node
 
@@ -117,6 +127,19 @@ class Environment(object):
 
     def _get_virtual_ip_by_netname(self, netname):
         return str(IPNetwork(self.environment.network_by_name(netname).ip_network)[-2])
+
+    def erase(self):
+        self.environment.erase()
+
+    def get_master_ssh(self):
+        """
+        :rtype : SSHClient
+        """
+        return self.environment.nodes().admin.remote('internal', login=self.login, password=self.password)
+
+    def get_master_ip(self, net_name='internal'):
+        return str(self.environment.nodes().admin.get_ip_address_by_network_name(net_name))
+
 
     # def public_router(self):
     #     return str(IPNetwork(self.get().network_by_name('public').ip_network)[1])

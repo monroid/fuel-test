@@ -29,33 +29,29 @@ class TestMasterNode(FuelTestCase):
     @logwrap
     def test_puppetmaster_alive(self):
         wait(
-            lambda: tcp_ping(self.get_admin_node_ip(), 8140),
-            timeout=5
+            lambda: tcp_ping(self.get_master_ip(), 8140), timeout=5
         )
-        ps_output = self.remote().execute('ps ax')['stdout']
-        pm_processes = filter(
-            lambda x: '/usr/sbin/puppetmasterd' in x,
-            ps_output
-        )
+        ps_output = self.get_master_ssh().execute('ps ax')['stdout']
+        pm_processes = filter(lambda x: '/usr/sbin/puppetmasterd' in x, ps_output)
         logging.debug("Found puppet master processes: %s" % pm_processes)
         self.assertEquals(len(pm_processes), 4)
 
     @logwrap
     def test_cobbler_alive(self):
         wait(
-            lambda: http(host=self.get_admin_node_ip(), url='/cobbler_api',
+            lambda: http(host=self.get_master_ip(), url='/cobbler_api',
                          waited_code=502),
             timeout=60
         )
         server = xmlrpclib.Server(
-            'http://%s/cobbler_api' % self.get_admin_node_ip())
+            'http://%s/cobbler_api' % self.get_master_ip())
         # raises an error if something isn't right
         server.login('cobbler', 'cobbler')
 
     @logwrap
     @fetch_logs
     def test_nailyd_alive(self):
-        ps_output = self.remote().execute('ps ax')['stdout']
+        ps_output = self.get_master_ip().execute('ps ax')['stdout']
         naily_master = filter(lambda x: 'naily master' in x, ps_output)
         logging.debug("Found naily processes: %s" % naily_master)
         self.assertEquals(len(naily_master), 1)

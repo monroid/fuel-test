@@ -34,21 +34,17 @@ logwrap = debug(logger)
 class FuelTestCase(TestCase):
     def setUp(self):
         self.env = FuelEnvironment()
-        self.env.get_environment()
-        self.client = NailgunClient(self.get_admin_node_ip())
+        self.env.get_empty_state()
+        self.client = NailgunClient(self.env.get_master_ip())
 
-    def remote(self):
+    def get_master_ssh(self):
         """
         :rtype : SSHClient
         """
-        return self.env.nodes().admin.remote(
-            'internal',
-            login='root',
-            password='r00tme')
+        return self.env.nodes().admin.remote('internal', login='root', password='r00tme')
 
-    def get_admin_node_ip(self):
-        return str(self.env.nodes().admin.get_ip_address_by_network_name('internal'))
-
+    def get_master_ip(self):
+        return self.env.get_master_ip()
 
     @logwrap
     def get_interface_description(self, ctrl_ssh, interface_short_name):
@@ -259,7 +255,7 @@ class FuelTestCase(TestCase):
         return map(lambda node: self.get_node_by_devops_node(node), devops_nodes)
 
     def devops_nodes_by_names(self, devops_node_names):
-        return map(lambda name: self.env.environment.node_by_name(name), devops_node_names)
+        return map(lambda name: self.env.get_env().node_by_name(name), devops_node_names)
 
     @logwrap
     def bootstrap_nodes(self, timeout=600):

@@ -6,7 +6,7 @@ from settings import DOMAIN_NAME
 class Config():
     def __init__(self, env):
         self.env = env
-        self.master_ip = env.nodes().admin.get_ip_address_by_network_name('internal')
+        self.master_ip = self.env.get_master_ip()
 
     def generate(self, **kwargs):
         config = {
