@@ -10,57 +10,54 @@ class Config():
 
     def generate(self, **kwargs):
         config = {
-            "attributes": self.attributes(**kwargs),
+            #"attributes": self.attributes(**kwargs),
+
             "engine": self.engine(**kwargs),
             "nodes": self.nodes(**kwargs)
         }
 
+        config.update(self.task_uuid())
+
         return yaml.safe_dump(config, default_flow_style=False)
 
     def nodes(self, **kwargs):
-        nodes = {}
+        nodes = []
         for node in self.env.nodes().slaves:
             node_info = {
-                            "id": 1,
-                            "uid": 1,
+                           # "id": 1,
+                           # "uid": 1,
                             "name": node.name,
                             "mac": node.interfaces.filter(network__name='internal')[0].mac_address,
                             "ip": str(node.get_ip_address_by_network_name('internal')),
                             "profile": kwargs.get('profile', 'centos-x86_64'),
                             "fqdn": node.name + DOMAIN_NAME_WDOT,
-                            "power_type": 'ssh',
-                            "power_user": 'root',
-                            "power_pass": "/root/.ssh/bootstrap.rsa",
-                            "power_address": str(node.get_ip_address_by_network_name('internal')),
-                            "netboot_enabled": 1,
-                            "name_servers": "! '%s'" % self.master_ip,
                             "puppet_master": kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                             "ks_meta": self._get_ks_meta(node),
                             "interfaces": self._get_interfaces(node),
-                            "interfaces_extra": self._get_interfaces_extra(),
-                            "meta": self._get_meta(node),
+                            #"meta": self._get_meta(node),
                             "error_type": ""
             }
 
-            nodes.update({node.name: node_info})
+            node_info.update(self.power_info(node))
+
+            nodes.append(node_info)
 
         return nodes
 
-    def _get_interfaces_extra(self):
-        return {"eth0": {"onboot": 'yes',
-                         "peerdns": 'no'},
-                "eth1": {"onboot": 'no',
-                         "peerdns": 'no'},
-                "eth2": {"onboot": 'no',
-                        "peerdns": 'no'},
-
-                }
-
-    def _get_ks_meta(self, node):
-        return True
+    def _get_ks_meta(self, node, **kwargs):
+        return self.ks_meta(**kwargs)
 
     def _get_interfaces(self, node):
-        return True
+        return [{"name": "eth0",
+                "ip_address": str(node.get_ip_address_by_network_name('internal')),
+                "netmask": "255.255.255.0",
+                "dns_name": node.name + DOMAIN_NAME_WDOT,
+                "static": '1',
+                "mac_address": node.interfaces.filter(network__name='internal')[0].mac_address,
+                "onboot": 'yes',
+                "peerdns": 'no',
+                "use_for_provision": True
+        }]
 
     def _get_meta(self, node):
         return True
@@ -160,14 +157,14 @@ class Config():
 
         return engine
 
-    def power_info(self, **kwargs):
+    def power_info(self, node, **kwargs):
         power = {
                     'power_type': kwargs.get('power_type', 'ssh'),
                     'power_user': kwargs.get('power_user', 'root'),
                     'name_servers': kwargs.get('name_servers', self.master_ip),
                     'power_pass': kwargs.get('power_pass', '/root/.ssh/bootstrap.rsa'),
-                    'netboot_enabled': kwargs.get('netboot_enabled', '1')
-
+                    'netboot_enabled': kwargs.get('netboot_enabled', '1'),
+                    "power_address": str(node.get_ip_address_by_network_name('internal')),
         }
 
         return power
