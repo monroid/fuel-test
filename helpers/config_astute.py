@@ -1,6 +1,6 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME
+from settings import DOMAIN_NAME_WDOT
 
 
 class Config():
@@ -11,132 +11,59 @@ class Config():
     def generate(self, **kwargs):
         config = {
             "attributes": self.attributes(**kwargs),
-            "engine": self.engine(**kwargs)
+            "engine": self.engine(**kwargs),
+            "nodes": self.nodes(**kwargs)
         }
-
-        #config.update(self.cobbler_nodes())
 
         return yaml.safe_dump(config, default_flow_style=False)
 
-    # def orchestrator_common(self, ci, template):
-    #     config = {"task_uuid": "deployment_task"}
-    #     attributes = {"attributes": {"deployment_mode": template.deployment_mode, "deployment_engine": "simplepuppet"}}
-    #     config.update(attributes)
-    #
-    #     return config
-    #
-    # def openstack_common(self, ci, nodes, quantums, cinder, quantum_netnode_on_cnt, create_networks, quantum, swift,
-    #                      loopback, use_syslog, cinder_nodes):
-    #     if not cinder_nodes: cinder_nodes = []
-    #     if not quantums: quantums = []
-    #
-    #     node_configs = Manifest().generate_node_configs_list(ci, nodes)
-    #
-    #     master = ci.nodes().masters[0]
-    #
-    #     config = {"auto_assign_floating_ip": True,
-    #               "create_networks": create_networks,
-    #               "default_gateway": ci.public_router(),
-    #               "deployment_id": Manifest().deployment_id(ci),
-    #               "dns_nameservers": Manifest().generate_dns_nameservers_list(ci),
-    #               "external_ip_info": Manifest().external_ip_info(ci, quantums),
-    #               "fixed_range": Manifest().fixed_network(ci),
-    #               "floating_range": Manifest().floating_network(ci),
-    #               "internal_interface": Manifest().internal_interface(),
-    #               "internal_netmask": ci.internal_net_mask(),
-    #               "internal_virtual_ip": ci.internal_virtual_ip(),
-    #               "mirror_type": Manifest().mirror_type(),
-    #               "nagios_master": ci.nodes().controllers[0].name + DOMAIN_NAME,
-    #               "network_manager": "nova.network.manager.FlatDHCPManager",
-    #               "nv_physical_volumes": ["/dev/vdb"],
-    #               "private_interface": Manifest().private_interface(),
-    #               "public_interface": Manifest().public_interface(),
-    #               "public_netmask": ci.public_net_mask(),
-    #               "public_virtual_ip": ci.public_virtual_ip(),
-    #               "quantum": quantum,
-    #               "repo_proxy": "http://%s:3128" % master.get_ip_address_by_network_name('internal'),
-    #               "segment_range": "900:999",
-    #               "swift": swift,
-    #               "swift_loopback": loopback,
-    #               "syslog_server": str(master.get_ip_address_by_network_name('internal')),
-    #               "use_syslog": use_syslog,
-    #               "cinder": cinder,
-    #               "quantum_netnode_on_cnt": quantum_netnode_on_cnt
-    #     }
-    #
-    #     config.update({"cinder_nodes": cinder_nodes})
-    #
-    #     config.update({"nodes": node_configs})
-    #
-    #     return config
-    #
-    # def cobbler_common(self, ci):
-    #     config = {"gateway": str(ci.nodes().masters[0].get_ip_address_by_network_name('internal')),
-    #               "name-servers": str(ci.nodes().masters[0].get_ip_address_by_network_name('internal')),
-    #               "name-servers-search": "localdomain",
-    #               "profile": CURRENT_PROFILE}
-    #
-    #     ksmeta = self.get_ks_meta(ci.nodes().masters[0].name + DOMAIN_NAME, ci.nodes().masters[0].name)
-    #
-    #     config.update({"ksmeta": ksmeta})
-    #
-    #     return config
-    #
-    # def get_ks_meta(self, puppet_master, mco_host):
-    #     return ("puppet_auto_setup=1 "
-    #             "puppet_master=%(puppet_master)s "
-    #             "puppet_version=%(puppet_version)s "
-    #             "puppet_enable=0 "
-    #             "mco_auto_setup=1 "
-    #             "ntp_enable=1 "
-    #             "mco_pskey=un0aez2ei9eiGaequaey4loocohjuch4Ievu3shaeweeg5Uthi "
-    #             "mco_stomphost=%(mco_host)s "
-    #             "mco_stompport=61613 "
-    #             "mco_stompuser=mcollective "
-    #             "mco_stomppassword=AeN5mi5thahz2Aiveexo "
-    #             "mco_enable=1 "
-    #             "interface_extra_eth0_peerdns=no "
-    #             "interface_extra_eth1_peerdns=no "
-    #             "interface_extra_eth2_peerdns=no "
-    #             "interface_extra_eth2_promisc=yes "
-    #             "interface_extra_eth2_userctl=yes "
-    #            ) % {'puppet_master': puppet_master,
-    #                 'puppet_version': PUPPET_VERSION,
-    #                 'mco_host': mco_host
-    #            }
-    #
-    # def cobbler_nodes(self, ci, nodes):
-    #     all_nodes = {}
-    #     for node in nodes:
-    #         interfaces = {
-    #             INTERFACES.get('internal'):
-    #                 {
-    #                     "mac": node.interfaces.filter(network__name='internal')[0].mac_address,
-    #                     "static": 1,
-    #                     "ip-address": str(node.get_ip_address_by_network_name('internal')),
-    #                     "netmask": ci.internal_net_mask(),
-    #                     "dns-name": node.name + DOMAIN_NAME,
-    #                     "management": "1"
-    #                 }
-    #         }
-    #         interfaces_extra = {
-    #             "eth0":
-    #                 {"peerdns": 'no'},
-    #             "eth1":
-    #                 {"peerdns": 'no'},
-    #             "eth2":
-    #                 {"peerdns": 'no',
-    #                  "promisc": 'yes',
-    #                  "userctl": 'yes'}
-    #         }
-    #         all_nodes.update({node.name: {"hostname": node.name,
-    #                                       "interfaces": interfaces,
-    #                                       "interfaces_extra": interfaces_extra,
-    #                                       }
-    #         }
-    #     )
-    #
-    #     return all_nodes
+    def nodes(self, **kwargs):
+        nodes = {}
+        for node in self.env.nodes().slaves:
+            node_info = {
+                            "id": 1,
+                            "uid": 1,
+                            "name": node.name,
+                            "mac": node.interfaces.filter(network__name='internal')[0].mac_address,
+                            "ip": str(node.get_ip_address_by_network_name('internal')),
+                            "profile": kwargs.get('profile', 'centos-x86_64'),
+                            "fqdn": node.name + DOMAIN_NAME_WDOT,
+                            "power_type": 'ssh',
+                            "power_user": 'root',
+                            "power_pass": "/root/.ssh/bootstrap.rsa",
+                            "power_address": str(node.get_ip_address_by_network_name('internal')),
+                            "netboot_enabled": 1,
+                            "name_servers": "! '%s'" % self.master_ip,
+                            "puppet_master": kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
+                            "ks_meta": self._get_ks_meta(node),
+                            "interfaces": self._get_interfaces(node),
+                            "interfaces_extra": self._get_interfaces_extra(),
+                            "meta": self._get_meta(node),
+                            "error_type": ""
+            }
+
+            nodes.update({node.name: node_info})
+
+        return nodes
+
+    def _get_interfaces_extra(self):
+        return {"eth0": {"onboot": 'yes',
+                         "peerdns": 'no'},
+                "eth1": {"onboot": 'no',
+                         "peerdns": 'no'},
+                "eth2": {"onboot": 'no',
+                        "peerdns": 'no'},
+
+                }
+
+    def _get_ks_meta(self, node):
+        return True
+
+    def _get_interfaces(self, node):
+        return True
+
+    def _get_meta(self, node):
+        return True
 
     def attributes(self, **kwargs):
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
@@ -151,7 +78,7 @@ class Config():
                 'quantum': kwargs.get('quantum', True),
                 'master_hostname': kwargs.get('master_hostname', 'controller-01'),
                 'nagios': kwargs.get('nagios', False),
-                'nagios_master': kwargs.get('nagios_master', 'master' + DOMAIN_NAME),
+                'nagios_master': kwargs.get('nagios_master', 'master' + DOMAIN_NAME_WDOT),
                 'proj_name': kwargs.get('proj_name', self.env.name),
                 'management_vip': kwargs.get('management_vip', self.env.internal_virtual_ip()),
                 'public_vip': kwargs.get('public_vip', self.env.public_virtual_ip()),
@@ -232,6 +159,41 @@ class Config():
         }
 
         return engine
+
+    def power_info(self, **kwargs):
+        power = {
+                    'power_type': kwargs.get('power_type', 'ssh'),
+                    'power_user': kwargs.get('power_user', 'root'),
+                    'name_servers': kwargs.get('name_servers', self.master_ip),
+                    'power_pass': kwargs.get('power_pass', '/root/.ssh/bootstrap.rsa'),
+                    'netboot_enabled': kwargs.get('netboot_enabled', '1')
+
+        }
+
+        return power
+
+    def task_uuid(self, deployment_task='deployment_task'):
+        return {'task_uuid': deployment_task}
+
+    def ks_meta(self, **kwargs):
+        meta = {
+                    'mco_enable': kwargs.get('mco_enable', 1),
+                    'mco_vhost': kwargs.get('mco_vhost', 'mcollective'),
+                    'mco_pskey': kwargs.get('mco_pskey', 'unset'),
+                    'mco_user': kwargs.get('mco_user', 'mcollective'),
+                    'puppet_enable': kwargs.get('puppet_enable', 0),
+                    'install_log_2_syslog': kwargs.get('install_log_2_syslog', 1),
+                    'mco_password': kwargs.get('mco_password', 'marionette'),
+                    'puppet_auto_setup': kwargs.get('puppet_auto_setup', 1),
+                    'puppet_master': kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
+                    'mco_auto_setup': kwargs.get('mco_auto_setup', 1),
+                    'auth_key': kwargs.get('auth_key', '""'),
+                    'puppet_version': kwargs.get('puppet_version', '2.7.19'),
+                    'mco_connector': kwargs.get('mco_connector', 'rabbitmq'),
+                    'mco_host': kwargs.get('mco_host', self.master_ip)
+        }
+
+        return meta
 
 
 if __name__ == "__main__":
