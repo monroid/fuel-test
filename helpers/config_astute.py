@@ -13,7 +13,10 @@ class Config():
             #"attributes": self.attributes(**kwargs),
 
             "engine": self.engine(**kwargs),
-            "nodes": self.nodes(**kwargs)
+            "nodes": self.nodes(**kwargs),
+            "common_ks_meta": self.common_ks_meta(**kwargs),
+            "common_power_info": self.power_info(**kwargs),
+            "common_node_settings": self.common_node_settings(**kwargs),
         }
 
         config.update(self.task_uuid())
@@ -27,10 +30,8 @@ class Config():
                            # "id": 1,
                            # "uid": 1,
                             "name": node.name,
-                            "mac": node.interfaces.filter(network__name='internal')[0].mac_address,
-                            "ip": str(node.get_ip_address_by_network_name('internal')),
                             "profile": kwargs.get('profile', 'centos-x86_64'),
-                            "fqdn": node.name + DOMAIN_NAME_WDOT,
+                            "hostname": node.name + DOMAIN_NAME_WDOT,
                             "puppet_master": kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                             "ks_meta": self._get_ks_meta(node),
                             "interfaces": self._get_interfaces(node),
@@ -38,14 +39,34 @@ class Config():
                             "error_type": ""
             }
 
-            node_info.update(self.power_info(node))
-
             nodes.append(node_info)
 
         return nodes
 
-    def _get_ks_meta(self, node, **kwargs):
-        return self.ks_meta(**kwargs)
+    def _get_ks_meta(self, node):
+        size = 16384
+        pv_size = (size - 564)
+        ks_meta = {'ks_disks': [
+                                {'type': "disk",
+                                 "id": "vda",
+                                 "size": size,
+                                 "volumes":[{"type": "boot", "size": 300},
+                                            {"type": "raid", "size": 200, "mount": "/boot"},
+                                            {"type": "lvm_meta", "size": 64, "name": "os"},
+                                            {"type": "pv", "size": pv_size, "vg": "os"}
+                                 ]},
+                               {'type': "vg", #//TODO: vg decrease 64 => (pv_size-1024) - 64
+                                 "id": "os",
+                                 "min_size": pv_size,
+                                 "label": "Base System",
+                                 "volumes":[{"type": "lv", "mount": "/", "name": "root", "size": (pv_size-1024)},
+                                            {"type": "lv", "mount": "/swap", "name": "swap", "size": 1024},
+
+                                 ]}
+        ]
+        }
+
+        return ks_meta
 
     def _get_interfaces(self, node):
         return [{"name": "eth0",
@@ -157,22 +178,26 @@ class Config():
 
         return engine
 
-    def power_info(self, node, **kwargs):
+    def power_info(self, **kwargs):
         power = {
                     'power_type': kwargs.get('power_type', 'ssh'),
                     'power_user': kwargs.get('power_user', 'root'),
-                    'name_servers': kwargs.get('name_servers', self.master_ip),
                     'power_pass': kwargs.get('power_pass', '/root/.ssh/bootstrap.rsa'),
                     'netboot_enabled': kwargs.get('netboot_enabled', '1'),
-                    "power_address": str(node.get_ip_address_by_network_name('internal')),
         }
 
         return power
 
+    def common_node_settings(self, **kwargs):
+        return {'name_servers': kwargs.get('name_servers', self.master_ip)}
+
+
     def task_uuid(self, deployment_task='deployment_task'):
         return {'task_uuid': deployment_task}
 
-    def ks_meta(self, **kwargs):
+
+
+    def common_ks_meta(self, **kwargs):
         meta = {
                     'mco_enable': kwargs.get('mco_enable', 1),
                     'mco_vhost': kwargs.get('mco_vhost', 'mcollective'),
@@ -184,7 +209,7 @@ class Config():
                     'puppet_auto_setup': kwargs.get('puppet_auto_setup', 1),
                     'puppet_master': kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                     'mco_auto_setup': kwargs.get('mco_auto_setup', 1),
-                    'auth_key': kwargs.get('auth_key', '""'),
+                    'auth_key': kwargs.get('auth_key', '! ""'),
                     'puppet_version': kwargs.get('puppet_version', '2.7.19'),
                     'mco_connector': kwargs.get('mco_connector', 'rabbitmq'),
                     'mco_host': kwargs.get('mco_host', self.master_ip)
@@ -194,7 +219,11 @@ class Config():
 
 
 if __name__ == "__main__":
-    env = Environment()
-    config_yaml = Config(env)
-    print config_yaml.generate()
+    env = Environment('test-test')
+    print env.get_master_ip()
+    for i in env.nodes():
+         print str(i.get_ip_address_by_network_name('internal'))
+         print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
+    #config_yaml = Config(env)
+    #print config_yaml.generate()
 

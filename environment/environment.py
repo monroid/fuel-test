@@ -17,8 +17,8 @@ class Environment(object):
     def __init__(self, name=name, base_image=None):
         self.manager = Manager()
         self.name = name
-        self.environment = self._get_or_create()
         self.base_image = base_image
+        self.environment = self._get_or_create()
 
     def _get_or_create(self):
         try:
@@ -63,6 +63,7 @@ class Environment(object):
     def describe_admin_node(self, name, networks, memory=2048, boot=boot):
         node = self.add_node(memory=memory, name=name, boot=boot)
         self.create_interfaces(node, networks)
+
         if self.base_image is None:
             self.add_empty_volume(node, name + '-system')
             self.add_empty_volume(node, name + '-iso', capacity=_get_file_size(ISO_PATH), format='raw', device='cdrom', bus='ide')
@@ -113,6 +114,9 @@ class Environment(object):
         self.environment.start([admin])
         #self._environment.snapshot(EMPTY_SNAPSHOT)
 
+    def start_all(self):
+        self.environment.start(self.nodes())
+
     def get_netmask_by_netname(self, netname):
         return str(IPNetwork(self.environment.network_by_name(netname).ip_network).netmask)
 
@@ -135,10 +139,10 @@ class Environment(object):
         """
         :rtype : SSHClient
         """
-        return self.environment.nodes().admin.remote('internal', login=self.login, password=self.password)
+        return self.nodes().admin.remote('internal', login=self.login, password=self.password)
 
     def get_master_ip(self, net_name='internal'):
-        return str(self.environment.nodes().admin.get_ip_address_by_network_name(net_name))
+        return str(self.nodes().admin.get_ip_address_by_network_name(net_name))
 
 
     # def public_router(self):

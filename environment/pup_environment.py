@@ -18,6 +18,7 @@ class PuppetEnvironment(Environment):
         self.base_image = base_image or BASE_IMAGE
         super(PuppetEnvironment, self).__init__(self.name, self.base_image)
         self.environment = super(PuppetEnvironment, self).get_env()
+        self.start_all()
 
     def snapshot_exist(self, snap_name="before_test"):
         return self.environment.has_snapshot(name=snap_name)
