@@ -13,6 +13,7 @@ BASE_IMAGE = os.environ.get('BASE_IMAGE', DEFAULT_IMAGES.get(OS_FAMILY))
 TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
 
 ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
+ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/Downloads/fuel-3.1.iso')
 
 PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
 
@@ -25,13 +26,16 @@ CURRENT_PROFILE = PROFILES_COBBLER_COMMON.get(OS_FAMILY)
 
 ASTUTE_USE = os.environ.get('ASTUTE_USE', 'false') == 'true'
 
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME', '.localdomain')
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME', 'localdomain')
+DOMAIN_NAME_WDOT = '.' + DOMAIN_NAME
 
 PUPPET_AGENT_COMMAND = 'puppet agent -tvd --evaltrace 2>&1'
 
 SETUP_TIMEOUT = int(os.environ.get('SETUP_TIMEOUT', 600))
 
 EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
+
+LOGS_DIR = os.environ.get('LOGS_DIR', '/home/alan/test-logs')
 
 #[tempest]
 ADMIN_USERNAME = 'admin'
@@ -42,8 +46,8 @@ ADMIN_TENANT_FOLSOM = 'admin'
 CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
 
 #[nodes]
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
-COMPUTES = int(os.environ.get('COMPUTES', 0))
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 3))
+COMPUTES = int(os.environ.get('COMPUTES', 3))
 STORAGES = int(os.environ.get('STORAGES', 0))
 PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
@@ -103,8 +107,8 @@ NET_INTERNAL = 'internal'
 NET_PRIVATE = 'private'
 
 INTERFACE_ORDER = (
-    NET_PUBLIC,
     NET_INTERNAL,
+    NET_PUBLIC,
     NET_PRIVATE
 )
 
@@ -115,13 +119,13 @@ INTERFACES = {
 }
 
 FORWARDING = {
-    NET_PUBLIC: os.environ.get('PUBLIC_FORWARD', 'nat'),
-    NET_INTERNAL: None,
+    NET_PUBLIC: None,
+    NET_INTERNAL: os.environ.get('PUBLIC_FORWARD', 'nat'),
     NET_PRIVATE: None,
 }
 
 DHCP = {
-    NET_PUBLIC: True,
+    NET_PUBLIC: False,
     NET_INTERNAL: False,
     NET_PRIVATE: False,
 }
@@ -143,4 +147,9 @@ POOLS = {
     NET_PUBLIC: os.environ.get('PUBLIC_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('public')).split(':'),
     NET_PRIVATE: os.environ.get('PRIVATE_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('private')).split(':'),
     NET_INTERNAL: os.environ.get('INTERNAL_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('internal')).split(':')
+}
+
+NETWORK_MANAGERS = {
+    "flat": 'FlatDHCPManager',
+    'vlan': 'VlanManager'
 }

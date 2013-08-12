@@ -20,6 +20,8 @@ from unittest import TestCase
 from devops.helpers.helpers import SSHClient, wait, _wait
 from paramiko import RSAKey
 from environment.fuel_environment import FuelEnvironment
+from helpers.config_astute import AstuteConfig
+from helpers.functions import write_config
 from helpers.helpers import Ebtables
 from helpers.decorators import debug
 from helpers.nailgun_client import NailgunClient
@@ -41,7 +43,7 @@ class FuelTestCase(TestCase):
         """
         :rtype : SSHClient
         """
-        return self.env.nodes().admin.remote('internal', login='root', password='r00tme')
+        return self.env.get_master_ssh()
 
     def get_master_ip(self):
         return self.env.get_master_ip()
@@ -53,6 +55,11 @@ class FuelTestCase(TestCase):
                 '/sbin/ip addr show dev %s' % interface_short_name
             )['stdout']
         )
+    @logwrap
+    def generate_astute_config(self):
+        config = AstuteConfig(self.env).generate()
+        config_path = "/root/astute.yaml"
+        write_config(self.get_master_ssh(), config_path, str(config))
 
     def assertNetworkConfiguration(self, node):
         remote = SSHClient(node['ip'], username='root', password='r00tme',

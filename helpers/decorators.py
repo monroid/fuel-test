@@ -43,7 +43,7 @@ def fetch_logs(func):
                 if not os.path.exists(LOGS_DIR):
                     os.makedirs(LOGS_DIR)
                 save_logs(
-                    args[0].get_admin_node_ip(),
+                    args[0].get_master_ip(),
                     os.path.join(LOGS_DIR, '%s-%d.tar.gz' % (
                         func.__name__,
                         time.time())))

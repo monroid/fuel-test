@@ -34,6 +34,13 @@ class TestNode(FuelTestCase):
     def test_node_deploy(self):
         self.bootstrap_nodes()
 
+    @snapshot_errors
+    @logwrap
+    @fetch_logs
+    def test_config(self):
+        self.generate_astute_config()
+        self.get_master_ssh().check_stderr("astute -f /root/astute.yaml -c provision", True)
+
 
 
 if __name__ == '__main__':

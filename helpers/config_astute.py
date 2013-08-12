@@ -3,7 +3,7 @@ from environment.environment import Environment
 from settings import DOMAIN_NAME_WDOT
 
 
-class Config():
+class AstuteConfig():
     def __init__(self, env):
         self.env = env
         self.master_ip = self.env.get_master_ip()
@@ -17,6 +17,7 @@ class Config():
             "common_ks_meta": self.common_ks_meta(**kwargs),
             "common_power_info": self.power_info(**kwargs),
             "common_node_settings": self.common_node_settings(**kwargs),
+
         }
 
         config.update(self.task_uuid())
@@ -32,7 +33,6 @@ class Config():
                             "name": node.name,
                             "profile": kwargs.get('profile', 'centos-x86_64'),
                             "hostname": node.name + DOMAIN_NAME_WDOT,
-                            "puppet_master": kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                             "ks_meta": self._get_ks_meta(node),
                             "interfaces": self._get_interfaces(node),
                             #"meta": self._get_meta(node),
@@ -44,7 +44,7 @@ class Config():
         return nodes
 
     def _get_ks_meta(self, node):
-        size = 16384
+        size = int(self.env.get_volume_capacity(node) / (1024 * 1024))
         pv_size = (size - 564)
         ks_meta = {'ks_disks': [
                                 {'type': "disk",
@@ -55,23 +55,20 @@ class Config():
                                             {"type": "lvm_meta", "size": 64, "name": "os"},
                                             {"type": "pv", "size": pv_size, "vg": "os"}
                                  ]},
-                               {'type': "vg", #//TODO: vg decrease 64 => (pv_size-1024) - 64
+                                {'type': "vg", #//TODO: vg decrease 64 => (pv_size-1024) - 64
                                  "id": "os",
                                  "min_size": pv_size,
                                  "label": "Base System",
-                                 "volumes":[{"type": "lv", "mount": "/", "name": "root", "size": (pv_size-1024)},
+                                 "volumes":[{"type": "lv", "mount": "/", "name": "root", "size": (pv_size - 1024) - 64},
                                             {"type": "lv", "mount": "/swap", "name": "swap", "size": 1024},
 
                                  ]}
-        ]
-        }
+        ]}
 
         return ks_meta
 
     def _get_interfaces(self, node):
         return [{"name": "eth0",
-                "ip_address": str(node.get_ip_address_by_network_name('internal')),
-                "netmask": "255.255.255.0",
                 "dns_name": node.name + DOMAIN_NAME_WDOT,
                 "static": '1',
                 "mac_address": node.interfaces.filter(network__name='internal')[0].mac_address,
@@ -191,11 +188,8 @@ class Config():
     def common_node_settings(self, **kwargs):
         return {'name_servers': kwargs.get('name_servers', self.master_ip)}
 
-
     def task_uuid(self, deployment_task='deployment_task'):
         return {'task_uuid': deployment_task}
-
-
 
     def common_ks_meta(self, **kwargs):
         meta = {
@@ -219,11 +213,11 @@ class Config():
 
 
 if __name__ == "__main__":
-    env = Environment('test-test')
-    print env.get_master_ip()
-    for i in env.nodes():
-         print str(i.get_ip_address_by_network_name('internal'))
-         print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
-    #config_yaml = Config(env)
-    #print config_yaml.generate()
+    env = Environment()
+    # print env.get_master_ip()
+    # for i in env.nodes():
+    #      print str(i.get_ip_address_by_network_name('internal'))
+    #      print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
+    config_yaml = AstuteConfig(env)
+    print config_yaml.generate()
 

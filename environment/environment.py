@@ -4,7 +4,7 @@ from devops.helpers.helpers import _get_file_size
 from devops.manager import Manager
 from node_roles import NodeRoles, Nodes
 
-from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP
+from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP, CONTROLLERS, COMPUTES, STORAGES, PROXIES, QUANTUMS
 
 
 class Environment(object):
@@ -84,8 +84,15 @@ class Environment(object):
         return node
 
     def _node_roles(self):
+        controllers=['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)]
+        computes=['fuel-compute-%02d' % x for x in range(1, 1 + COMPUTES)]
+        storages=['fuel-swift-%02d' % x for x in range(1, 1 + STORAGES)]
+        proxies=['fuel-swiftproxy-%02d' % x for x in range(1, 1 + PROXIES)]
+        quantums=['fuel-quantum-%02d' % x for x in range(1, 1 + QUANTUMS)]
+
         return NodeRoles(admin_names=['master'],
-                         other_names=['slave-%02d' % x for x in range(1, 2)])
+                         other_names= controllers + computes + storages + proxies + quantums
+        )
 
     def _create(self):
         self.environment = self.manager.environment_create(self.name)
@@ -144,6 +151,13 @@ class Environment(object):
     def get_master_ip(self, net_name='internal'):
         return str(self.nodes().admin.get_ip_address_by_network_name(net_name))
 
+    def get_volume_capacity(self, node, volume_name='system'):
+        for d in node.disk_devices:
+            if volume_name in d.volume.get_path():
+                return d.volume.get_capacity()
+
+        return None
+
 
     # def public_router(self):
     #     return str(IPNetwork(self.get().network_by_name('public').ip_network)[1])
@@ -166,3 +180,6 @@ class Environment(object):
 
 if __name__ == '__main__':
     env = Environment('test')
+    for i in env.nodes():
+        for d in i.disk_devices:
+            print d.volume.get_path(), d.volume.get_capacity()
