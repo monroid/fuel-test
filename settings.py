@@ -13,7 +13,7 @@ BASE_IMAGE = os.environ.get('BASE_IMAGE', DEFAULT_IMAGES.get(OS_FAMILY))
 TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
 
 ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
-ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/Downloads/fuel-3.1.iso')
+ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/git/fuelweb/build/iso/fuelweb-centos-6.4-x86_64.iso')
 
 PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
 

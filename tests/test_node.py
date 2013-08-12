@@ -31,16 +31,13 @@ class TestNode(FuelTestCase):
     @snapshot_errors
     @logwrap
     @fetch_logs
-    def test_node_deploy(self):
+    def test_nodes_provision(self):
         self.bootstrap_nodes()
-
-    @snapshot_errors
-    @logwrap
-    @fetch_logs
-    def test_config(self):
         self.generate_astute_config()
-        self.get_master_ssh().check_stderr("astute -f /root/astute.yaml -c provision", True)
-
+        ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
+        logging.debug('Output of /root: %s' % ps_out)
+        res = self.get_master_ssh().check_stderr("astute -f /root/astute.yaml -c provision", True)
+        self.assertEqual(0, res)
 
 
 if __name__ == '__main__':

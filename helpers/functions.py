@@ -39,13 +39,11 @@ def extract_virtual_ips(ipaout):
     pattern = '(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*(eth\d{1,}):ka'
     return dict((v, k) for k, v in re.findall(pattern, ipaout))
 
-
 def write_config(remote, path, text):
     config = remote.open(path, 'w')
     config.write(text)
     logging.info('Write config %s' % text)
     config.close()
-
 
 def retry(count, func, **kwargs):
     i = 0

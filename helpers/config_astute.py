@@ -10,7 +10,7 @@ class AstuteConfig():
 
     def generate(self, **kwargs):
         config = {
-            #"attributes": self.attributes(**kwargs),
+            "attributes": self.attributes(**kwargs),
 
             "engine": self.engine(**kwargs),
             "nodes": self.nodes(**kwargs),
