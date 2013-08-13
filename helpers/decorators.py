@@ -87,3 +87,18 @@ def json_parse(func):
         response = func(*args, **kwargs)
         return json.loads(response.read())
     return wrapped
+
+
+def retry(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        i = 0
+        while True:
+            try:
+                return func(**kwargs)
+            except:
+                if i >= args[0]:
+                    raise
+                i += 1
+                time.sleep(1)
+    return wrapper

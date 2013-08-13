@@ -61,5 +61,11 @@ class TestMasterNode(FuelTestCase):
             (len(naily_workers), naily_workers))
         self.assertEqual(True, len(naily_workers) > 1)
 
+    @logwrap
+    @fetch_logs
+    def test_config_astute(self):
+        self.generate_astute_config()
+
+
 if __name__ == '__main__':
     unittest.main()

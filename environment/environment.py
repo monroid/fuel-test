@@ -84,14 +84,14 @@ class Environment(object):
         return node
 
     def _node_roles(self):
-        controllers=['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)]
-        computes=['fuel-compute-%02d' % x for x in range(1, 1 + COMPUTES)]
-        storages=['fuel-swift-%02d' % x for x in range(1, 1 + STORAGES)]
-        proxies=['fuel-swiftproxy-%02d' % x for x in range(1, 1 + PROXIES)]
-        quantums=['fuel-quantum-%02d' % x for x in range(1, 1 + QUANTUMS)]
+        controllers = ['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)]
+        computes = ['fuel-compute-%02d' % x for x in range(1, 1 + COMPUTES)]
+        storages = ['fuel-swift-%02d' % x for x in range(1, 1 + STORAGES)]
+        proxies = ['fuel-swiftproxy-%02d' % x for x in range(1, 1 + PROXIES)]
+        quantums = ['fuel-quantum-%02d' % x for x in range(1, 1 + QUANTUMS)]
 
         return NodeRoles(admin_names=['master'],
-                         other_names= controllers + computes + storages + proxies + quantums
+                         other_names=controllers + computes + storages + proxies + quantums
         )
 
     def _create(self):

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 logwrap = debug(logger)
 
 
-class TestNode(FuelTestCase):
+class TestCLI(FuelTestCase):
     @snapshot_errors
     @logwrap
     @fetch_logs

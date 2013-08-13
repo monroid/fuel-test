@@ -60,15 +60,10 @@ class PuppetEnvironment(Environment):
 
 if __name__ == "__main__":
     env = PuppetEnvironment(base_image='/var/lib/libvirt/images/centos6.4-base.qcow2')
-
     env.await()
-
     env.upload_modules('/home/alan/fuel/deployment/puppet')
-
     env.snapshot_create(snap_name="test1")
-
     env.execute_cmd('apt-get install mc')
-
     env.erase()
 
 
