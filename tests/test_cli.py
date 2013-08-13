@@ -36,7 +36,7 @@ class TestCLI(FuelTestCase):
         self.generate_astute_config()
         ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
         logging.debug('Output of /root: %s' % ps_out)
-        res = self.get_master_ssh().check_stderr("astute -f /root/astute.yaml -c provision", True).get('exit_code')
+        res = self.get_master_ssh().check_call("astute -f /root/astute.yaml -c provision", True)['exit_code']
         self.assertEqual(0, res)
 
 
