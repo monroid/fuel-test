@@ -11,7 +11,6 @@ class AstuteConfig():
     def generate(self, **kwargs):
         config = {
             "attributes": self.attributes(**kwargs),
-
             "engine": self.engine(**kwargs),
             "nodes": self.nodes(**kwargs),
             "common_ks_meta": self.common_ks_meta(**kwargs),
@@ -28,18 +27,18 @@ class AstuteConfig():
         nodes = []
         for node in self.env.nodes().slaves:
             node_info = {
-                           # "id": 1,
-                           # "uid": 1,
                             "name": node.name,
-                            "role": node.role,
+                            "hostname": node.name + DOMAIN_NAME_WDOT,
                             "profile": kwargs.get('profile', 'centos-x86_64'),
-                            "fqdn": node.name + DOMAIN_NAME_WDOT,
                             "ks_meta": self._get_ks_meta(node),
                             "interfaces": self._get_interfaces(node),
-                            "error_type": "",
-                            "network_data": self._get_network_data(node),
                             "public_br": 'br-ex',
-                            "internal_br": 'br-mgmt'
+                            "internal_br": 'br-mgmt',
+                            "role": node.role,
+                            "default_gateway": self.env.get_router_by_netname('internal'),
+                            #"fqdn": node.name + DOMAIN_NAME_WDOT,
+                            #"error_type": "",
+                            "network_data": self._get_network_data(node),
 
             }
 
@@ -94,19 +93,41 @@ class AstuteConfig():
         return ks_meta
 
     def _get_interfaces(self, node):
-        return [{"name": "eth0",
+        return [
+            {
+                "name": "eth0",
                 "dns_name": node.name + DOMAIN_NAME_WDOT,
-                "static": '1',
+                "static": '0',
                 "mac_address": node.interfaces.filter(network__name='internal')[0].mac_address,
                 "onboot": 'yes',
                 "peerdns": 'no',
                 "use_for_provision": True
-        }]
+            },
+            {
+                "name": "eth1",
+                "ip_address": node.get_ip_address_by_network_name('public'),
+                "mac_address": node.interfaces.filter(network__name='public')[0].mac_address,
+                "static": '0',
+                "onboot": 'no',
+                "peerdns": 'no',
+            },
+            {
+                "name": "eth2",
+                "ip_address": node.get_ip_address_by_network_name('private'),
+                "mac_address": node.interfaces.filter(network__name='private')[0].mac_address,
+                "static": '0',
+                "onboot": 'no',
+                "peerdns": 'no',
+            }
+        ]
 
     def _get_meta(self, node):
         return True
 
     def attributes(self, **kwargs):
+        quantum = kwargs.get('quantum', True)
+        floating_network_range = 'CIDR' if quantum else [kwargs.get('floating_network_range', self.master_ip)]
+        fixed_network_range = 'CIDR'
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
                 'libvirt_type': kwargs.get('libvirt_type', 'qemu'),
                 'dns_nameservers': [kwargs.get('master_ip', self.master_ip)],
@@ -116,7 +137,7 @@ class AstuteConfig():
                 'start_guests_on_host_boot': kwargs.get('start_guests_on_host_boot', True),
                 'create_networks': kwargs.get('create_networks', True),
                 'compute_scheduler_driver': kwargs.get('compute_scheduler_driver', 'nova.scheduler.multi.MultiScheduler'),
-                'quantum': kwargs.get('quantum', True),
+                'quantum': quantum,
                 'master_hostname': kwargs.get('master_hostname', 'controller-01'),
                 'nagios': kwargs.get('nagios', False),
                 'nagios_master': kwargs.get('nagios_master', 'master' + DOMAIN_NAME_WDOT),
@@ -177,11 +198,13 @@ class AstuteConfig():
                             'syslog_transport': kwargs.get('syslog_transport', 'udp'),
                             'syslog_server': kwargs.get('syslog_server', self.master_ip),
                         },
-                'floating_network_range': [kwargs.get('floating_network_range', self.master_ip)],
+                'floating_network_range': floating_network_range,
+                'fixed_network_range': fixed_network_range,
                 'deployment_id': kwargs.get('deployment_id', 1),
                 'deployment_mode': kwargs.get('deployment_mode', 'ha'),
                 'deployment_source': kwargs.get('deployment_source', 'cli'),
                 'deployment_engine': kwargs.get('deployment_engine', 'nailyfact'),
+                'ntp_servers': kwargs.get('ntp_servers', ['pool.ntp.org']),
                 }
 
         return attr
@@ -200,13 +223,13 @@ class AstuteConfig():
                     'power_type': kwargs.get('power_type', 'ssh'),
                     'power_user': kwargs.get('power_user', 'root'),
                     'power_pass': kwargs.get('power_pass', '/root/.ssh/bootstrap.rsa'),
-                    'netboot_enabled': kwargs.get('netboot_enabled', '1'),
+                    'netboot_enabled': "\'%s\'" % kwargs.get('netboot_enabled', '1'),
         }
 
         return power
 
     def common_node_settings(self, **kwargs):
-        return {'name_servers': kwargs.get('name_servers', self.master_ip)}
+        return {'name_servers': '! \'"%s"\'' % kwargs.get('name_servers', self.master_ip)}
 
     def task_uuid(self, deployment_task='deployment_task'):
         return {'task_uuid': deployment_task}
@@ -223,7 +246,7 @@ class AstuteConfig():
                     'puppet_auto_setup': kwargs.get('puppet_auto_setup', 1),
                     'puppet_master': kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                     'mco_auto_setup': kwargs.get('mco_auto_setup', 1),
-                    'auth_key': kwargs.get('auth_key', '! ""'),
+                    'auth_key': kwargs.get('auth_key', '\'! ""\''),
                     'puppet_version': kwargs.get('puppet_version', '2.7.19'),
                     'mco_connector': kwargs.get('mco_connector', 'rabbitmq'),
                     'mco_host': kwargs.get('mco_host', self.master_ip)

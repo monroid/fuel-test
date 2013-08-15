@@ -13,7 +13,7 @@ BASE_IMAGE = os.environ.get('BASE_IMAGE', DEFAULT_IMAGES.get(OS_FAMILY))
 TEST_REPO = os.environ.get('TEST_REPO', 'false') == 'true'
 
 ISO_IMAGE = os.environ.get('ISO_IMAGE', '/home/user/fuel-centos-6.4-x86_64-3.0.iso')
-ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/fuelweb-centos-6.4-x86_64.iso')
+ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/git/fuelweb/build/iso/fuelweb-centos-6.4-x86_64.iso')
 
 PARENT_PROXY = os.environ.get('PARENT_PROXY', '')
 
@@ -46,8 +46,8 @@ ADMIN_TENANT_FOLSOM = 'admin'
 CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
 
 #[nodes]
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
-COMPUTES = int(os.environ.get('COMPUTES', 0))
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 2))
+COMPUTES = int(os.environ.get('COMPUTES', 2))
 STORAGES = int(os.environ.get('STORAGES', 0))
 PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
