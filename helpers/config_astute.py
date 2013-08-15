@@ -31,17 +31,43 @@ class AstuteConfig():
                            # "id": 1,
                            # "uid": 1,
                             "name": node.name,
+                            "role": node.role,
                             "profile": kwargs.get('profile', 'centos-x86_64'),
-                            "hostname": node.name + DOMAIN_NAME_WDOT,
+                            "fqdn": node.name + DOMAIN_NAME_WDOT,
                             "ks_meta": self._get_ks_meta(node),
                             "interfaces": self._get_interfaces(node),
-                            #"meta": self._get_meta(node),
-                            "error_type": ""
+                            "error_type": "",
+                            "network_data": self._get_network_data(node),
+                            "public_br": 'br-ex',
+                            "internal_br": 'br-mgmt'
+
             }
 
             nodes.append(node_info)
 
         return nodes
+
+    def _get_network_data(self, node):
+        public_net = {"name": "public",
+                      "ip": node.get_ip_address_by_network_name('public'),
+                      "dev": "eth1",
+                      "netmask": "255.255.255.0",
+                      }
+        management_net = {"name": ["management", "storage"],
+                        "ip": node.get_ip_address_by_network_name('internal'),
+                        "dev": "eth0",
+                        "netmask": "255.255.255.0",
+                      }
+
+        fixed_net = {"name": "fixed",
+                        #"ip": node.get_ip_address_by_network_name('private'),
+                        "dev": "eth2",
+                        #"netmask": "255.255.255.0",
+                      }
+
+        nets = [public_net, management_net, fixed_net]
+
+        return nets
 
     def _get_ks_meta(self, node):
         size = int(self.env.get_volume_capacity(node) / (1024 * 1024))
@@ -97,12 +123,6 @@ class AstuteConfig():
                 'proj_name': kwargs.get('proj_name', self.env.name),
                 'management_vip': kwargs.get('management_vip', self.env.internal_virtual_ip()),
                 'public_vip': kwargs.get('public_vip', self.env.public_virtual_ip()),
-                'novanetwork_parameters': {
-                                            'fixed_network_range': kwargs.get('fixed_network_range', 'CIDR'),
-                                            'vlan_start': kwargs.get('vlan_start', '<1-1024>'),
-                                            'network_manager': kwargs.get('network_manager', ':TODO'),
-                                            'network_size': kwargs.get('network_size', ':TODO'),
-                                        },
                 'quantum_parameters': {
                                         'tenant_network_type': kwargs.get('tenant_network_type', 'gre'),
                                         'segment_range': kwargs.get('segment_range', '! 300:500'),
@@ -218,6 +238,10 @@ if __name__ == "__main__":
     # for i in env.nodes():
     #      print str(i.get_ip_address_by_network_name('internal'))
     #      print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
+    #
     config_yaml = AstuteConfig(env)
     print config_yaml.generate()
 
+    # import libvirt
+    # conn = libvirt.open('qemu:///system')
+    # print conn.getCapabilities()
