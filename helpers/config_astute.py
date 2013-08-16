@@ -16,7 +16,6 @@ class AstuteConfig():
             "common_ks_meta": self.common_ks_meta(**kwargs),
             "common_power_info": self.power_info(**kwargs),
             "common_node_settings": self.common_node_settings(**kwargs),
-
         }
 
         config.update(self.task_uuid())
@@ -34,7 +33,7 @@ class AstuteConfig():
                             "interfaces": self._get_interfaces(node),
                             "public_br": 'br-ex',
                             "internal_br": 'br-mgmt',
-                            "role": node.role,
+                            "role": self._get_role(node.name),
                             "default_gateway": self.env.get_router_by_netname('internal'),
                             #"fqdn": node.name + DOMAIN_NAME_WDOT,
                             #"error_type": "",
@@ -45,6 +44,24 @@ class AstuteConfig():
             nodes.append(node_info)
 
         return nodes
+
+    def _get_role(self, node_name):
+        if "controller" in node_name:
+            return self._get_controller_role(node_name)
+        elif "compute" in node_name:
+            return "compute"
+        elif "swift-proxy" in node_name:
+            return self._get_proxy_role(node_name)
+        elif "swift" in node_name:
+            return "storage"
+
+        return None
+
+    def _get_controller_role(self, node_name):
+        return "primary-controller" if "controller-01" in node_name else "controller"
+
+    def _get_proxy_role(self, node_name):
+        return "primary-swift-proxy" if "swift-proxy-01" in node_name else "swift-proxy"
 
     def _get_network_data(self, node):
         public_net = {"name": "public",
@@ -138,7 +155,8 @@ class AstuteConfig():
                 'create_networks': kwargs.get('create_networks', True),
                 'compute_scheduler_driver': kwargs.get('compute_scheduler_driver', 'nova.scheduler.multi.MultiScheduler'),
                 'quantum': quantum,
-                'master_hostname': kwargs.get('master_hostname', 'controller-01'),
+                'master_hostname': kwargs.get('master_hostname', 'master' + DOMAIN_NAME_WDOT),
+                'master_ip': kwargs.get('master_ip', self.master_ip),
                 'nagios': kwargs.get('nagios', False),
                 'nagios_master': kwargs.get('nagios_master', 'master' + DOMAIN_NAME_WDOT),
                 'proj_name': kwargs.get('proj_name', self.env.name),
@@ -146,7 +164,7 @@ class AstuteConfig():
                 'public_vip': kwargs.get('public_vip', self.env.public_virtual_ip()),
                 'quantum_parameters': {
                                         'tenant_network_type': kwargs.get('tenant_network_type', 'gre'),
-                                        'segment_range': kwargs.get('segment_range', '! 300:500'),
+                                        'segment_range': kwargs.get('segment_range', '300:500'),
                                         'metadata_proxy_shared_secret': kwargs.get('metadata_proxy_shared_secret', 'quantum'),
                                     },
                 'mysql': {
@@ -201,7 +219,7 @@ class AstuteConfig():
                 'floating_network_range': floating_network_range,
                 'fixed_network_range': fixed_network_range,
                 'deployment_id': kwargs.get('deployment_id', 1),
-                'deployment_mode': kwargs.get('deployment_mode', 'ha'),
+                'deployment_mode': kwargs.get('deployment_mode', 'multinode'),
                 'deployment_source': kwargs.get('deployment_source', 'cli'),
                 'deployment_engine': kwargs.get('deployment_engine', 'nailyfact'),
                 'ntp_servers': kwargs.get('ntp_servers', ['pool.ntp.org']),
@@ -223,13 +241,13 @@ class AstuteConfig():
                     'power_type': kwargs.get('power_type', 'ssh'),
                     'power_user': kwargs.get('power_user', 'root'),
                     'power_pass': kwargs.get('power_pass', '/root/.ssh/bootstrap.rsa'),
-                    'netboot_enabled': "\'%s\'" % kwargs.get('netboot_enabled', '1'),
+                    'netboot_enabled': kwargs.get('netboot_enabled', 1),
         }
 
         return power
 
     def common_node_settings(self, **kwargs):
-        return {'name_servers': '! \'"%s"\'' % kwargs.get('name_servers', self.master_ip)}
+        return {'name_servers': kwargs.get('name_servers', self.master_ip)}
 
     def task_uuid(self, deployment_task='deployment_task'):
         return {'task_uuid': deployment_task}
@@ -246,7 +264,7 @@ class AstuteConfig():
                     'puppet_auto_setup': kwargs.get('puppet_auto_setup', 1),
                     'puppet_master': kwargs.get('puppet_master', 'master' + DOMAIN_NAME_WDOT),
                     'mco_auto_setup': kwargs.get('mco_auto_setup', 1),
-                    'auth_key': kwargs.get('auth_key', '\'! ""\''),
+                    'auth_key': kwargs.get('auth_key', '""'),
                     'puppet_version': kwargs.get('puppet_version', '2.7.19'),
                     'mco_connector': kwargs.get('mco_connector', 'rabbitmq'),
                     'mco_host': kwargs.get('mco_host', self.master_ip)
@@ -257,13 +275,15 @@ class AstuteConfig():
 
 if __name__ == "__main__":
     env = Environment()
+    #env.get_env().snapshot(name="before_deploy", description='test')
+    env.get_env().revert(name="before_deploy")
     # print env.get_master_ip()
     # for i in env.nodes():
     #      print str(i.get_ip_address_by_network_name('internal'))
     #      print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
     #
-    config_yaml = AstuteConfig(env)
-    print config_yaml.generate()
+    # config_yaml = AstuteConfig(env)
+    # print config_yaml.generate()
 
     # import libvirt
     # conn = libvirt.open('qemu:///system')

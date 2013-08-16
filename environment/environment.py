@@ -87,7 +87,7 @@ class Environment(object):
         controllers = ['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)]
         computes = ['fuel-compute-%02d' % x for x in range(1, 1 + COMPUTES)]
         storages = ['fuel-swift-%02d' % x for x in range(1, 1 + STORAGES)]
-        proxies = ['fuel-swiftproxy-%02d' % x for x in range(1, 1 + PROXIES)]
+        proxies = ['fuel-swift-proxy-%02d' % x for x in range(1, 1 + PROXIES)]
         quantums = ['fuel-quantum-%02d' % x for x in range(1, 1 + QUANTUMS)]
 
         return NodeRoles(admin_names=['master'],

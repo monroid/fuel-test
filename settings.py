@@ -46,8 +46,8 @@ ADMIN_TENANT_FOLSOM = 'admin'
 CIRROS_IMAGE = os.environ.get('CIRROS_IMAGE', 'http://srv08-srt.srt.mirantis.net/cirros-0.3.0-x86_64-disk.img')
 
 #[nodes]
-CONTROLLERS = int(os.environ.get('CONTROLLERS', 2))
-COMPUTES = int(os.environ.get('COMPUTES', 2))
+CONTROLLERS = int(os.environ.get('CONTROLLERS', 1))
+COMPUTES = int(os.environ.get('COMPUTES', 1))
 STORAGES = int(os.environ.get('STORAGES', 0))
 PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
