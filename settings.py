@@ -51,8 +51,14 @@ COMPUTES = int(os.environ.get('COMPUTES', 1))
 STORAGES = int(os.environ.get('STORAGES', 0))
 PROXIES = int(os.environ.get('PROXIES', 0))
 QUANTUMS = int(os.environ.get('QUANTUMS', 0))
-DEFAULT_RAM_SIZE = int(os.environ.get('DEFAULT_RAM_SIZE', 1024))
+DEFAULT_RAM_SIZE = int(os.environ.get('DEFAULT_RAM_SIZE', 2048))
 COMPUTE_RAM_SIZE = int(os.environ.get('COMPUTE_RAM_SIZE', 2048))
+
+DEPLOY_MODE = {
+    "multinode": "multinode",
+    "ha": "ha",
+    "ha_full": "ha_full"
+}
 
 #[puppet]
 PUPPET_GEN = os.environ.get('PUPPET_GEN', "2")

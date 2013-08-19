@@ -20,13 +20,14 @@ from unittest import TestCase
 from devops.helpers.helpers import SSHClient, wait, _wait
 from paramiko import RSAKey
 from environment.fuel_environment import FuelEnvironment
+from helpers.cobbler_client import CobblerClient
 from helpers.config_astute import AstuteConfig
 from helpers.functions import write_config
 from helpers.helpers import Ebtables
 from helpers.decorators import debug
 from helpers.nailgun_client import NailgunClient
 
-from settings import NETWORK_MANAGERS
+from settings import NETWORK_MANAGERS, CURRENT_PROFILE, DOMAIN_NAME_WDOT
 
 
 logger = logging.getLogger(__name__)
@@ -263,6 +264,65 @@ class FuelTestCase(TestCase):
 
     def devops_nodes_by_names(self, devops_node_names):
         return map(lambda name: self.env.get_env().node_by_name(name), devops_node_names)
+
+    @logwrap
+    def cobbler_configure(self):
+        master = self.env.nodes().admin
+        client = CobblerClient(master.get_ip_address_by_network_name('internal'))
+        token = client.login('cobbler', 'cobbler')
+        for node in self.env.nodes().slaves:
+            self.add_node(client,
+                          token,
+                          master,
+                          node,
+                          gateway=master.get_ip_address_by_network_name('internal'),
+                          net_mask=self.env.internal_net_mask()
+            )
+
+    def add_node(self, client, token, cobbler, node, gateway, net_mask):
+        node_name = node.name
+        node_mac0 = str(node.interfaces[0].mac_address)
+        node_mac1 = str(node.interfaces[1].mac_address)
+        node_mac2 = str(node.interfaces[2].mac_address)
+        node_ip = str(node.get_ip_address_by_network_name('internal'))
+        self._add_node(client,
+                       token,
+                       cobbler,
+                       node_name,
+                       node_mac0,
+                       node_mac1,
+                       node_mac2,
+                       node_ip,
+                       gateway=gateway,
+                       net_mask=net_mask,
+            )
+
+    def _add_node(self, client, token, cobbler, node_name, node_mac0, node_mac1,
+                  node_mac2, node_ip, gateway, net_mask):
+        system_id = client.new_system(token)
+        profile = "bootstrap"
+        client.modify_system_args(system_id,
+                                  token,
+                                  name=node_name,
+                                  hostname=node_name,
+                                  name_servers=cobbler.get_ip_address_by_network_name('internal'),
+                                  name_servers_search="localdomain",
+                                  profile=profile,
+                                  gateway=gateway,
+                                  netboot_enabled="1")
+        client.modify_system(system_id, 'modify_interface', {
+            "macaddress-eth0": str(node_mac0),
+            "ipaddress-eth0": str(node_ip),
+            "netmask-eth0": str(net_mask),
+            "dnsname-eth0": node_name + DOMAIN_NAME_WDOT,
+            "static-eth0": "1",
+            "macaddress-eth1": str(node_mac1),
+            "static-eth1": "1",
+            "macaddress-eth2": str(node_mac2),
+            "static-eth2": "1"
+        }, token)
+        client.save_system(system_id, token)
+        client.sync(token)
 
     @logwrap
     def bootstrap_nodes(self, timeout=600):

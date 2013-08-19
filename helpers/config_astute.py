@@ -1,12 +1,13 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME_WDOT
+from settings import DOMAIN_NAME_WDOT, DEPLOY_MODE
 
 
 class AstuteConfig():
-    def __init__(self, env):
+    def __init__(self, env, deployment_mode=None):
         self.env = env
         self.master_ip = self.env.get_master_ip()
+        self.deploy = deployment_mode or DEPLOY_MODE['multinode']
 
     def generate(self, **kwargs):
         config = {
@@ -58,7 +59,7 @@ class AstuteConfig():
         return None
 
     def _get_controller_role(self, node_name):
-        return "primary-controller" if "controller-01" in node_name else "controller"
+        return "primary-controller" if self.deploy is not DEPLOY_MODE["multinode"] and "controller-01" in node_name else "controller"
 
     def _get_proxy_role(self, node_name):
         return "primary-swift-proxy" if "swift-proxy-01" in node_name else "swift-proxy"
@@ -113,6 +114,7 @@ class AstuteConfig():
         return [
             {
                 "name": "eth0",
+                "ip_address": node.get_ip_address_by_network_name('internal'),
                 "dns_name": node.name + DOMAIN_NAME_WDOT,
                 "static": '0',
                 "mac_address": node.interfaces.filter(network__name='internal')[0].mac_address,
@@ -143,8 +145,8 @@ class AstuteConfig():
 
     def attributes(self, **kwargs):
         quantum = kwargs.get('quantum', True)
-        floating_network_range = 'CIDR' if quantum else [kwargs.get('floating_network_range', self.master_ip)]
-        fixed_network_range = 'CIDR'
+        floating_network_range = '10.108.2.150/26' if quantum else [kwargs.get('floating_network_range', self.master_ip)]
+        fixed_network_range = '10.108.0.0/24'
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
                 'libvirt_type': kwargs.get('libvirt_type', 'qemu'),
                 'dns_nameservers': [kwargs.get('master_ip', self.master_ip)],
@@ -219,7 +221,7 @@ class AstuteConfig():
                 'floating_network_range': floating_network_range,
                 'fixed_network_range': fixed_network_range,
                 'deployment_id': kwargs.get('deployment_id', 1),
-                'deployment_mode': kwargs.get('deployment_mode', 'multinode'),
+                'deployment_mode': kwargs.get('deployment_mode', self.deploy),
                 'deployment_source': kwargs.get('deployment_source', 'cli'),
                 'deployment_engine': kwargs.get('deployment_engine', 'nailyfact'),
                 'ntp_servers': kwargs.get('ntp_servers', ['pool.ntp.org']),
@@ -275,8 +277,8 @@ class AstuteConfig():
 
 if __name__ == "__main__":
     env = Environment()
-    #env.get_env().snapshot(name="before_deploy", description='test')
-    env.get_env().revert(name="before_deploy")
+    env.get_env().snapshot(name="before_deploy_wcidr", description='test')
+    #env.get_env().revert(name="before_deploy_wcidr")
     # print env.get_master_ip()
     # for i in env.nodes():
     #      print str(i.get_ip_address_by_network_name('internal'))

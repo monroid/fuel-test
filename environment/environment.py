@@ -4,7 +4,7 @@ from devops.helpers.helpers import _get_file_size
 from devops.manager import Manager
 from node_roles import NodeRoles, Nodes
 
-from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP, CONTROLLERS, COMPUTES, STORAGES, PROXIES, QUANTUMS
+from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP, CONTROLLERS, COMPUTES, STORAGES, PROXIES, QUANTUMS, DEFAULT_RAM_SIZE, COMPUTE_RAM_SIZE
 
 
 class Environment(object):
@@ -60,7 +60,7 @@ class Environment(object):
         for network in networks:
             self.manager.interface_create(network, node=node)
 
-    def describe_admin_node(self, name, networks, memory=2048, boot=boot):
+    def describe_admin_node(self, name, networks, memory=DEFAULT_RAM_SIZE, boot=boot):
         node = self.add_node(memory=memory, name=name, boot=boot)
         self.create_interfaces(node, networks)
 
@@ -74,7 +74,7 @@ class Environment(object):
 
         return node
 
-    def describe_node(self, name, networks, memory=1024):
+    def describe_node(self, name, networks, memory=DEFAULT_RAM_SIZE):
         node = self.add_node(name, memory)
         self.create_interfaces(node, networks)
         self.add_empty_volume(node, name + '-system')
@@ -111,7 +111,7 @@ class Environment(object):
             self.describe_admin_node(name, networks)
 
         for name in self._node_roles().other_names:
-            self.describe_node(name, networks, memory=1024)
+            self.describe_node(name, networks, memory=COMPUTE_RAM_SIZE)
 
         return self.environment
 
@@ -171,9 +171,9 @@ class Environment(object):
     # def public_network(self):
     #     return str(IPNetwork(self.get().network_by_name('public').ip_network))
     #
-    # def internal_net_mask(self):
-    #     return str(IPNetwork(self.get().network_by_name('internal').ip_network).netmask)
-    #
+    def internal_net_mask(self):
+        return str(IPNetwork(self.environment.network_by_name('internal').ip_network).netmask)
+
     # def public_net_mask(self):
     #     return str(IPNetwork(self.get().network_by_name('public').ip_network).netmask)
 
