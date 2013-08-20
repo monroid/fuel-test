@@ -37,15 +37,15 @@ class TestCLI(FuelTestCase):
         self.generate_astute_config()
         ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
         logging.debug('Output of /root: %s' % ps_out)
-        res = self.get_master_ssh().check_call("astute -f /root/astute.yaml -c provision", True)['exit_code']
+        res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c provision", True)['exit_code']
         self.assertEqual(0, res)
         self.env.get_env().snapshot(name="provisioned")
-        res = self.get_master_ssh().check_call("astute -f /root/astute.yaml -c deploy", True)['exit_code']
+        res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
         self.assertEqual(0, res)
-        err = self.get_master_ssh().check_call("find . -name puppet-agent.log -print0 | xargs -0 -I @ grep 'notice:' '@' | wc -l", True)['stdout']
+        err = self.get_master_ssh().execute("find . -name puppet-agent.log -print0 | xargs -0 -I @ grep 'err:' '@' | wc -l", True)['stdout'][0]
         self.env.get_env().snapshot(name="deployed")
         logging.debug('Count of errors in puppet-agent logs: %s' % err)
-        self.assertEqual(0, err)
+        self.assertEqual(0, int(err))
 
 
 if __name__ == '__main__':

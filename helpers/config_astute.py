@@ -1,13 +1,13 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME_WDOT, DEPLOY_MODE
+from settings import DOMAIN_NAME_WDOT, DEPLOY_SIMPLE, FIXED_RANGE, FLOATING_RANGE
 
 
 class AstuteConfig():
     def __init__(self, env, deployment_mode=None):
         self.env = env
         self.master_ip = self.env.get_master_ip()
-        self.deploy = deployment_mode or DEPLOY_MODE['multinode']
+        self.deploy = deployment_mode or DEPLOY_SIMPLE
 
     def generate(self, **kwargs):
         config = {
@@ -59,7 +59,7 @@ class AstuteConfig():
         return None
 
     def _get_controller_role(self, node_name):
-        return "primary-controller" if self.deploy is not DEPLOY_MODE["multinode"] and "controller-01" in node_name else "controller"
+        return "primary-controller" if self.deploy is not DEPLOY_SIMPLE and "controller-01" in node_name else "controller"
 
     def _get_proxy_role(self, node_name):
         return "primary-swift-proxy" if "swift-proxy-01" in node_name else "swift-proxy"
@@ -145,8 +145,8 @@ class AstuteConfig():
 
     def attributes(self, **kwargs):
         quantum = kwargs.get('quantum', True)
-        floating_network_range = '10.108.2.150/26' if quantum else [kwargs.get('floating_network_range', self.master_ip)]
-        fixed_network_range = '10.108.0.0/24'
+        floating_network_range = FLOATING_RANGE if quantum else [kwargs.get('floating_network_range', self.master_ip)]
+        fixed_network_range = FIXED_RANGE
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
                 'libvirt_type': kwargs.get('libvirt_type', 'qemu'),
                 'dns_nameservers': [kwargs.get('master_ip', self.master_ip)],

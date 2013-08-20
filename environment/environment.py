@@ -4,7 +4,8 @@ from devops.helpers.helpers import _get_file_size
 from devops.manager import Manager
 from node_roles import NodeRoles, Nodes
 
-from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP, CONTROLLERS, COMPUTES, STORAGES, PROXIES, QUANTUMS, DEFAULT_RAM_SIZE, COMPUTE_RAM_SIZE
+from settings import EMPTY_SNAPSHOT, ISO_PATH, INTERFACE_ORDER, POOLS, FORWARDING, DHCP, \
+    DEFAULT_RAM_SIZE, COMPUTE_RAM_SIZE, COUNT_NODES, DEPLOYMENT_MODE
 
 
 class Environment(object):
@@ -84,11 +85,11 @@ class Environment(object):
         return node
 
     def _node_roles(self):
-        controllers = ['fuel-controller-%02d' % x for x in range(1, 1 + CONTROLLERS)]
-        computes = ['fuel-compute-%02d' % x for x in range(1, 1 + COMPUTES)]
-        storages = ['fuel-swift-%02d' % x for x in range(1, 1 + STORAGES)]
-        proxies = ['fuel-swift-proxy-%02d' % x for x in range(1, 1 + PROXIES)]
-        quantums = ['fuel-quantum-%02d' % x for x in range(1, 1 + QUANTUMS)]
+        controllers = ['fuel-controller-%02d' % x for x in range(1, 1 + COUNT_NODES[DEPLOYMENT_MODE]['CONTROLLERS'])]
+        computes = ['fuel-compute-%02d' % x for x in range(1, 1 + COUNT_NODES[DEPLOYMENT_MODE]['COMPUTES'])]
+        storages = ['fuel-swift-%02d' % x for x in range(1, 1 + COUNT_NODES[DEPLOYMENT_MODE]['STORAGES'])]
+        proxies = ['fuel-swift-proxy-%02d' % x for x in range(1, 1 + COUNT_NODES[DEPLOYMENT_MODE]['PROXIES'])]
+        quantums = ['fuel-quantum-%02d' % x for x in range(1, 1 + COUNT_NODES[DEPLOYMENT_MODE]['QUANTUMS'])]
 
         return NodeRoles(admin_names=['master'],
                          other_names=controllers + computes + storages + proxies + quantums
