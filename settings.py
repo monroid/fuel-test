@@ -30,7 +30,7 @@ DOMAIN_NAME_WDOT = '.' + DOMAIN_NAME
 
 EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
 
-LOGS_DIR = os.environ.get('LOGS_DIR', '/home/user/test-logs')
+LOGS_DIR = os.environ.get('LOGS_DIR', '/home/alan/test-logs')
 
 #[tempest]
 ADMIN_USERNAME = 'admin'
