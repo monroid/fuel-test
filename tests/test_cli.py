@@ -32,19 +32,24 @@ class TestCLI(FuelTestCase):
     @logwrap
     @fetch_logs
     def test_nodes_provision(self):
-        self.cobbler_configure()
-        self.bootstrap_nodes()
-        self.generate_astute_config()
-        ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
-        logging.debug('Output of /root: %s' % ps_out)
-        res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c provision", True)['exit_code']
-        self.assertEqual(0, res)
-        self.env.get_env().snapshot(name="provisioned")
+        if self.env.get_env().has_snapshot(name="provisioned"):
+            self.env.get_env().revert(name="provisioned")
+        else:
+            self.cobbler_configure()
+            self.bootstrap_nodes()
+            self.generate_astute_config()
+            ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
+            logging.debug('Output of /root: %s' % ps_out)
+            res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c provision", True)['exit_code']
+            self.assertEqual(0, res)
+            self.env.get_env().snapshot(name="provisioned", force=True)
+
         res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
+        logging.debug('!!! Deploy result: %s' % res)
         self.assertEqual(0, res)
         err = self.get_master_ssh().execute("find . -name puppet-agent.log -print0 | xargs -0 -I @ grep 'err:' '@' | wc -l", True)['stdout'][0]
-        self.env.get_env().snapshot(name="deployed")
-        logging.debug('Count of errors in puppet-agent logs: %s' % err)
+        self.env.get_env().snapshot(name="deployed", force=True)
+        logging.debug('!!! Count of errors in puppet-agent logs: %s' % err)
         self.assertEqual(0, int(err))
 
 
