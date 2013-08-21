@@ -47,7 +47,7 @@ COMPUTE_RAM_SIZE = int(os.environ.get('COMPUTE_RAM_SIZE', 2048))
 COUNT_NODES = {
     DEPLOY_SIMPLE: {
         "CONTROLLERS": int(os.environ.get('CONTROLLERS', 1)),
-        "COMPUTES": int(os.environ.get('COMPUTES', 2)),
+        "COMPUTES": int(os.environ.get('COMPUTES', 3)),
         "STORAGES": int(os.environ.get('STORAGES', 0)),
         "PROXIES": int(os.environ.get('PROXIES', 0)),
         "QUANTUMS": int(os.environ.get('QUANTUMS', 0))
