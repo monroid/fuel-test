@@ -16,6 +16,7 @@
 import logging
 import unittest
 from helpers.decorators import snapshot_errors, debug, fetch_logs
+from settings import USE_SNAP
 from tests.fuel_testcase import FuelTestCase
 
 logging.basicConfig(
@@ -32,14 +33,14 @@ class TestCLI(FuelTestCase):
     @logwrap
     @fetch_logs
     def test_nodes_provision(self):
-        if self.env.get_env().has_snapshot(name="provisioned"):
+        if USE_SNAP and self.env.get_env().has_snapshot(name="provisioned"):
             self.env.get_env().revert(name="provisioned")
         else:
             self.cobbler_configure()
             self.bootstrap_nodes()
             self.generate_astute_config()
             ps_out = self.get_master_ssh().execute('ls -al /root/')['stdout']
-            logging.debug('Output of /root: %s' % ps_out)
+            logging.debug('!!! Output of /root: %s' % ps_out)
             res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c provision", True)['exit_code']
             self.assertEqual(0, res)
             self.env.get_env().snapshot(name="provisioned", force=True)

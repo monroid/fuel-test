@@ -32,6 +32,8 @@ EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
 
 LOGS_DIR = os.environ.get('LOGS_DIR', '/home/alan/test-logs')
 
+USE_SNAP = os.environ.get('USE_SNAP', True)
+
 #[tempest]
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'nova'
@@ -112,13 +114,10 @@ POOLS = {
     NET_INTERNAL: os.environ.get('INTERNAL_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('internal')).split(':')
 }
 
-FLOATING_RANGE = '10.108.2.150/26'
-FIXED_RANGE = '10.108.0.0/24'
+FIXED_RANGE = DEFAULT_POOLS.get(OS_FAMILY).get('internal').replace('16:', '')
+FLOATING_RANGE = '.'.join(DEFAULT_POOLS.get(OS_FAMILY).get('public').split('.')[:-1] + ['150/26'])
 
 NETWORK_MANAGERS = {
     "flat": 'FlatDHCPManager',
     'vlan': 'VlanManager'
 }
-
-if __name__ == "__main__":
-    print COUNT_NODES[DEPLOYMENT_MODE]['CONTROLLERS']
