@@ -1,6 +1,6 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME_WDOT, DEPLOY_SIMPLE, FIXED_RANGE, FLOATING_RANGE
+from settings import DOMAIN_NAME_WDOT, DEPLOY_SIMPLE
 
 
 class AstuteConfig():
@@ -145,13 +145,16 @@ class AstuteConfig():
 
     def attributes(self, **kwargs):
         quantum = kwargs.get('quantum', True)
-        floating_network_range = FLOATING_RANGE if quantum else [kwargs.get('floating_network_range', self.master_ip)]
-        fixed_network_range = FIXED_RANGE
+
+        fixed_network_range = '.'.join(env.get_master_ip().split('.')[:-1] + ['0/24'])
+        floating_network_range = '.'.join(env.get_master_ip('public').split('.')[:-1] + ['150/26']) if quantum else \
+                                    [kwargs.get('floating_network_range', self.master_ip)]
+
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
                 'libvirt_type': kwargs.get('libvirt_type', 'qemu'),
                 'dns_nameservers': [kwargs.get('master_ip', self.master_ip)],
-                'verbose': kwargs.get('verbose', True),
-                'debug': kwargs.get('verbose', True),
+                #'verbose': kwargs.get('verbose', True),
+                #'debug': kwargs.get('verbose', True),
                 'auto_assign_floating_ip': kwargs.get('auto_assign_floating_ip', True),
                 'start_guests_on_host_boot': kwargs.get('start_guests_on_host_boot', True),
                 'create_networks': kwargs.get('create_networks', True),
@@ -277,7 +280,9 @@ class AstuteConfig():
 
 if __name__ == "__main__":
     env = Environment()
-    env.get_env().snapshot(name="before_deploy_wcidr", description='test')
+    print '.'.join(env.get_master_ip('public').split('.')[:-1] + ['150/26'])
+
+    #env.get_env().snapshot(name="before_deploy_wcidr", description='test')
     #env.get_env().revert(name="before_deploy_wcidr")
     # print env.get_master_ip()
     # for i in env.nodes():

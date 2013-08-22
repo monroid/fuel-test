@@ -32,7 +32,7 @@ EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
 
 LOGS_DIR = os.environ.get('LOGS_DIR', '/home/alan/test-logs')
 
-USE_SNAP = os.environ.get('USE_SNAP', True)
+USE_SNAP = os.environ.get('USE_SNAP', False)
 
 #[tempest]
 ADMIN_USERNAME = 'admin'
@@ -68,6 +68,14 @@ COUNT_NODES = {
         "COMPUTES": int(os.environ.get('COMPUTES', 3)),
         "STORAGES": int(os.environ.get('STORAGES', 3)),
         "PROXIES": int(os.environ.get('PROXIES', 2)),
+        "QUANTUMS": int(os.environ.get('QUANTUMS', 0))
+    },
+
+    'puppet_integration': {
+        "CONTROLLERS": int(os.environ.get('CONTROLLERS', 0)),
+        "COMPUTES": int(os.environ.get('COMPUTES', 0)),
+        "STORAGES": int(os.environ.get('STORAGES', 0)),
+        "PROXIES": int(os.environ.get('PROXIES', 0)),
         "QUANTUMS": int(os.environ.get('QUANTUMS', 0))
     },
     }
@@ -113,9 +121,6 @@ POOLS = {
     NET_PRIVATE: os.environ.get('PRIVATE_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('private')).split(':'),
     NET_INTERNAL: os.environ.get('INTERNAL_POOL', DEFAULT_POOLS.get(OS_FAMILY).get('internal')).split(':')
 }
-
-FIXED_RANGE = DEFAULT_POOLS.get(OS_FAMILY).get('internal').replace('16:', '')
-FLOATING_RANGE = '.'.join(DEFAULT_POOLS.get(OS_FAMILY).get('public').split('.')[:-1] + ['150/26'])
 
 NETWORK_MANAGERS = {
     "flat": 'FlatDHCPManager',
