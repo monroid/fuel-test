@@ -146,8 +146,8 @@ class AstuteConfig():
     def attributes(self, **kwargs):
         quantum = kwargs.get('quantum', True)
 
-        fixed_network_range = '.'.join(env.get_master_ip().split('.')[:-1] + ['0/24'])
-        floating_network_range = '.'.join(env.get_master_ip('public').split('.')[:-1] + ['150/26']) if quantum else \
+        fixed_network_range = '.'.join(self.env.get_master_ip().split('.')[:-1] + ['0/24'])
+        floating_network_range = '.'.join(self.env.get_master_ip('public').split('.')[:-1] + ['150/26']) if quantum else \
                                     [kwargs.get('floating_network_range', self.master_ip)]
 
         attr = {'use_cow_images': kwargs.get('use_cow_images', True),
@@ -279,9 +279,7 @@ class AstuteConfig():
 
 
 if __name__ == "__main__":
-    env = Environment()
-    print '.'.join(env.get_master_ip('public').split('.')[:-1] + ['150/26'])
-
+    e = Environment()
     #env.get_env().snapshot(name="before_deploy_wcidr", description='test')
     #env.get_env().revert(name="before_deploy_wcidr")
     # print env.get_master_ip()
@@ -289,8 +287,8 @@ if __name__ == "__main__":
     #      print str(i.get_ip_address_by_network_name('internal'))
     #      print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
     #
-    # config_yaml = AstuteConfig(env)
-    # print config_yaml.generate()
+    config_yaml = AstuteConfig(e)
+    print config_yaml.generate()
 
     # import libvirt
     # conn = libvirt.open('qemu:///system')
