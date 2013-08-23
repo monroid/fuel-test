@@ -1,6 +1,6 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME_WDOT, DEPLOYMENT_MODE
+from settings import DOMAIN_NAME_WDOT, DEPLOYMENT_MODE, DEPLOY_SIMPLE
 
 
 class AstuteConfig():
@@ -139,9 +139,6 @@ class AstuteConfig():
                 "peerdns": 'no',
             }
         ]
-
-    def _get_meta(self, node):
-        return True
 
     def attributes(self, **kwargs):
         quantum = kwargs.get('quantum', True)
