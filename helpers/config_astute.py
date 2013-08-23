@@ -1,13 +1,13 @@
 import yaml
 from environment.environment import Environment
-from settings import DOMAIN_NAME_WDOT, DEPLOY_SIMPLE
+from settings import DOMAIN_NAME_WDOT, DEPLOYMENT_MODE
 
 
 class AstuteConfig():
     def __init__(self, env, deployment_mode=None):
         self.env = env
         self.master_ip = self.env.get_master_ip()
-        self.deploy = deployment_mode or DEPLOY_SIMPLE
+        self.deploy = DEPLOYMENT_MODE or deployment_mode
 
     def generate(self, **kwargs):
         config = {
