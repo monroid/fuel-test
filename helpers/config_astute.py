@@ -34,7 +34,7 @@ class AstuteConfig():
                             "interfaces": self._get_interfaces(node),
                             "public_br": 'br-ex',
                             "internal_br": 'br-mgmt',
-                            "role": self._get_role(node.name),
+                            "roles": [self._get_role(node.name)],
                             "default_gateway": self.env.get_router_by_netname('internal'),
                             #"fqdn": node.name + DOMAIN_NAME_WDOT,
                             #"error_type": "",
