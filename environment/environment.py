@@ -79,7 +79,7 @@ class Environment(object):
         node = self.add_node(name, memory)
         self.create_interfaces(node, networks)
         self.add_empty_volume(node, name + '-system')
-        #self.add_empty_volume(node, name + '-cinder')
+        self.add_empty_volume(node, name + '-cinder')
         #self.add_empty_volume(node, name + '-swift')
 
         return node
