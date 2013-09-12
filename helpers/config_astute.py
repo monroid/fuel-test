@@ -94,7 +94,7 @@ class AstuteConfig():
                                  "id": "vda",
                                  "size": size,
                                  "volumes":[{"type": "boot", "size": 300},
-                                            {"type": "raid", "size": 200, "mount": "/boot"},
+                                            {"type": "partition", "size": 200, "mount": "/boot"},
                                             {"type": "lvm_meta", "size": 64, "name": "os"},
                                             {"type": "pv", "size": pv_size, "vg": "os"}
                                  ]},

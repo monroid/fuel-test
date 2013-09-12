@@ -7,7 +7,7 @@ DEPLOY_FULL = "ha_full"
 
 OS_FAMILY = os.environ.get('OS_FAMILY', "centos")
 
-ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/git/fuelweb/build/iso/fuelweb-centos-6.4-x86_64.iso')
+ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/Downloads/fuellib_test.iso')
 
 DEPLOYMENT_MODE = os.environ.get('DEPLOYMENT_MODE', DEPLOY_SIMPLE)
 
@@ -78,6 +78,14 @@ COUNT_NODES = {
         "PROXIES": int(os.environ.get('PROXIES', 0)),
         "QUANTUMS": int(os.environ.get('QUANTUMS', 0))
     },
+    'test_env': {
+        "CONTROLLERS": int(os.environ.get('CONTROLLERS', 0)),
+        "COMPUTES": int(os.environ.get('COMPUTES', 0)),
+        "STORAGES": int(os.environ.get('STORAGES', 0)),
+        "PROXIES": int(os.environ.get('PROXIES', 0)),
+        "QUANTUMS": int(os.environ.get('QUANTUMS', 0))
+    },
+
     }
 
 #[network]
