@@ -7,9 +7,9 @@ DEPLOY_FULL = "ha_full"
 
 OS_FAMILY = os.environ.get('OS_FAMILY', "centos")
 
-ISO_PATH = os.environ.get('ISO_PATH', '/home/alan/Downloads/fuellib_test.iso')
+ISO_PATH = os.environ.get('ISO_PATH', '/home/Downloads/fuellib_test.iso')
 
-DEPLOYMENT_MODE = os.environ.get('DEPLOYMENT_MODE', DEPLOY_SIMPLE)
+DEPLOYMENT_MODE = os.environ.get('DEPLOYMENT_MODE', DEPLOY_COMPACT)
 
 DEFAULT_IMAGES = {
     'centos': '/var/lib/libvirt/images/centos6.4-base.qcow2',
@@ -32,7 +32,7 @@ EMPTY_SNAPSHOT = os.environ.get('EMPTY_SNAPSHOT', 'empty')
 
 LOGS_DIR = os.environ.get('LOGS_DIR', '/home/alan/test-logs')
 
-USE_SNAP = os.environ.get('USE_SNAP', False)
+USE_SNAP = os.environ.get('USE_SNAP', True)
 
 #[tempest]
 ADMIN_USERNAME = 'admin'

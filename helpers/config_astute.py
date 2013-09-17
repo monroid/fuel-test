@@ -277,16 +277,5 @@ class AstuteConfig():
 
 if __name__ == "__main__":
     e = Environment()
-    #env.get_env().snapshot(name="before_deploy_wcidr", description='test')
-    #env.get_env().revert(name="before_deploy_wcidr")
-    # print env.get_master_ip()
-    # for i in env.nodes():
-    #      print str(i.get_ip_address_by_network_name('internal'))
-    #      print "i.name", i.name, i.interfaces.filter(network__name='internal')[0].mac_address
-    #
     config_yaml = AstuteConfig(e)
     print config_yaml.generate()
-
-    # import libvirt
-    # conn = libvirt.open('qemu:///system')
-    # print conn.getCapabilities()
