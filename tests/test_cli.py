@@ -48,7 +48,7 @@ class TestCLI(FuelTestCase):
         res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
         logging.debug('!!! Deploy result: %s' % res)
         self.assertEqual(0, res)
-        err = self.get_master_ssh().execute("find . -name puppet-agent.log -print0 | xargs -0 -I @ grep 'err:' '@' | wc -l", True)['stdout'][0]
+        err = self.get_master_ssh().execute("find /var/log/remote -name puppet-agent.log -print0 | xargs -0 -I @ grep 'err:' '@' | wc -l", True)['stdout'][0]
         self.env.get_env().snapshot(name="deployed", force=True)
         logging.debug('!!! Count of errors in puppet-agent logs: %s' % err)
         self.assertEqual(0, int(err))
