@@ -9,7 +9,7 @@ OS_FAMILY = os.environ.get('OS_FAMILY', "centos")
 
 ISO_PATH = os.environ.get('ISO_PATH', '/home/Downloads/fuellib_test.iso')
 
-DEPLOYMENT_MODE = os.environ.get('DEPLOYMENT_MODE', DEPLOY_COMPACT)
+DEPLOYMENT_MODE = os.environ.get('DEPLOYMENT_MODE', DEPLOY_SIMPLE)
 
 DEFAULT_IMAGES = {
     'centos': '/var/lib/libvirt/images/centos6.4-base.qcow2',
