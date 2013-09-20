@@ -45,9 +45,9 @@ class TestCLI(FuelTestCase):
             self.assertEqual(0, res)
             self.env.get_env().snapshot(name="provisioned", force=True)
 
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command cmd="mkdir -p /var/lib/astute/nova"')
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command cmd="echo 1 > /var/lib/astute/nova/nova"')
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command cmd="echo 1 > /var/lib/astute/nova/nova.pub"')
+        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="mkdir -p /var/lib/astute/nova"')
+        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="echo 1 > /var/lib/astute/nova/nova"')
+        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="echo 1 > /var/lib/astute/nova/nova.pub"')
 
         res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
         logging.debug('!!! Deploy result: %s' % res)
