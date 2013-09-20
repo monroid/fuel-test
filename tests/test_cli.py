@@ -45,6 +45,12 @@ class TestCLI(FuelTestCase):
             self.assertEqual(0, res)
             self.env.get_env().snapshot(name="provisioned", force=True)
 
+        for i in self.env.nodes().others:
+            remote = i.remote('internal', login=self.env.login, password=self.env.password)
+            remote.execute("mkdir -p  /var/lib/astute/nova")
+            remote.execute("echo 1> /var/lib/astute/nova/nova")
+            remote.execute("echo 1> /var/lib/astute/nova/nova.pub")
+
         res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
         logging.debug('!!! Deploy result: %s' % res)
         self.assertEqual(0, res)
