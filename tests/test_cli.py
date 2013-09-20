@@ -29,9 +29,9 @@ logwrap = debug(logger)
 
 
 class TestCLI(FuelTestCase):
-    #@snapshot_errors
-    #@logwrap
-    #@fetch_logs
+    @snapshot_errors
+    @logwrap
+    @fetch_logs
     def test_nodes_provision(self):
         if USE_SNAP and self.env.get_env().has_snapshot(name="provisioned"):
             self.env.get_env().revert(name="provisioned")
