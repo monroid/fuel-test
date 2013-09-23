@@ -15,6 +15,8 @@
 
 import logging
 import unittest
+from paramiko import sftp, SSHClient
+import select
 from helpers.decorators import snapshot_errors, debug, fetch_logs
 from settings import USE_SNAP
 from tests.fuel_testcase import FuelTestCase
@@ -45,10 +47,9 @@ class TestCLI(FuelTestCase):
             self.assertEqual(0, res)
             self.env.get_env().snapshot(name="provisioned", force=True)
 
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="mkdir -p /var/lib/astute/nova"')
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="echo 1 > /var/lib/astute/nova/nova"')
-        self.get_master_ssh().execute('mco rpc -v execute_shell_command execute cmd="echo 1 > /var/lib/astute/nova/nova.pub"')
-
+        ips = " ".join([i.get_ip_address_by_network_name("internal") for i in self.env.nodes().others])
+        out = self.get_master_ssh().execute('for ip  in %s; do ssh "${ip}" "mkdir -p /var/lib/astute/nova; echo 1 > /var/lib/astute/nova/nova; echo 1 > /var/lib/astute/nova/nova.pub" ; done' %ips, True)['exit_code']
+        logger.info("!!! added private key out: %s " % out)
         res = self.get_master_ssh().execute("astute -f /root/astute.yaml -c deploy", True)['exit_code']
         logging.debug('!!! Deploy result: %s' % res)
         self.assertEqual(0, res)
