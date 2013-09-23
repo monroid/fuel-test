@@ -15,8 +15,6 @@
 
 import logging
 import unittest
-from paramiko import sftp, SSHClient
-import select
 from helpers.decorators import snapshot_errors, debug, fetch_logs
 from settings import USE_SNAP
 from tests.fuel_testcase import FuelTestCase
